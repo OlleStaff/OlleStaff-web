@@ -14,6 +14,7 @@ import ReviewManagePage from "@/pages/owner/ReviewManagePage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import RecruitDetailPage from "@/pages/RecruitDetailPage";
 import FullscreenLayout from "@/layout/FullScreenLayout";
+import TermsDetailPage from "@/pages/auth/TermsDetailPage";
 
 const AuthRoutes: RouteObject[] = [
     {
@@ -64,6 +65,10 @@ const AuthRoutes: RouteObject[] = [
     {
         path: "business-verification/term",
         element: <OwnerTermsPage />,
+    },
+    {
+        path: "/terms/:termId",
+        element: <TermsDetailPage />,
     },
     {
         path: "owner/recruit/write/*",
