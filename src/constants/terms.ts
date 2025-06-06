@@ -211,7 +211,7 @@ export const TERMS_CONTENT = {
     },
     personalInfoAgreement: {
         id: "personalInfoAgreement",
-        title: "올래스텝 개인정보처리 동의서",
+        title: "개인정보처리 동의서",
         version: "v1",
         date: "2025-04-09",
         required: true,
@@ -233,6 +233,20 @@ export const TERMS_CONTENT = {
 
 ※ 보다 자세한 내용은 [개인정보처리방침]을 참고해 주세요.
 `,
+    },
+    marketingAndEventAgreement: {
+        id: "marketingAndEventAgreement",
+        title: "마케팅 및 이벤트 수신 동의",
+        version: "v1",
+        date: "2025-06-06",
+        required: false,
+        content: `(주)맥시마이즈는 이용자의 닉네임, 이메일, 디바이스 정보(푸시 수신 토큰 등)를 수집하여,
+올래스텝 관련 소식 및 혜택 정보를 이메일 또는 웹 푸시 알림을 통해 제공할 수 있습니다.
+수집 항목: 닉네임, 이메일 주소, 디바이스 정보(푸시 메시지 토큰)
+수집 목적: 올래스텝 서비스 관련 소식, 이벤트 및 프로모션 안내, 맞춤형 콘텐츠 추천
+수신 방법: 이메일, 웹 푸시 알림
+보유 및 이용 기간: 동의 철회 시 또는 회원 탈퇴 후 2개월까지 보관 후 파기
+※ 본 항목은 선택사항이며, 동의를 거부하셔도 올래스텝 서비스 이용에는 제한이 없습니다.`,
     },
     personalInfoUsageAgreement: {
         id: "personalInfoUsageAgreement",
