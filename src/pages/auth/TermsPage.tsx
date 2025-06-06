@@ -4,21 +4,20 @@ import { TERMS_CONTENT } from "@/constants/terms";
 import theme from "@/styles/theme";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/Button";
-import { CheckBox } from "@/components/CheckBox";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { Text } from "@/styles/Text";
 import Header from "@/components/Header";
 import PageWrapper from "@/components/PageWrapper";
+import { Wrapper } from "@/styles/Wrapper";
 
 export default function TermsPage() {
-    const termsArray = Object.values(TERMS_CONTENT);
+    const termsArray = Object.values(TERMS_CONTENT).filter(term => term.id !== "personalInfoUsageAgreement");
     const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>(
         termsArray.reduce((acc, { id }) => ({ ...acc, [id]: false }), {})
     );
     const [marketingAgreed, setMarketingAgreed] = useState(false);
     const navigate = useNavigate();
 
+    const allChecked = termsArray.every(term => checkedItems[term.id]);
     const allRequiredChecked = termsArray.filter(term => term.required).every(term => checkedItems[term.id]);
 
     const handleSingleCheck = (id: string) => {
@@ -26,7 +25,7 @@ export default function TermsPage() {
     };
 
     const handleAllCheck = () => {
-        const next = !termsArray.every(term => checkedItems[term.id]);
+        const next = !allChecked;
         const newState = termsArray.reduce((acc, term) => ({ ...acc, [term.id]: next }), {} as Record<string, boolean>);
         setCheckedItems(newState);
     };
@@ -43,102 +42,84 @@ export default function TermsPage() {
         navigate("/signup", { state: { agreements: agreed } });
     };
 
+    const handleViewTermDetail = (id: string) => {};
+
     return (
         <>
-            <Header showBackButton title="이용약관 동의" />
+            <Header showBackButton title="이용 약관 동의" />
             <PageWrapper hasHeader>
-                {termsArray.map(({ id, title, required, content }) => (
-                    <AgreementBox key={id}>
-                        <CheckBox
-                            checked={checkedItems[id]}
-                            onChange={() => handleSingleCheck(id)}
-                            label={
-                                <>
-                                    {title}{" "}
-                                    {required && (
-                                        <Text.Body1_1 style={{ color: theme.color.Main }}>(필수)</Text.Body1_1>
-                                    )}
-                                </>
-                            }
-                        />
-
-                        <ScrollBox>
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
-                        </ScrollBox>
-                    </AgreementBox>
-                ))}
-                <CustomWrapper>
-                    <CheckBox checked={marketingAgreed} onChange={() => setMarketingAgreed(!marketingAgreed)} />
-                    마케팅 및 이벤트 수신에 동의합니다. <span style={{ color: theme.color.Gray4 }}>(선택)</span>
-                </CustomWrapper>
-
-                <AllCheckWrapper>
-                    <CheckBox
-                        checked={termsArray.every(term => checkedItems[term.id])}
-                        onChange={handleAllCheck}
-                        label={"모든 약관에 동의합니다."}
+                <Wrapper.FlexBox justifyContent="space-between">
+                    <Text.Title3_1>전체 동의 합니다.</Text.Title3_1>
+                    <CheckImage
+                        src={`/icons/${allChecked ? "checked" : "unChecked"}.svg`}
+                        alt="전체 동의 체크박스"
+                        onClick={handleAllCheck}
                     />
-                </AllCheckWrapper>
+                </Wrapper.FlexBox>
 
-                <Button
-                    width="large"
-                    backgroundColor="Main"
-                    disabled={!allRequiredChecked}
-                    isActive={allRequiredChecked}
-                    onClick={handleSubmit}
-                    label={"동의 완료"}
-                >
-                    동의완료
-                </Button>
+                <Divider />
+
+                {termsArray.map(({ id, title, required }) => (
+                    <Wrapper.FlexBox
+                        alignItems="center"
+                        justifyContent="space-between"
+                        padding="12px 0px"
+                        key={id}
+                        onClick={() => handleViewTermDetail(id)}
+                    >
+                        <Wrapper.FlexBox gap="8px">
+                            <UnderlineText>{title}</UnderlineText>
+                            <Text.Body1_1 style={{ color: required ? theme.color.Main : theme.color.Gray4 }}>
+                                {required ? "(필수)" : "(선택)"}
+                            </Text.Body1_1>
+                        </Wrapper.FlexBox>
+
+                        <CheckImage
+                            src={`/icons/${checkedItems[id] ? "checked" : "unChecked"}.svg`}
+                            alt="체크박스"
+                            onClick={e => {
+                                e.stopPropagation();
+                                handleSingleCheck(id);
+                            }}
+                        />
+                    </Wrapper.FlexBox>
+                ))}
+
+                <ButtonWrapper>
+                    <Button
+                        label=""
+                        width="large"
+                        backgroundColor="Main"
+                        disabled={!allRequiredChecked}
+                        isActive={allRequiredChecked}
+                        onClick={handleSubmit}
+                    >
+                        동의 완료
+                    </Button>
+                </ButtonWrapper>
             </PageWrapper>
         </>
     );
 }
 
-const ScrollBox = styled.div`
-    background-color: ${theme.color.White};
-    padding: 12px 18.411px 0px 16.184px;
-    border-radius: 8px;
-    height: 130px;
-    white-space: pre-line;
-    align-self: stretch;
-    overflow-y: auto;
-    font-size: 14px;
-    color: ${theme.color.Gray4};
-    border: 1px solid ${theme.color.Gray2};
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 12px;
-        font-size: 13px;
-    }
-
-    th,
-    td {
-        border: 1px solid ${theme.color.Gray2};
-        padding: 8px;
-        text-align: left;
-        word-break: break-word;
-        white-space: normal;
-    }
-
-    th {
-        background-color: ${theme.color.Gray1};
-    }
+const Divider = styled.hr`
+    border: none;
+    border-top: 1px solid ${theme.color.Gray2};
+    margin: 20px 0;
 `;
 
-const AgreementBox = styled.div`
-    margin-bottom: 24px;
+const UnderlineText = styled(Text.Body1_1)`
+    text-decoration-line: underline;
+    cursor: pointer;
 `;
 
-const AllCheckWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    margin: 16px 0;
+const CheckImage = styled.img`
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    flex-shrink: 0;
 `;
 
-const CustomWrapper = styled.div`
-    display: flex;
-    align-items: center;
+const ButtonWrapper = styled.div`
+    margin-top: 40px;
 `;

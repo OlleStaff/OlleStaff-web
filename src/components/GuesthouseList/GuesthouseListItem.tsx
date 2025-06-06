@@ -42,8 +42,8 @@ export const GuesthouseListItem = ({
                 <Footer>
                     {closed ? (
                         <IconText>
-                            <img src="/icons/check_gray.svg" alt="마감됨" width={18} height={18} />
-                            <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
+                            <img src="/icons/unChecked.svg" alt="마감됨" width={12} height={12} />
+                            <Text.Body3 color="Gray4" style={{ marginTop: "2px" }}>
                                 마감됨
                             </Text.Body3>
                         </IconText>
