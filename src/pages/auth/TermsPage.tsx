@@ -8,13 +8,14 @@ import { Text } from "@/styles/Text";
 import Header from "@/components/Header";
 import PageWrapper from "@/components/PageWrapper";
 import { Wrapper } from "@/styles/Wrapper";
+import AgreementCheck from "./components/AgreementCheck";
 
 export default function TermsPage() {
     const termsArray = Object.values(TERMS_CONTENT).filter(term => term.id !== "personalInfoUsageAgreement");
     const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>(
         termsArray.reduce((acc, { id }) => ({ ...acc, [id]: false }), {})
     );
-    const [marketingAgreed, setMarketingAgreed] = useState(false);
+    const [marketingAgreed, _] = useState(false);
     const navigate = useNavigate();
 
     const allChecked = termsArray.every(term => checkedItems[term.id]);
@@ -36,67 +37,58 @@ export default function TermsPage() {
             .map(term => `${term.title}_${term.date}_${term.version}`);
 
         if (marketingAgreed) {
-            agreed.push("올래스텝 개인정보처리 동의서-마케팅_2025-04-09_v1");
+            const marketingTerm = TERMS_CONTENT.personalInfoUsageAgreement;
+            agreed.push(`${marketingTerm.title}_${marketingTerm.date}_${marketingTerm.version}`);
         }
 
         navigate("/signup", { state: { agreements: agreed } });
     };
 
-    const handleViewTermDetail = (id: string) => {};
-
     return (
         <>
             <Header showBackButton title="이용 약관 동의" />
             <PageWrapper hasHeader>
-                <Wrapper.FlexBox justifyContent="space-between">
-                    <Text.Title3_1>전체 동의 합니다.</Text.Title3_1>
-                    <CheckImage
-                        src={`/icons/${allChecked ? "checked" : "unChecked"}.svg`}
-                        alt="전체 동의 체크박스"
-                        onClick={handleAllCheck}
-                    />
-                </Wrapper.FlexBox>
-
-                <Divider />
-
-                {termsArray.map(({ id, title, required }) => (
-                    <Wrapper.FlexBox
-                        alignItems="center"
-                        justifyContent="space-between"
-                        padding="12px 0px"
-                        key={id}
-                        onClick={() => handleViewTermDetail(id)}
-                    >
-                        <Wrapper.FlexBox gap="8px">
-                            <UnderlineText>{title}</UnderlineText>
-                            <Text.Body1_1 style={{ color: required ? theme.color.Main : theme.color.Gray4 }}>
-                                {required ? "(필수)" : "(선택)"}
-                            </Text.Body1_1>
+                <Wrapper.FlexBox
+                    direction="column"
+                    justifyContent="space-between"
+                    height={`calc(100vh - ${theme.size.HeaderHeight})`}
+                >
+                    <div>
+                        <Wrapper.FlexBox justifyContent="space-between">
+                            <Text.Title3_1>전체 동의 합니다.</Text.Title3_1>
+                            <CheckImage
+                                src={`/icons/${allChecked ? "checked" : "unChecked"}.svg`}
+                                alt="전체 동의 체크박스"
+                                onClick={handleAllCheck}
+                            />
                         </Wrapper.FlexBox>
+                        <Divider />
 
-                        <CheckImage
-                            src={`/icons/${checkedItems[id] ? "checked" : "unChecked"}.svg`}
-                            alt="체크박스"
-                            onClick={e => {
-                                e.stopPropagation();
-                                handleSingleCheck(id);
-                            }}
-                        />
-                    </Wrapper.FlexBox>
-                ))}
+                        {termsArray.map(({ id, title, required }) => (
+                            <AgreementCheck
+                                key={id}
+                                isChecked={checkedItems[id]}
+                                onToggle={() => handleSingleCheck(id)}
+                                label={title}
+                                requirementType={required ? "필수" : "선택"}
+                                termsLink={`/terms/${id}`}
+                            />
+                        ))}
+                    </div>
 
-                <ButtonWrapper>
-                    <Button
-                        label=""
-                        width="large"
-                        backgroundColor="Main"
-                        disabled={!allRequiredChecked}
-                        isActive={allRequiredChecked}
-                        onClick={handleSubmit}
-                    >
-                        동의 완료
-                    </Button>
-                </ButtonWrapper>
+                    <ButtonWrapper>
+                        <Button
+                            label=""
+                            width="large"
+                            backgroundColor="Main"
+                            disabled={!allRequiredChecked}
+                            isActive={allRequiredChecked}
+                            onClick={handleSubmit}
+                        >
+                            동의 완료
+                        </Button>
+                    </ButtonWrapper>
+                </Wrapper.FlexBox>
             </PageWrapper>
         </>
     );
@@ -108,11 +100,6 @@ const Divider = styled.hr`
     margin: 20px 0;
 `;
 
-const UnderlineText = styled(Text.Body1_1)`
-    text-decoration-line: underline;
-    cursor: pointer;
-`;
-
 const CheckImage = styled.img`
     width: 20px;
     height: 20px;
@@ -121,5 +108,5 @@ const CheckImage = styled.img`
 `;
 
 const ButtonWrapper = styled.div`
-    margin-top: 40px;
+    padding-bottom: 40px;
 `;
