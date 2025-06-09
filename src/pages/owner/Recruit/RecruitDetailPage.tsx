@@ -13,6 +13,7 @@ import ExpandableText from "@/components/ExpandableText";
 import { useState } from "react";
 import ImageViewer from "@/components/ImageViewer";
 import MapComponent from "../components/Map";
+import ImageCarousel from "@/components/ImageCarousel";
 
 export default function RecruitDetailPage() {
     const [showAllBenefits, setShowAllBenefits] = useState(false);
@@ -90,9 +91,10 @@ export default function RecruitDetailPage() {
                 <Wrapper.FlexBox direction="column" padding="30px" gap="20px">
                     {Array.isArray(images) && images.length > 0 && (
                         <>
-                            {images.map((url, idx) => (
+                            {/* {images.map((url, idx) => (
                                 <PostImage key={idx} src={url} onClick={() => handleImageClick(idx)} />
-                            ))}
+                            ))} */}
+                            <ImageCarousel images={images} />
                         </>
                     )}
 
