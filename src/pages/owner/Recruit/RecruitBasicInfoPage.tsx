@@ -12,6 +12,7 @@ import BenefitListEditor from "../components/BenefitListEditor";
 import LocationSelector from "../components/LocationSelector";
 import CategorySelector from "../components/CategorySelector";
 import { EmploymentPostProps } from "@/types/employment";
+import { formatDateInput } from "@/utils/date";
 
 interface Props {
     formData: EmploymentPostProps;
@@ -94,7 +95,9 @@ export default function RecruitBasicInfoPage({ setImageFiles, formData, setFormD
                                 placeholder="예) 2025-02-08"
                                 variant="default"
                                 value={formData.startedAt}
-                                onChange={e => setFormData(prev => ({ ...prev, startedAt: e.target.value }))}
+                                onChange={e =>
+                                    setFormData(prev => ({ ...prev, startedAt: formatDateInput(e.target.value) }))
+                                }
                             />
                         </Wrapper.FlexBox>
                         <Wrapper.FlexBox width="48%">
@@ -103,7 +106,9 @@ export default function RecruitBasicInfoPage({ setImageFiles, formData, setFormD
                                 placeholder="예) 2025-12-22"
                                 variant="default"
                                 value={formData.endedAt}
-                                onChange={e => setFormData(prev => ({ ...prev, endedAt: e.target.value }))}
+                                onChange={e =>
+                                    setFormData(prev => ({ ...prev, endedAt: formatDateInput(e.target.value) }))
+                                }
                             />
                         </Wrapper.FlexBox>
                     </Wrapper.FlexBox>
@@ -113,7 +118,9 @@ export default function RecruitBasicInfoPage({ setImageFiles, formData, setFormD
                         placeholder="예) 2025-02-01"
                         variant="default"
                         value={formData.recruitmentEnd}
-                        onChange={e => setFormData(prev => ({ ...prev, recruitmentEnd: e.target.value }))}
+                        onChange={e =>
+                            setFormData(prev => ({ ...prev, recruitmentEnd: formatDateInput(e.target.value) }))
+                        }
                     />
 
                     <Textarea
