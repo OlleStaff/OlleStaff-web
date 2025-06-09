@@ -71,8 +71,8 @@ export default function RecruitBasicInfoPage({ setImageFiles, formData, setFormD
                         <Wrapper.FlexBox width="120px">
                             <DropdownButton
                                 dropTitle="모집 인원"
-                                label={`${formData.personNum || "00"}명`}
-                                options={["1", "2", "3", "4", "5"]}
+                                label={`${formData.personNum || "0 "}명`}
+                                options={Array.from({ length: 100 }, (_, i) => (i + 1).toString())}
                                 onSelect={value => setFormData(prev => ({ ...prev, personNum: parseInt(value) }))}
                             />
                         </Wrapper.FlexBox>
