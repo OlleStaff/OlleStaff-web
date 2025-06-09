@@ -74,7 +74,7 @@ const BackButton = styled.button`
 `;
 
 const IconButton = styled.button`
-    width: 24px;
+    width: 100%;
     background: none;
     border: none;
     cursor: pointer;

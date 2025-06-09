@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Text } from "@/styles/Text";
 import { useEmploymentDetail } from "@/hooks/owner/employment/useEmploymentDetail";
 import Header from "@/components/Header";
@@ -16,6 +16,7 @@ import MapComponent from "../components/Map";
 import ImageCarousel from "@/components/ImageCarousel";
 
 export default function RecruitDetailPage() {
+    const navigate = useNavigate();
     const [showAllBenefits, setShowAllBenefits] = useState(false);
     const [isViewerOpen, setViewerOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -45,7 +46,9 @@ export default function RecruitDetailPage() {
         longitude,
     } = detail.data;
 
-    const handleEditClick = () => {};
+    const handleEditClick = () => {
+        navigate("/edit");
+    };
 
     const metaItems = [
         {
@@ -90,12 +93,7 @@ export default function RecruitDetailPage() {
             <PageWrapper hasHeader>
                 <Wrapper.FlexBox direction="column" padding="30px" gap="20px">
                     {Array.isArray(images) && images.length > 0 && (
-                        <>
-                            {/* {images.map((url, idx) => (
-                                <PostImage key={idx} src={url} onClick={() => handleImageClick(idx)} />
-                            ))} */}
-                            <ImageCarousel images={images} />
-                        </>
+                        <ImageCarousel images={images} onImageClick={handleImageClick} />
                     )}
 
                     {isViewerOpen && (

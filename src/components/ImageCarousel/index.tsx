@@ -7,9 +7,10 @@ import styled from "@emotion/styled";
 
 interface ImageCarouselProps {
     images: string[];
+    onImageClick?: (index: number) => void;
 }
 
-export default function ImageCarousel({ images }: ImageCarouselProps) {
+export default function ImageCarousel({ images, onImageClick }: ImageCarouselProps) {
     return (
         <CarouselWrapper>
             <Swiper
@@ -24,7 +25,7 @@ export default function ImageCarousel({ images }: ImageCarouselProps) {
             >
                 {images.map((img, idx) => (
                     <SwiperSlide key={idx}>
-                        <SlideImage src={img} alt={`image-${idx}`} />
+                        <SlideImage src={img} alt={`image-${idx}`} onClick={() => onImageClick?.(idx)} />
                         <CustomPagination>
                             {idx + 1} / {images.length}
                         </CustomPagination>
