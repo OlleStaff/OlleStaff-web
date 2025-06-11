@@ -4,19 +4,28 @@ import PageWrapper from "@/components/PageWrapper";
 import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
 import PrecautionListItem from "../components/PrecautionListItem";
-import { EmploymentPostProps } from "@/types/employment";
+import { EmploymentPostProps, EmploymentPutProps } from "@/types/employment";
 import { useState } from "react";
 import Modal from "@/components/Modal";
 import { useNavigate } from "react-router-dom";
 
-interface Props {
-    formData: EmploymentPostProps;
-    setFormData: React.Dispatch<React.SetStateAction<EmploymentPostProps>>;
-    imageFiles: File[];
+export type Mode = "create" | "edit";
+
+export type FormDataType<T extends Mode> = T extends "create" ? EmploymentPostProps : EmploymentPutProps;
+
+export interface RecruitPrecautionPageProps<T extends Mode> {
+    mode: T;
+    formData: FormDataType<T>;
+    setFormData: React.Dispatch<React.SetStateAction<FormDataType<T>>>;
     handleSubmit: () => void;
 }
 
-export default function RecruitPrecautionPage({ formData, setFormData, handleSubmit }: Props) {
+export default function RecruitPrecautionPage<T extends Mode>({
+    mode,
+    formData,
+    setFormData,
+    handleSubmit,
+}: RecruitPrecautionPageProps<T>) {
     const isFormValid =
         formData.precautions.length >= 2 &&
         formData.precautions.every(
@@ -25,9 +34,11 @@ export default function RecruitPrecautionPage({ formData, setFormData, handleSub
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
+
     const handleOpenModal = () => {
         if (isFormValid) setIsModalOpen(true);
     };
+
     const handleConfirm = () => {
         handleSubmit();
         navigate("/owner");
@@ -48,14 +59,15 @@ export default function RecruitPrecautionPage({ formData, setFormData, handleSub
                         values={formData.precautions}
                         onChange={updated => setFormData(prev => ({ ...prev, precautions: updated }))}
                     />
+
                     <Button
-                        label="작성 완료"
+                        label={mode === "edit" ? "수정 완료" : "작성 완료"}
                         width="large"
                         onClick={handleOpenModal}
                         disabled={!isFormValid}
                         isActive={isFormValid}
                     >
-                        작성 완료
+                        {mode === "edit" ? "수정 완료" : "작성 완료"}
                     </Button>
                 </Wrapper.FlexBox>
             </PageWrapper>
@@ -63,11 +75,12 @@ export default function RecruitPrecautionPage({ formData, setFormData, handleSub
             {isModalOpen && (
                 <Modal
                     variant="confirm"
-                    title="게시글 등록을 완료 하시겠습니까?"
-                    message="등록버튼을 누를시 게시글이 업로드 됩니다.
-업로드 게시글 수정은 나의 공고 > 더보기"
+                    title={mode === "edit" ? "게시글 수정을 완료하시겠습니까?" : "게시글 등록을 완료하시겠습니까?"}
+                    message={`${
+                        mode === "edit" ? "수정" : "등록"
+                    } 버튼을 누를 시 게시글이 업로드 됩니다.\n업로드 게시글 수정은 나의 공고 > 더보기`}
                     cancelText="취소"
-                    confirmText="등록"
+                    confirmText={mode === "edit" ? "수정" : "등록"}
                     handleModalClose={() => setIsModalOpen(false)}
                     onConfirm={handleConfirm}
                 />

@@ -1,32 +1,54 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import theme from "@/styles/theme";
 import { Text } from "@/styles/Text";
 
 interface ImageUploaderProps {
     maxImages?: number;
-    onChange?: (files: File[]) => void;
+    onChange?: (files: File[], remainingUrls: string[]) => void;
+    initialImages?: string[];
 }
 
-export default function ImageUploader({ maxImages = 6, onChange }: ImageUploaderProps) {
+export default function ImageUploader({ maxImages = 6, onChange, initialImages = [] }: ImageUploaderProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [images, setImages] = useState<File[]>([]);
+    const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+    const [initialImageUrls, setInitialImageUrls] = useState<string[]>([]);
+
+    // 초기 이미지 설정
+    useEffect(() => {
+        setInitialImageUrls(initialImages);
+    }, [initialImages]);
+
+    useEffect(() => {
+        onChange?.(uploadedImages, initialImageUrls);
+    }, [uploadedImages, initialImageUrls, onChange]);
 
     const handleAddImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-        if (!files || !files[0]) return;
-        if (images.length >= maxImages) return;
+        const selectedFiles = e.target.files;
+        if (!selectedFiles || !selectedFiles.length) return;
 
-        const updated = [...images, files[0]];
-        setImages(updated);
-        onChange?.(updated);
+        const newFiles = Array.from(selectedFiles);
+        const availableSlots = maxImages - (uploadedImages.length + initialImageUrls.length);
+        const validNewFiles = newFiles.slice(0, availableSlots);
+
+        const newUploadedImages = [...uploadedImages, ...validNewFiles];
+
+        setUploadedImages(newUploadedImages);
     };
 
-    const handleRemoveImage = (index: number) => {
-        const updated = images.filter((_, i) => i !== index);
-        setImages(updated);
-        onChange?.(updated);
+    const handleRemoveInitialImage = (index: number) => {
+        const updated = [...initialImageUrls];
+        updated.splice(index, 1);
+        setInitialImageUrls(updated);
     };
+
+    const handleRemoveUploadedImage = (index: number) => {
+        const updated = [...uploadedImages];
+        updated.splice(index, 1);
+        setUploadedImages(updated);
+    };
+
+    const totalImages = initialImageUrls.length + uploadedImages.length;
 
     return (
         <div>
@@ -35,20 +57,30 @@ export default function ImageUploader({ maxImages = 6, onChange }: ImageUploader
                     * 최대 {maxImages}개의 사진을 첨부할 수 있습니다.
                 </Text.Body3_1>
                 <Text.Body3_1 style={{ color: theme.color.Gray4 }}>
-                    {images.length} / {maxImages}
+                    {totalImages} / {maxImages}
                 </Text.Body3_1>
             </Description>
+
             <Grid maxCount={maxImages}>
-                {images.map((img, index) => (
-                    <div key={`${img.name}-${img.lastModified}`} style={{ position: "relative" }}>
+                {initialImageUrls.map((url, index) => (
+                    <div key={`initial-${index}`} style={{ position: "relative" }}>
                         <ImagePreview>
-                            <img src={URL.createObjectURL(img)} alt={`uploaded-${index}`} />
+                            <img src={url} alt={`initial-${index}`} />
                         </ImagePreview>
-                        <RemoveButton onClick={() => handleRemoveImage(index)} />
+                        <RemoveButton onClick={() => handleRemoveInitialImage(index)} />
                     </div>
                 ))}
 
-                {images.length < maxImages && (
+                {uploadedImages.map((file, index) => (
+                    <div key={`uploaded-${index}`} style={{ position: "relative" }}>
+                        <ImagePreview>
+                            <img src={URL.createObjectURL(file)} alt={`uploaded-${index}`} />
+                        </ImagePreview>
+                        <RemoveButton onClick={() => handleRemoveUploadedImage(index)} />
+                    </div>
+                ))}
+
+                {totalImages < maxImages && (
                     <AddButton onClick={() => fileInputRef.current?.click()}>
                         <input
                             type="file"

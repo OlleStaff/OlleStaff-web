@@ -9,11 +9,12 @@ import TermsPage from "@/pages/auth/TermsPage";
 import TypeSelectPage from "@/pages/auth/TypeSelectPage";
 import BusinessVerificationPage from "@/pages/auth/BusinessVerification";
 import OwnerTermsPage from "@/pages/auth/OwnerTermsPage";
-import RecruitWriteContainer from "@/pages/owner/Recruit";
+import RecruitWriteContainer from "@/pages/owner/Recruit/RecruitCreateContainer";
 import ReviewManagePage from "@/pages/owner/ReviewManagePage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import RecruitDetailPage from "@/pages/owner/Recruit/RecruitDetailPage";
 import FullscreenLayout from "@/layout/FullScreenLayout";
+import RecruitEditContainer from "@/pages/owner/Recruit/RecruitEditContainer";
 
 const AuthRoutes: RouteObject[] = [
     {
@@ -68,6 +69,10 @@ const AuthRoutes: RouteObject[] = [
     {
         path: "owner/recruit/write/*",
         element: <RecruitWriteContainer />,
+    },
+    {
+        path: "owner/recruit/edit/:employmentId/*",
+        element: <RecruitEditContainer />,
     },
     {
         path: "owner/userinfo/reviews",

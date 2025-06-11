@@ -47,7 +47,7 @@ export default function RecruitDetailPage() {
     } = detail.data;
 
     const handleEditClick = () => {
-        navigate("/edit");
+        navigate(`/owner/recruit/edit/${employmentId}/step1`);
     };
 
     const metaItems = [
@@ -217,11 +217,4 @@ const BenefitListWrapper = styled.ul`
     display: flex;
     flex-direction: column;
     gap: 8px;
-`;
-
-const PostImage = styled.img`
-    width: 100%;
-    border-radius: 8px;
-    aspect-ratio: 1/1;
-    object-fit: cover;
 `;

@@ -110,10 +110,7 @@ export const mockdata_reviews: ReviewListItemProps = {
             images: [],
             review: "깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!깔끔하고 친절했어요!",
             disclosure: true,
-            reviewComment:
-                "감사합니다! 또 놀러오세요 :)감사합니다! 또 놀러오세요 :)감사합니다! 또 놀러오세요 :)감사합니다! 또 놀러오세요 :)감사합니다! 또 놀러오세요 :)감사합니다! 또 놀러오세요 :)",
             reviewDate: 1747900000,
-            reviewCommentDate: 1747900000,
             hostNickName: "호스트",
         },
         {
@@ -128,9 +125,7 @@ export const mockdata_reviews: ReviewListItemProps = {
             ],
             review: "깔끔하고 친절했어요!깔끔하고 친절했어요!",
             disclosure: false,
-            reviewComment: null,
             reviewDate: 1747900000,
-            reviewCommentDate: 1747900000,
             hostNickName: "호스트",
         },
         {
@@ -141,9 +136,7 @@ export const mockdata_reviews: ReviewListItemProps = {
             images: [],
             review: "흠",
             disclosure: true,
-            reviewComment: null,
             reviewDate: 1747900000,
-            reviewCommentDate: 1747900000,
             hostNickName: "호스트",
         },
     ],
