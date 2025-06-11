@@ -63,3 +63,16 @@ export interface EmploymentPutProps {
     }[];
     images: string[];
 }
+
+// 공고 목록 조회용 (리스트, /employments/all)
+export interface EmploymentPreviewProps {
+    employmentId: number;
+    image: string;
+    hashtagName: string[];
+    title: string;
+    sex: "all" | "male" | "female";
+    recruitmentEnd: string;
+    content: string;
+    locationName: string;
+    personNum: number;
+}

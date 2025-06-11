@@ -1,6 +1,8 @@
 import { CommentBox } from "@/components/CommentBox";
 import Header from "@/components/Header";
+import ImageGrid from "@/components/ImageGrid";
 import ImageViewer from "@/components/ImageViewer";
+import LikeButton from "@/components/LikeButton";
 import PageWrapper from "@/components/PageWrapper";
 import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
@@ -14,7 +16,7 @@ export default function AccompanyDetailPage() {
     const { state } = useLocation();
 
     const { accompany } = state as { accompany: AccompanyListItemProps };
-    const { title, content, images, createdAt, userNickname, likeCount, commentCount, userImage } = accompany;
+    const { title, content, images, createdAt, userNickname, likeCount, commentCount, userImage, like } = accompany;
 
     const [isViewerOpen, setViewerOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -38,23 +40,14 @@ export default function AccompanyDetailPage() {
                     <Title>{title}</Title>
                     <Content style={{ whiteSpace: "pre-wrap" }}>{content}</Content>
                 </Wrapper.FlexBox>
-                {images.length > 0 && (
-                    <ImageGrid>
-                        {images.map((url, idx) => (
-                            <PostImage key={idx} src={url} onClick={() => handleImageClick(idx)} />
-                        ))}
-                    </ImageGrid>
-                )}
+                {images.length > 0 && <ImageGrid images={images} onImageClick={handleImageClick} />}
 
                 {isViewerOpen && (
                     <ImageViewer images={images} startIndex={currentImageIndex} onClose={() => setViewerOpen(false)} />
                 )}
 
                 <ReactionBar>
-                    <IconWrapper>
-                        <Icon src="/icons/heart_black.svg" />
-                        <Text.Body1 style={{ marginTop: "4px" }}>{likeCount}</Text.Body1>
-                    </IconWrapper>
+                    <LikeButton accompanyId={accompany.id} initialLiked={like} initialCount={likeCount} />
                     <IconWrapper>
                         <Icon src="/icons/comment_black.svg" />
                         <Text.Body1 style={{ marginTop: "4px" }}>{commentCount}</Text.Body1>
@@ -100,20 +93,6 @@ const Title = styled(Text.Title2_1)`
 const Content = styled(Text.Body1)`
     white-space: pre-wrap;
     margin-bottom: 16px;
-`;
-
-const ImageGrid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    margin-bottom: 16px;
-`;
-
-const PostImage = styled.img`
-    width: 100%;
-    border-radius: 8px;
-    aspect-ratio: 1/1;
-    object-fit: cover;
 `;
 
 const ReactionBar = styled.div`

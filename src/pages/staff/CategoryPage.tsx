@@ -2,131 +2,31 @@ import { useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import PageWrapper from "@/components/PageWrapper";
 import { GuesthouseList } from "@/components/GuesthouseList";
-import { GuesthouseListItemProps } from "@/types/guesthouse";
 import TabSelector from "@/components/TabSelector";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { StaffTabTypes, TAB_LABELS } from "@/constants/tabs";
+import { categoryMap } from "@/constants/categories";
+import { useEmploymentAll } from "@/hooks/staff/useEmploymentAll";
+import Oops from "@/components/Oops";
+import { Wrapper } from "@/styles/Wrapper";
 
 type SearchTab = StaffTabTypes["SEARCH"]; // "진행중인 공고", "마감공고"
 
-const mockData: GuesthouseListItemProps[] = [
-    {
-        employmentId: 1,
-        title: "결 게스트하우스 스탭모집",
-        image: "/images/guesthouse3.png",
-        hashtagName: ["활기찬", "힐링", "자연", "바다"],
-        content: "바다 근처 힙한 게스트 하우스",
-        locationName: "함덕해수욕장",
-        sex: "male",
-        personNum: 2,
-        recruitmentEnd: "2025-05-13",
-    },
-    {
-        employmentId: 2,
-        title: "오션뷰 게스트하우스",
-        image: "/images/guesthouse3.png",
-        hashtagName: ["뷰맛집", "바다", "프라이빗"],
-        content: "바다가 보이는 오션뷰 숙소",
-        locationName: "협재",
-        sex: "female",
-        personNum: 1,
-        closed: true,
-        recruitmentEnd: "2025-05-13",
-    },
-    {
-        employmentId: 3,
-        title: "소소한 쉼터",
-        image: "/images/guesthouse3.png",
-        hashtagName: ["힐링", "자연"],
-        content: "마음이 편안해지는 조용한 숙소",
-        locationName: "성산읍",
-        sex: "male",
-        personNum: 2,
-        recruitmentEnd: "2025-05-13",
-    },
-    {
-        employmentId: 4,
-        title: "오션뷰 게스트하우스",
-        image: "/images/guesthouse3.png",
-        hashtagName: ["뷰맛집", "바다", "프라이빗"],
-        content: "바다가 보이는 오션뷰 숙소",
-        locationName: "협재",
-        sex: "female",
-        personNum: 1,
-        closed: true,
-        recruitmentEnd: "2025-05-13",
-    },
-    {
-        employmentId: 5,
-        title: "소소한 쉼터",
-        image: "/images/guesthouse3.png",
-        hashtagName: ["힐링", "자연"],
-        content: "마음이 편안해지는 조용한 숙소",
-        locationName: "성산읍",
-        sex: "male",
-        personNum: 2,
-        recruitmentEnd: "2025-05-13",
-    },
-    {
-        employmentId: 6,
-        title: "오션뷰 게스트하우스",
-        image: "/images/guesthouse3.png",
-        hashtagName: ["뷰맛집", "바다", "프라이빗"],
-        content: "바다가 보이는 오션뷰 숙소",
-        locationName: "협재",
-        sex: "female",
-        personNum: 1,
-        closed: true,
-        recruitmentEnd: "2025-05-13",
-    },
-    {
-        employmentId: 7,
-        title: "소소한 쉼터",
-        image: "/images/guesthouse3.png",
-        hashtagName: ["힐링", "자연"],
-        content: "마음이 편안해지는 조용한 숙소",
-        locationName: "성산읍",
-        sex: "male",
-        personNum: 2,
-        recruitmentEnd: "2025-05-13",
-    },
-    {
-        employmentId: 8,
-        title: "오션뷰 게스트하우스",
-        image: "/images/guesthouse3.png",
-        hashtagName: ["뷰맛집", "바다", "프라이빗"],
-        content: "바다가 보이는 오션뷰 숙소",
-        locationName: "협재",
-        sex: "female",
-        personNum: 3,
-        closed: true,
-        recruitmentEnd: "2025-05-13",
-    },
-    // api 명세에 맞게 mockdata 임시 수정
-];
-
 export default function CategoryPage() {
     const [sort, setSort] = useState<SearchTab>("진행중인 공고");
-    const [data, setData] = useState<GuesthouseListItemProps[]>([]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // const response = await fetch(``);
-                // const result = await response.json();
-                // setData(result);
-                setData(mockData);
-            } catch (error) {
-                console.error("카테고리 불러오기 실패", error);
-                setData([]);
-            }
-        };
-
-        fetchData();
-    }, [sort]);
-
     const [params] = useSearchParams();
-    const label = params.get("label");
+    const label = params.get("label") || "";
+    const category = categoryMap[label];
+
+    const {
+        data = [],
+        isLoading,
+        isError,
+    } = useEmploymentAll({
+        type: sort === "마감공고" ? "END" : "IN_PROGRESS",
+        category,
+        pageSize: 10,
+    });
 
     return (
         <>
@@ -138,7 +38,20 @@ export default function CategoryPage() {
                     onChange={value => setSort(value as SearchTab)}
                     variant="bold"
                 />
-                <GuesthouseList data={data} />
+                {isLoading ? (
+                    <p>로딩중...</p>
+                ) : isError ? (
+                    <p>에러가 발생했습니다. 다시 시도해주세요.</p>
+                ) : data.length === 0 ? (
+                    <Wrapper.FlexBox gap="12px" alignItems="center" direction="column" padding="50% 0">
+                        <Oops
+                            message="등록된 공고가 없어요."
+                            description={`다른 카테고리를 선택하거나\n나중에 다시 확인해보세요!`}
+                        />
+                    </Wrapper.FlexBox>
+                ) : (
+                    <GuesthouseList data={data} />
+                )}
             </PageWrapper>
         </>
     );

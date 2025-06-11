@@ -26,16 +26,3 @@ export const useMyEmploymentList = () => {
         },
     });
 };
-
-// staff 관점에서 사용하는 모든 공고 조회 (진행중 | 마감)
-// export const useGuesthouseList = () => {
-//     return useQuery<GuesthouseListItemProps[]>({
-//         queryKey: ["guesthouseList"],
-//         queryFn: async () => {
-//             const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/employments`, {
-//                 withCredentials: true,
-//             });
-//             return data.data.guesthouses;
-//         },
-//     });
-// };

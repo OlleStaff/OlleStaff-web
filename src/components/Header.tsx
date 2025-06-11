@@ -11,10 +11,21 @@ type HeaderProps = {
     rightText?: string;
 };
 
-export default function Header({ title, showBackButton, rightIconSrc, onRightClick, rightText }: HeaderProps) {
+export default function Header({
+    title,
+    showBackButton,
+    rightIconSrc,
+    onRightClick,
+    rightText,
+    onBackClick,
+}: HeaderProps) {
     const navigate = useNavigate();
     const handleBackClick = () => {
-        navigate(-1);
+        if (onBackClick) {
+            onBackClick();
+        } else {
+            navigate(-1);
+        }
     };
     return (
         <HeaderWrapper>

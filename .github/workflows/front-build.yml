@@ -12,6 +12,14 @@ jobs:
             - name: Checkout Repository
               uses: actions/checkout@v3
 
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                node-version: 18
+
+            - name: Create .env
+              run: echo "${{ secrets.REACT_ENV }}" > .env
+
             - name: Install Dependencies
               run: npm install
 

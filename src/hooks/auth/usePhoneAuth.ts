@@ -31,9 +31,9 @@ export const usePhoneAuth = (phone: string) => {
             setIsStarted(true);
             setIsRequested(true);
             setIsExpired(false);
-            setTimer(10); // 임시로 10초
+            setTimer(180);
             setIsCooldown(true);
-            setTimeout(() => setIsCooldown(false), 6000); // 임시로 6초
+            setTimeout(() => setIsCooldown(false), 30000); // 30초뒤 재전송 가능
         } catch (err) {
             console.error("인증 요청 실패", err);
             setMessage("인증 요청에 실패했습니다.");
