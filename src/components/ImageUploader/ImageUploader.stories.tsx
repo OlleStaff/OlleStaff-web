@@ -25,7 +25,7 @@ export const ThreeLimit: StoryObj<typeof ImageUploader> = {
 
         return (
             <div style={{ maxWidth: 360 }}>
-                <ImageUploader maxImages={3} onChange={setFiles} />
+                <ImageUploader maxImages={3} onChange={({ files }) => setFiles(files)} />
                 <p style={{ marginTop: 12 }}>최대 3장 제한, 현재: {files.length}개</p>
             </div>
         );

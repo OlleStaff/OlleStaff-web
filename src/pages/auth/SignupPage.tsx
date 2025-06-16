@@ -2,7 +2,7 @@ import Input from "@/components/Input";
 import ProfileAdd from "@/components/ProfileAdd";
 import { Wrapper } from "@/styles/Wrapper";
 import { Button } from "@/components/Button";
-import useSignupForm from "@/hooks/useValidation";
+import useValidation from "@/hooks/useValidation";
 import { VerificationTimer } from "@/components/VerificationTimer";
 import { usePhoneAuth } from "@/hooks/auth/usePhoneAuth";
 import { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ import PageWrapper from "@/components/PageWrapper";
 import styled from "@emotion/styled";
 
 export default function SignupPage() {
-    const { userInfo, errors, handleInputChange, validate } = useSignupForm();
+    const { userInfo, errors, handleInputChange, validate } = useValidation();
     const {
         timer,
         message: verificationMessage,

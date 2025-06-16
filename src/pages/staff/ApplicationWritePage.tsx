@@ -104,7 +104,7 @@ export default function ApplicationWritePage() {
 
                     <FieldGroup>
                         <Text.Body1_1>사진 첨부</Text.Body1_1>
-                        <ImageUploader maxImages={6} onChange={setImages} />
+                        <ImageUploader maxImages={6} onChange={({ files }) => setImages(files)} />
                     </FieldGroup>
                 </FormWrapper>
 

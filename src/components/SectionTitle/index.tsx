@@ -1,33 +1,43 @@
 import { Text } from "@/styles/Text";
+import { Wrapper } from "@/styles/Wrapper";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
 
 interface SectionTitleProps {
     title: string;
     link?: string;
+    type?: "default" | "copy";
+    onCopyClick?: () => void;
 }
 
-export default function SectionTitle({ title, link }: SectionTitleProps) {
+export default function SectionTitle({ title, link, type = "default", onCopyClick }: SectionTitleProps) {
     const navigate = useNavigate();
 
     return (
-        <Wrapper>
-            <Text.Title2_1>{title}</Text.Title2_1>
-            {link && (
-                <MoreButton onClick={() => navigate(link, { relative: "path" })}>
-                    <MoreText>더보기</MoreText>
-                    <RotatedIcon src="/icons/backbtn.svg" alt="더보기 아이콘" />
-                </MoreButton>
+        <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
+            {type === "default" && link && (
+                <>
+                    <Text.Title2_1>{title}</Text.Title2_1>
+                    <MoreButton onClick={() => navigate(link, { relative: "path" })}>
+                        <Text.Body3_1 color="Gray4" style={{ marginTop: "2px" }}>
+                            더보기
+                        </Text.Body3_1>
+                        <img style={{ width: "17px", height: "17px" }} src="/icons/backbtn.svg" alt="더보기 아이콘" />
+                    </MoreButton>
+                </>
             )}
-        </Wrapper>
+
+            {type === "copy" && (
+                <>
+                    <Text.Body1_1>{title}</Text.Body1_1>
+                    <CopyButton onClick={onCopyClick}>
+                        <img src="/icons/copy.svg" alt="복사 아이콘" />
+                    </CopyButton>
+                </>
+            )}
+        </Wrapper.FlexBox>
     );
 }
-
-const Wrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`;
 
 const MoreButton = styled.button`
     display: flex;
@@ -38,15 +48,15 @@ const MoreButton = styled.button`
     cursor: pointer;
 `;
 
-const MoreText = styled(Text.Body3_1)`
-    color: ${({ theme }) => theme.color.Gray4};
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.24px;
-    margin-top: 2px;
-`;
+const CopyButton = styled.button`
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
 
-const RotatedIcon = styled.img`
-    width: 17px;
-    height: 17px;
+    img {
+        width: 20px;
+        height: 20px;
+        padding: 3px;
+    }
 `;

@@ -24,6 +24,8 @@ interface RecruitBasicInfoPageProps<T extends Mode> {
     setFormData: React.Dispatch<React.SetStateAction<FormDataType<T>>>;
     imageFiles: File[];
     setImageFiles: React.Dispatch<React.SetStateAction<File[]>>;
+    imageUrls?: string[];
+    setImageUrls?: React.Dispatch<React.SetStateAction<string[]>>;
     onNext: () => void;
 }
 
@@ -33,9 +35,11 @@ export default function RecruitBasicInfoPage<T extends Mode>({
     setFormData,
     imageFiles,
     setImageFiles,
+    imageUrls,
+    setImageUrls,
     onNext,
 }: RecruitBasicInfoPageProps<T>) {
-    const isImageValid = imageFiles.length > 0 || ("images" in formData && formData.images?.length > 0);
+    const isImageValid = imageFiles.length > 0;
 
     const isFormValid =
         isImageValid &&
@@ -63,8 +67,8 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                 <Wrapper.FlexBox direction="column" padding="30px" gap="20px">
                     <ImageUploader
                         maxImages={9}
-                        onChange={setImageFiles}
-                        initialImages={"images" in formData ? formData.images : undefined}
+                        onChange={({ files }) => setImageFiles(files)}
+                        previewImageUrls={imageUrls}
                     />
 
                     <HashTagEditor

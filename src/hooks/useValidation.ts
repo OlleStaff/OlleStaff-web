@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { UserInfo, ErrorState } from "@/types/user";
 
-export default function useSignupForm() {
+export default function useValidation() {
     const [userInfo, setUserInfo] = useState<UserInfo>({
         nickname: "",
         phone: "",
@@ -24,18 +24,25 @@ export default function useSignupForm() {
         }));
     };
 
-    const validate = () => {
+    const validate = (options?: { skipBirthDateCheck?: boolean; originalPhone?: string }) => {
         const newErrors: ErrorState = {};
+
         if (userInfo.nickname.length < 2 || userInfo.nickname.length > 8) {
             newErrors.nickname = "닉네임은 2~8자 사이여야 해요.";
         }
+
         if (!/^010\d{8}$/.test(userInfo.phone)) {
             newErrors.phone = "올바른 전화번호 형식이 아닙니다.";
         }
-        if (userInfo.verificationCode != "000000") {
-            newErrors.verificationCode = "인증번호가 틀렸습니다. 다시 한번 입력해 주세요.";
+
+        // 전화번호가 바뀐 경우에만 인증번호 체크
+        if (userInfo.phone !== options?.originalPhone) {
+            if (userInfo.verificationCode !== "000000") {
+                newErrors.verificationCode = "인증번호가 틀렸습니다.";
+            }
         }
-        if (!/^\d{8}$/.test(userInfo.birthDate)) {
+
+        if (!options?.skipBirthDateCheck && !/^\d{8}$/.test(userInfo.birthDate)) {
             newErrors.birthDate = "생년월일은 8자리 숫자 (YYYYMMDD)로 입력해 주세요.";
         }
 
@@ -48,6 +55,7 @@ export default function useSignupForm() {
 
     return {
         userInfo,
+        setUserInfo,
         errors,
         handleInputChange,
         validate,

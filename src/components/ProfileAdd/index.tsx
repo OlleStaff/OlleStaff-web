@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import theme from "@/styles/theme";
 
 type ProfileAddProps = {
     onImageChange?: (file: File) => void;
+    previewImageUrl?: string | null;
+    disabled?: boolean;
 };
 
-export default function ProfileAdd({ onImageChange }: ProfileAddProps) {
-    const [preview, setPreview] = useState<string | null>(null);
+export default function ProfileAdd({ onImageChange, previewImageUrl, disabled }: ProfileAddProps) {
+    const [preview, setPreview] = useState<string | null>(previewImageUrl ?? null);
+
+    useEffect(() => {
+        if (previewImageUrl) {
+            setPreview(previewImageUrl);
+        }
+    }, [previewImageUrl]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -27,10 +35,16 @@ export default function ProfileAdd({ onImageChange }: ProfileAddProps) {
                     <DefaultIcon src="/icons/user.svg" alt="기본 프로필" />
                 )}
             </Frame>
-            <UploadButton htmlFor="profile-upload">
+            <UploadButton htmlFor="profile-upload" disabled={disabled}>
                 <CameraIcon src="/icons/cameraIcon.svg" alt="업로드 아이콘" />
             </UploadButton>
-            <HiddenInput id="profile-upload" type="file" accept="image/*" onChange={handleImageChange} />
+            <HiddenInput
+                id="profile-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                disabled={disabled}
+            />
         </Wrapper>
     );
 }
@@ -65,7 +79,7 @@ const DefaultIcon = styled.img`
     height: 118px;
 `;
 
-const UploadButton = styled.label`
+const UploadButton = styled.label<{ disabled?: boolean }>`
     position: absolute;
     bottom: 0px;
     right: 0px;
@@ -77,7 +91,9 @@ const UploadButton = styled.label`
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+    opacity: ${({ disabled }) => (disabled ? 0 : 1)};
+    pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
 `;
 
 const CameraIcon = styled.img`
