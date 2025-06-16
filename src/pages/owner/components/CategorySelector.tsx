@@ -1,4 +1,5 @@
 import RadioButton from "@/components/RadioButton";
+import { categoryMap } from "@/constants/categories";
 import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
 
@@ -9,14 +10,6 @@ interface CategorySelectorProps {
 
 export default function CategorySelector({ value, onChange }: CategorySelectorProps) {
     const categories = ["대규모", "소규모", "뷰맛집", "힐링", "체험"];
-
-    const categoryMap: Record<string, string> = {
-        대규모: "LARGE",
-        소규모: "SMALL",
-        뷰맛집: "VIEW",
-        힐링: "HEALING",
-        체험: "EXPERIENCE",
-    };
 
     const reverseMap: Record<string, string> = Object.fromEntries(
         Object.entries(categoryMap).map(([ko, en]) => [en, ko])
@@ -35,7 +28,7 @@ export default function CategorySelector({ value, onChange }: CategorySelectorPr
             </Wrapper.FlexBox>
 
             <RadioButton
-                radioTitle=""
+                key={value}
                 labelList={categories}
                 selectedIndex={getSelectedIndex(value)}
                 onSelect={index => onChange(categoryMap[categories[index]])}

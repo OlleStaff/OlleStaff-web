@@ -38,6 +38,7 @@ export interface EmploymentGetProps {
     benefitsContent: string[];
     phoneNum: string;
     locationName: string;
+    category: string;
 }
 
 // 공고 게시글 수정

@@ -16,7 +16,9 @@ export default function ImageUploader({ maxImages = 6, onChange, initialImages =
 
     // 초기 이미지 설정
     useEffect(() => {
-        setInitialImageUrls(initialImages);
+        if (initialImages && initialImages.length > 0) {
+            setInitialImageUrls(initialImages);
+        }
     }, [initialImages]);
 
     useEffect(() => {

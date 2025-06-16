@@ -45,7 +45,7 @@ export default function RecruitEditContainer() {
                 locationName: employmentData.locationName,
                 hashtagName: employmentData.hashtagName,
                 benefitsContent: employmentData.benefitsContent,
-                category: "",
+                category: employmentData.category,
                 precautions: [],
                 images: employmentData.images ?? [],
             };
