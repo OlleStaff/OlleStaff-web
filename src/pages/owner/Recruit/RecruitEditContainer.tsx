@@ -16,6 +16,7 @@ export default function RecruitEditContainer() {
     const [formData, setFormData] = useState<EmploymentPutProps | null>(null);
 
     const [imageFiles, setImageFiles] = useState<File[]>([]);
+    const [imageUrls, setImageUrls] = useState<string[]>([]);
 
     const handleEdit = async () => {
         if (!formData) return;
@@ -51,7 +52,7 @@ export default function RecruitEditContainer() {
             };
 
             setFormData(transformedData);
-
+            setImageUrls(data.data.images || []);
             setImageFiles([]);
         }
     }, [employmentData]);
@@ -69,6 +70,8 @@ export default function RecruitEditContainer() {
                         setFormData={setFormData as React.Dispatch<React.SetStateAction<EmploymentPutProps>>}
                         imageFiles={imageFiles}
                         setImageFiles={setImageFiles}
+                        imageUrls={imageUrls}
+                        setImageUrls={setImageUrls}
                         onNext={() => navigate(`/owner/recruit/edit/${employmentId}/step2`)}
                     />
                 }
