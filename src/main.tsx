@@ -20,8 +20,10 @@ createRoot(document.getElementById("root")!).render(
 );
 
 if ("Notification" in window && Notification.permission === "default") {
+    alert("알림 권한을 요청합니다.");
+
     Notification.requestPermission().then(perm => {
-        console.log("🔔 알림 권한 요청 결과:", perm);
+        alert("알림 권한 결과: " + perm);
 
         if (perm === "granted" && "serviceWorker" in navigator && "PushManager" in window) {
             navigator.serviceWorker.ready.then(registration => {
@@ -32,15 +34,17 @@ if ("Notification" in window && Notification.permission === "default") {
                             "BPLuUCuJZ3O0Kxrg2VD7Mk80a_xxsdKByb68ceH-p3JZZ5xHGKjlyAyKz09xGoB-vnIXG8ddGJfAcxkQo3j8VGw"
                         ),
                     })
-                    .then(sub => {
-                        console.log("✅ 푸시 구독 성공:", sub);
+                    .then(() => {
+                        alert("푸시 구독 성공 🎉");
                     })
-                    .catch(err => {
-                        console.warn("❌ 푸시 구독 실패:", err);
+                    .catch(() => {
+                        alert("푸시 구독 실패 😢");
                     });
             });
         }
     });
+} else {
+    alert("Notification API 사용 불가 또는 이미 권한 상태: " + Notification.permission);
 }
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
