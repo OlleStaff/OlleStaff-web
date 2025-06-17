@@ -36,7 +36,6 @@ export default function RecruitBasicInfoPage<T extends Mode>({
     imageFiles,
     setImageFiles,
     imageUrls,
-    setImageUrls,
     onNext,
 }: RecruitBasicInfoPageProps<T>) {
     const isImageValid = imageFiles.length > 0;
