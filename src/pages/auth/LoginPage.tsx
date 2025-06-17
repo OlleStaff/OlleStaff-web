@@ -9,28 +9,25 @@ export default function LoginPage() {
     const NAVER_REDIRECT_URI = import.meta.env.VITE_NAVER_REDIRECT_URI;
 
     const handleKakaoLogin = async () => {
-        if ("Notification" in window) {
+        if ("Notification" in window && Notification.permission === "default") {
             try {
-                const permission = await Notification.requestPermission();
-                console.log("알림 권한 결과:", permission);
-            } catch (err) {
-                console.warn("알림 권한 요청 실패:", err);
+                const result = await Notification.requestPermission();
+                console.log("알림 권한 결과:", result);
+
+                if (result === "granted") {
+                    new Notification("올래스텝", {
+                        body: "알림 권한이 성공적으로 설정되었습니다!",
+                    });
+                }
+            } catch (e) {
+                console.warn("알림 권한 요청 실패:", e);
             }
         }
 
-        Notification.requestPermission().then(perm => {
-            console.log("알림 권한:", perm);
-            if (perm === "granted") {
-                new Notification("알림 테스트", {
-                    body: "올래스텝 앱에서 알림이 정상적으로 작동합니다!",
-                });
-            }
-        });
-
-        const url = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
         setTimeout(() => {
+            const url = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
             window.location.href = url;
-        }, 300);
+        }, 500);
     };
 
     const handleNaverLogin = () => {
