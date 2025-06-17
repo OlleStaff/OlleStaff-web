@@ -8,7 +8,16 @@ export default function LoginPage() {
     const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
     const NAVER_REDIRECT_URI = import.meta.env.VITE_NAVER_REDIRECT_URI;
 
-    const handleKakaoLogin = () => {
+    const handleKakaoLogin = async () => {
+        if ("Notification" in window) {
+            try {
+                const permission = await Notification.requestPermission();
+                console.log("알림 권한 결과:", permission);
+            } catch (err) {
+                console.warn("알림 권한 요청 실패:", err);
+            }
+        }
+
         const url = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
         window.location.href = url;
     };
