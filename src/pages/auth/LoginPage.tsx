@@ -18,8 +18,19 @@ export default function LoginPage() {
             }
         }
 
+        Notification.requestPermission().then(perm => {
+            console.log("알림 권한:", perm);
+            if (perm === "granted") {
+                new Notification("알림 테스트", {
+                    body: "올래스텝 앱에서 알림이 정상적으로 작동합니다!",
+                });
+            }
+        });
+
         const url = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
-        window.location.href = url;
+        setTimeout(() => {
+            window.location.href = url;
+        }, 300);
     };
 
     const handleNaverLogin = () => {
