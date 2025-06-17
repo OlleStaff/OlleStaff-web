@@ -20,7 +20,7 @@ export default function HomePage() {
 
     useEffect(() => {
         setReviewData(mockdata_reviews);
-    }, []);
+    }, [data]);
 
     useEffect(() => {
         const checkApplicationStatus = async () => {

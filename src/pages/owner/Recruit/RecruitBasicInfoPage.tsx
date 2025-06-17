@@ -1,3 +1,4 @@
+import { EmploymentPostProps, EmploymentPutProps } from "@/types/employment";
 import { Button } from "@/components/Button";
 import DropdownButton from "@/components/DropdownButton";
 import Header from "@/components/Header";
@@ -11,39 +12,63 @@ import HashTagEditor from "../components/HashTagEditor";
 import BenefitListEditor from "../components/BenefitListEditor";
 import LocationSelector from "../components/LocationSelector";
 import CategorySelector from "../components/CategorySelector";
-import { EmploymentPostProps } from "@/types/employment";
+import { formatDateInput } from "@/utils/date";
 
-interface Props {
-    formData: EmploymentPostProps;
-    setFormData: React.Dispatch<React.SetStateAction<EmploymentPostProps>>;
-    setImageFiles: React.Dispatch<React.SetStateAction<File[]>>;
-    onNext: () => void;
+type Mode = "create" | "edit";
+
+type FormDataType<T extends Mode> = T extends "create" ? EmploymentPostProps : EmploymentPutProps;
+
+interface RecruitBasicInfoPageProps<T extends Mode> {
+    mode: T;
+    formData: FormDataType<T>;
+    setFormData: React.Dispatch<React.SetStateAction<FormDataType<T>>>;
     imageFiles: File[];
+    setImageFiles: React.Dispatch<React.SetStateAction<File[]>>;
+    imageUrls?: string[];
+    setImageUrls?: React.Dispatch<React.SetStateAction<string[]>>;
+    onNext: () => void;
 }
 
-export default function RecruitBasicInfoPage({ setImageFiles, formData, setFormData, onNext }: Props) {
+export default function RecruitBasicInfoPage<T extends Mode>({
+    mode,
+    formData,
+    setFormData,
+    imageFiles,
+    setImageFiles,
+    imageUrls,
+    onNext,
+}: RecruitBasicInfoPageProps<T>) {
+    const isImageValid = imageFiles.length > 0;
+
     const isFormValid =
-        formData.hashtagName.length > 0 && // hashtagName: string[];
-        formData.benefitsContent.length > 0 && // benefitsContent: string[];
-        formData.title.trim() !== "" && // title: string;
-        formData.content.trim() !== "" && // content: string;
-        formData.instarUrl.trim() !== "" && // instarUrl: string;
-        formData.startedAt.trim() !== "" && // startedAt: string;
-        formData.endedAt.trim() !== "" && // endedAt: string;
-        formData.recruitmentEnd.trim() !== "" && // recruitmentEnd: string;
-        formData.locationName.trim() !== "" && //     locationName: string;
-        formData.category.trim() !== "" && // category: string;
-        !!formData.personNum && //   personNum: number;
-        !!formData.sex && // sex: "all" | "male" | "female";
-        formData.latitude !== 0 && // latitude: number;
-        formData.longitude !== 0; // longitude: number;
+        isImageValid &&
+        formData.hashtagName.length > 0 &&
+        formData.benefitsContent.length > 0 &&
+        formData.title.trim() !== "" &&
+        formData.content.trim() !== "" &&
+        formData.instarUrl.trim() !== "" &&
+        formData.startedAt.trim() !== "" &&
+        formData.endedAt.trim() !== "" &&
+        formData.recruitmentEnd.trim() !== "" &&
+        formData.locationName.trim() !== "" &&
+        "category" in formData &&
+        formData.category.trim() !== "" &&
+        !!formData.personNum &&
+        !!formData.sex &&
+        formData.latitude !== 0 &&
+        formData.longitude !== 0;
 
     return (
         <>
-            <Header title="게시글 작성" showBackButton />
+            <Header title={mode === "edit" ? "게시글 수정" : "게시글 작성"} showBackButton />
+
             <PageWrapper hasHeader>
                 <Wrapper.FlexBox direction="column" padding="30px" gap="20px">
-                    <ImageUploader maxImages={9} onChange={({ files }) => setImageFiles(files)} />
+                    <ImageUploader
+                        maxImages={9}
+                        onChange={({ files }) => setImageFiles(files)}
+                        previewImageUrls={imageUrls}
+                    />
 
                     <HashTagEditor
                         values={formData.hashtagName}
@@ -70,8 +95,8 @@ export default function RecruitBasicInfoPage({ setImageFiles, formData, setFormD
                         <Wrapper.FlexBox width="120px">
                             <DropdownButton
                                 dropTitle="모집 인원"
-                                label={`${formData.personNum || "00"}명`}
-                                options={["1", "2", "3", "4", "5"]}
+                                label={`${formData.personNum || "0 "}명`}
+                                options={Array.from({ length: 99 }, (_, i) => (i + 1).toString())}
                                 onSelect={value => setFormData(prev => ({ ...prev, personNum: parseInt(value) }))}
                             />
                         </Wrapper.FlexBox>
@@ -94,7 +119,12 @@ export default function RecruitBasicInfoPage({ setImageFiles, formData, setFormD
                                 placeholder="예) 2025-02-08"
                                 variant="default"
                                 value={formData.startedAt}
-                                onChange={e => setFormData(prev => ({ ...prev, startedAt: e.target.value }))}
+                                onChange={e =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        startedAt: formatDateInput(e.target.value),
+                                    }))
+                                }
                             />
                         </Wrapper.FlexBox>
                         <Wrapper.FlexBox width="48%">
@@ -103,7 +133,12 @@ export default function RecruitBasicInfoPage({ setImageFiles, formData, setFormD
                                 placeholder="예) 2025-12-22"
                                 variant="default"
                                 value={formData.endedAt}
-                                onChange={e => setFormData(prev => ({ ...prev, endedAt: e.target.value }))}
+                                onChange={e =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        endedAt: formatDateInput(e.target.value),
+                                    }))
+                                }
                             />
                         </Wrapper.FlexBox>
                     </Wrapper.FlexBox>
@@ -113,7 +148,12 @@ export default function RecruitBasicInfoPage({ setImageFiles, formData, setFormD
                         placeholder="예) 2025-02-01"
                         variant="default"
                         value={formData.recruitmentEnd}
-                        onChange={e => setFormData(prev => ({ ...prev, recruitmentEnd: e.target.value }))}
+                        onChange={e =>
+                            setFormData(prev => ({
+                                ...prev,
+                                recruitmentEnd: formatDateInput(e.target.value),
+                            }))
+                        }
                     />
 
                     <Textarea
@@ -134,12 +174,17 @@ export default function RecruitBasicInfoPage({ setImageFiles, formData, setFormD
                         latitude={formData.latitude}
                         longitude={formData.longitude}
                         onChange={(lat, lng, name) =>
-                            setFormData(prev => ({ ...prev, latitude: lat, longitude: lng, locationName: name }))
+                            setFormData(prev => ({
+                                ...prev,
+                                latitude: lat,
+                                longitude: lng,
+                                locationName: name,
+                            }))
                         }
                     />
 
                     <CategorySelector
-                        value={formData.category}
+                        value={"category" in formData ? formData.category : ""}
                         onChange={category => setFormData(prev => ({ ...prev, category }))}
                     />
 

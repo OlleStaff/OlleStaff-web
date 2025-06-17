@@ -14,7 +14,7 @@ interface LocationSelectorProps {
     onChange: (lat: number, lng: number, locationName: string) => void;
 }
 
-export default function LocationSelector({ onChange }: LocationSelectorProps) {
+export default function LocationSelector({ locationName, onChange }: LocationSelectorProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [address, setAddress] = useState("");
 
@@ -53,6 +53,10 @@ export default function LocationSelector({ onChange }: LocationSelectorProps) {
             document.head.appendChild(script);
         }
     }, []);
+
+    useEffect(() => {
+        setAddress(locationName);
+    }, [locationName]);
 
     return (
         <>

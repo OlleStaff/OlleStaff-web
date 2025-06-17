@@ -23,7 +23,7 @@ const initialFormData: EmploymentPostProps = {
     precautions: [{ precautionsTitle: "", precautionsContent: "" }],
 };
 
-export default function Recruit() {
+export default function RecruitCreateContainer() {
     const [formData, setFormData] = useState<EmploymentPostProps>(initialFormData);
     const [imageFiles, setImageFiles] = useState<File[]>([]);
 
@@ -44,6 +44,7 @@ export default function Recruit() {
                 path="step1"
                 element={
                     <RecruitBasicInfoPage
+                        mode="create"
                         formData={formData}
                         setFormData={setFormData}
                         setImageFiles={setImageFiles}
@@ -56,9 +57,9 @@ export default function Recruit() {
                 path="step2"
                 element={
                     <RecruitPrecautionPage
+                        mode="create"
                         formData={formData}
                         setFormData={setFormData}
-                        imageFiles={imageFiles}
                         handleSubmit={handleSubmit}
                     />
                 }

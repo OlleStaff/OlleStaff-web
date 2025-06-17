@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Text } from "@/styles/Text";
 import { useEmploymentDetail } from "@/hooks/owner/employment/useEmploymentDetail";
 import Header from "@/components/Header";
@@ -13,8 +13,10 @@ import ExpandableText from "@/components/ExpandableText";
 import { useState } from "react";
 import ImageViewer from "@/components/ImageViewer";
 import MapComponent from "../components/Map";
+import ImageCarousel from "@/components/ImageCarousel";
 
 export default function RecruitDetailPage() {
+    const navigate = useNavigate();
     const [showAllBenefits, setShowAllBenefits] = useState(false);
     const [isViewerOpen, setViewerOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -44,7 +46,9 @@ export default function RecruitDetailPage() {
         longitude,
     } = detail.data;
 
-    const handleEditClick = () => {};
+    const handleEditClick = () => {
+        navigate(`/owner/recruit/edit/${employmentId}/step1`);
+    };
 
     const metaItems = [
         {
@@ -89,11 +93,7 @@ export default function RecruitDetailPage() {
             <PageWrapper hasHeader>
                 <Wrapper.FlexBox direction="column" padding="30px" gap="20px">
                     {Array.isArray(images) && images.length > 0 && (
-                        <>
-                            {images.map((url, idx) => (
-                                <PostImage key={idx} src={url} onClick={() => handleImageClick(idx)} />
-                            ))}
-                        </>
+                        <ImageCarousel images={images} onImageClick={handleImageClick} />
                     )}
 
                     {isViewerOpen && (
@@ -217,11 +217,4 @@ const BenefitListWrapper = styled.ul`
     display: flex;
     flex-direction: column;
     gap: 8px;
-`;
-
-const PostImage = styled.img`
-    width: 100%;
-    border-radius: 8px;
-    aspect-ratio: 1/1;
-    object-fit: cover;
 `;

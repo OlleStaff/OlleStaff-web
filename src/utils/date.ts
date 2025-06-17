@@ -28,6 +28,7 @@ export const timeAgo = (timestamp: number): string => {
     return format(new Date(timestamp * 1000), "ko");
 };
 
+// D-day 일수 계산
 export function calculateDDay(targetDateStr: string): string {
     const today = new Date();
     const target = new Date(targetDateStr);
@@ -37,13 +38,24 @@ export function calculateDDay(targetDateStr: string): string {
     return diffDays >= 0 ? `D - ${diffDays}` : "마감됨";
 }
 
+// 20251010 입력하면 10월 10일 형태로 바뀌도록
 export function formatDateToMonthDay(dateStr: string): string {
     const date = new Date(dateStr);
     return `${date.getMonth() + 1}월 ${date.getDate()}일`;
 }
 
+// 마감된 공고인지
 export const isClosed = (recruitmentEnd: string): boolean => {
     const today = new Date();
     const endDate = new Date(recruitmentEnd);
     return today > endDate;
+};
+
+// 20251010 입력하면 2025-10-10 형태로 바뀌도록
+export const formatDateInput = (value: string): string => {
+    const digits = value.replace(/\D/g, "").slice(0, 8);
+
+    if (digits.length < 5) return digits;
+    if (digits.length < 7) return `${digits.slice(0, 4)}-${digits.slice(4)}`;
+    return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6)}`;
 };

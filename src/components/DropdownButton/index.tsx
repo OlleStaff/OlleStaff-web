@@ -84,6 +84,8 @@ const Style = {
         min-width: 100%;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         z-index: 999;
+        max-height: 300px;
+        overflow: scroll;
     `,
     DropdownItem: styled.div`
         padding: 8px 12px;
