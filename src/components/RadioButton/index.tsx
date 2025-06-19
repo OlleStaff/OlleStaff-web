@@ -2,15 +2,23 @@ import { useState } from "react";
 import { Text } from "@/styles/Text";
 import styled from "@emotion/styled";
 import { Wrapper } from "@/styles/Wrapper";
+import theme from "@/styles/theme";
 
 export interface RadioButtonProps {
     labelList?: string[];
     selectedIndex: number;
     onSelect?: (index: number) => void;
     radioTitle?: string;
+    required?: boolean;
 }
 
-export default function RadioButton({ labelList = [], selectedIndex, onSelect, radioTitle }: RadioButtonProps) {
+export default function RadioButton({
+    labelList = [],
+    selectedIndex,
+    onSelect,
+    radioTitle,
+    required,
+}: RadioButtonProps) {
     const [selected, setSelected] = useState<number>(selectedIndex);
 
     const handleSelect = (index: number) => {
@@ -21,7 +29,11 @@ export default function RadioButton({ labelList = [], selectedIndex, onSelect, r
     return (
         <>
             <Wrapper.FlexBox direction="column" gap="18px">
-                <Text.Body1_1>{radioTitle}</Text.Body1_1>
+                <Text.Body1_1>
+                    {radioTitle}
+
+                    {required && <RequiredStar>*</RequiredStar>}
+                </Text.Body1_1>
                 <Wrapper.FlexBox gap="20px" style={{ flexWrap: "wrap" }}>
                     {labelList.map((name, index) => (
                         <Style.RadioButton key={index}>
@@ -69,3 +81,8 @@ const Style = {
         border-radius: 50%;
     `,
 };
+
+const RequiredStar = styled.span`
+    margin-left: 4px;
+    color: ${theme.color.Main};
+`;

@@ -13,6 +13,7 @@ import BenefitListEditor from "../components/BenefitListEditor";
 import LocationSelector from "../components/LocationSelector";
 import CategorySelector from "../components/CategorySelector";
 import { formatDateInput } from "@/utils/date";
+import { useEffect } from "react";
 
 type Mode = "create" | "edit";
 
@@ -24,7 +25,7 @@ interface RecruitBasicInfoPageProps<T extends Mode> {
     setFormData: React.Dispatch<React.SetStateAction<FormDataType<T>>>;
     imageFiles: File[];
     setImageFiles: React.Dispatch<React.SetStateAction<File[]>>;
-    imageUrls?: string[];
+    imageUrls: string[];
     setImageUrls?: React.Dispatch<React.SetStateAction<string[]>>;
     onNext: () => void;
 }
@@ -38,7 +39,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
     imageUrls,
     onNext,
 }: RecruitBasicInfoPageProps<T>) {
-    const isImageValid = imageFiles.length > 0;
+    const isImageValid = mode === "create" ? imageFiles.length > 0 : imageUrls?.length > 0;
 
     const isFormValid =
         isImageValid &&
@@ -51,13 +52,15 @@ export default function RecruitBasicInfoPage<T extends Mode>({
         formData.endedAt.trim() !== "" &&
         formData.recruitmentEnd.trim() !== "" &&
         formData.locationName.trim() !== "" &&
-        "category" in formData &&
         formData.category.trim() !== "" &&
         !!formData.personNum &&
         !!formData.sex &&
         formData.latitude !== 0 &&
         formData.longitude !== 0;
 
+    useEffect(() => {
+        console.log(formData);
+    }, []);
     return (
         <>
             <Header title={mode === "edit" ? "게시글 수정" : "게시글 작성"} showBackButton />
@@ -81,6 +84,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                         variant="default"
                         value={formData.title}
                         onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                        required
                     />
 
                     <Input
@@ -89,15 +93,17 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                         variant="default"
                         value={formData.instarUrl}
                         onChange={e => setFormData(prev => ({ ...prev, instarUrl: e.target.value }))}
+                        required
                     />
 
-                    <Wrapper.FlexBox>
+                    <Wrapper.FlexBox gap="20px">
                         <Wrapper.FlexBox width="120px">
                             <DropdownButton
                                 dropTitle="모집 인원"
                                 label={`${formData.personNum || "0 "}명`}
                                 options={Array.from({ length: 99 }, (_, i) => (i + 1).toString())}
                                 onSelect={value => setFormData(prev => ({ ...prev, personNum: parseInt(value) }))}
+                                required
                             />
                         </Wrapper.FlexBox>
 
@@ -109,6 +115,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                                 const value = index === 0 ? "all" : index === 1 ? "male" : "female";
                                 setFormData(prev => ({ ...prev, sex: value }));
                             }}
+                            required
                         />
                     </Wrapper.FlexBox>
 
@@ -125,6 +132,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                                         startedAt: formatDateInput(e.target.value),
                                     }))
                                 }
+                                required
                             />
                         </Wrapper.FlexBox>
                         <Wrapper.FlexBox width="48%">
@@ -139,6 +147,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                                         endedAt: formatDateInput(e.target.value),
                                     }))
                                 }
+                                required
                             />
                         </Wrapper.FlexBox>
                     </Wrapper.FlexBox>
@@ -154,6 +163,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                                 recruitmentEnd: formatDateInput(e.target.value),
                             }))
                         }
+                        required
                     />
 
                     <Textarea
@@ -162,11 +172,13 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                         value={formData.content}
                         onChange={e => setFormData(prev => ({ ...prev, content: e.target.value }))}
                         variant="flat-lg"
+                        required
                     />
 
                     <BenefitListEditor
                         values={formData.benefitsContent}
                         onChange={updated => setFormData(prev => ({ ...prev, benefitsContent: updated }))}
+                        required
                     />
 
                     <LocationSelector
@@ -181,11 +193,13 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                                 locationName: name,
                             }))
                         }
+                        required
                     />
 
                     <CategorySelector
-                        value={"category" in formData ? formData.category : ""}
+                        value={formData.category}
                         onChange={category => setFormData(prev => ({ ...prev, category }))}
+                        required
                     />
 
                     <Button

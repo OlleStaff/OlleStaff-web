@@ -9,9 +9,10 @@ export interface DropdownButtonProps {
     options: string[];
     onSelect?: (option: string) => void;
     dropTitle?: string;
+    required?: boolean;
 }
 
-export default function DropdownButton({ label, options, onSelect, dropTitle }: DropdownButtonProps) {
+export default function DropdownButton({ label, options, onSelect, dropTitle, required }: DropdownButtonProps) {
     const [isOpen, setIsOpen] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -39,7 +40,9 @@ export default function DropdownButton({ label, options, onSelect, dropTitle }: 
 
     return (
         <Wrapper.FlexBox direction="column" gap="12px">
-            <Text.Body1_1>{dropTitle}</Text.Body1_1>
+            <Text.Body1_1>
+                {dropTitle} {required && <RequiredStar>*</RequiredStar>}
+            </Text.Body1_1>
             <Style.Wrapper ref={wrapperRef}>
                 <Style.Button onClick={toggleDropdown}>{label}</Style.Button>
                 {isOpen && (
@@ -98,3 +101,8 @@ const Style = {
         }
     `,
 };
+
+const RequiredStar = styled.span`
+    margin-left: 4px;
+    color: ${theme.color.Main};
+`;

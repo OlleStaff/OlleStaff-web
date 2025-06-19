@@ -13,6 +13,7 @@ type TextareaProps = {
     variant?: TextareaVariant;
     minLength?: number;
     textareaTitle?: string;
+    required?: boolean;
 };
 
 export default function Textarea({
@@ -23,6 +24,7 @@ export default function Textarea({
     variant = "flat",
     minLength,
     textareaTitle,
+    required,
 }: TextareaProps) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -38,7 +40,13 @@ export default function Textarea({
 
     return (
         <TextareaContainer>
-            {textareaTitle && <Text.Body1_1>{textareaTitle}</Text.Body1_1>}
+            {textareaTitle && (
+                <Text.Body1_1>
+                    {textareaTitle}
+
+                    {required && <RequiredStar>*</RequiredStar>}
+                </Text.Body1_1>
+            )}
             <Wrapper variant={variant} hasCharCount={showCount}>
                 <StyledTextarea
                     ref={textareaRef}
@@ -115,4 +123,9 @@ const CharCount = styled.div`
     right: 12px;
     font-size: 14px;
     color: ${theme.color.Gray3};
+`;
+
+const RequiredStar = styled.span`
+    margin-left: 4px;
+    color: ${theme.color.Main};
 `;
