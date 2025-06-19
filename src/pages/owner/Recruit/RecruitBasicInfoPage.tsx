@@ -25,7 +25,7 @@ interface RecruitBasicInfoPageProps<T extends Mode> {
     setFormData: React.Dispatch<React.SetStateAction<FormDataType<T>>>;
     imageFiles: File[];
     setImageFiles: React.Dispatch<React.SetStateAction<File[]>>;
-    imageUrls: string[];
+    imageUrls?: T extends "edit" ? string[] : undefined;
     setImageUrls?: React.Dispatch<React.SetStateAction<string[]>>;
     onNext: () => void;
 }
@@ -39,7 +39,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
     imageUrls,
     onNext,
 }: RecruitBasicInfoPageProps<T>) {
-    const isImageValid = mode === "create" ? imageFiles.length > 0 : imageUrls?.length > 0;
+    const isImageValid = mode === "create" ? imageFiles.length > 0 : imageUrls && imageUrls.length > 0;
 
     const isFormValid =
         isImageValid &&
