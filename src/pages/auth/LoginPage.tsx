@@ -8,9 +8,26 @@ export default function LoginPage() {
     const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
     const NAVER_REDIRECT_URI = import.meta.env.VITE_NAVER_REDIRECT_URI;
 
-    const handleKakaoLogin = () => {
-        const url = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
-        window.location.href = url;
+    const handleKakaoLogin = async () => {
+        if ("Notification" in window && Notification.permission === "default") {
+            try {
+                const result = await Notification.requestPermission();
+                console.log("알림 권한 결과:", result);
+
+                if (result === "granted") {
+                    new Notification("올래스텝", {
+                        body: "알림 권한이 성공적으로 설정되었습니다!",
+                    });
+                }
+            } catch (e) {
+                console.warn("알림 권한 요청 실패:", e);
+            }
+        }
+
+        setTimeout(() => {
+            const url = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+            window.location.href = url;
+        }, 500);
     };
 
     const handleNaverLogin = () => {

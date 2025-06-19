@@ -17,6 +17,7 @@ import MyReviewsPage from "@/pages/staff/user/MyReviewsPage";
 import MyLikesPage from "@/pages/staff/user/MyLikesPage";
 import ApplicationViewPage from "@/pages/staff/ApplicationViewPage";
 import ReviewWritePage from "@/pages/staff/ReviewWritePage";
+import ChatPage from "@/pages/ChatPage";
 
 const StaffRoutes: RouteObject[] = [
     {
@@ -93,6 +94,10 @@ const StaffRoutes: RouteObject[] = [
             {
                 path: "review",
                 element: <ReviewWritePage />,
+            },
+            {
+                path: "chat",
+                element: <ChatPage />,
             },
         ],
     },
