@@ -71,6 +71,7 @@ export default function SignupPage() {
                             onChange={handleInputChange("nickname")}
                             placeholder="닉네임을 입력하세요."
                             bottomMessage={errors.nickname}
+                            required
                         />
 
                         <Input
@@ -79,6 +80,7 @@ export default function SignupPage() {
                             onChange={handleInputChange("birthDate")}
                             placeholder="YYYYMMDD를 입력하세요."
                             bottomMessage={errors.birthDate}
+                            required
                         />
 
                         <Wrapper.FlexBox gap="4px" alignItems="center">
@@ -89,6 +91,7 @@ export default function SignupPage() {
                                 placeholder="전화번호를 입력하세요."
                                 bottomMessage={errors.phone || verificationMessage}
                                 messageColor={errors.phone ? "Red1" : "Gray4"}
+                                required
                             />
                             <Button
                                 width="small"
@@ -113,6 +116,7 @@ export default function SignupPage() {
                                     ? "제한시간을 초과하여 인증에 실패하였습니다.\n‘재전송’ 버튼을 눌러 새로운 인증번호를 받아주세요."
                                     : errors.verificationCode
                             }
+                            required
                         />
                     </Wrapper.FlexBox>
 

@@ -21,7 +21,9 @@ export default function ImageUploader({ maxImages = 6, previewImageUrls = [], on
     const totalCount = imageUrls.length + imageFiles.length;
 
     useEffect(() => {
-        setImageUrls(previewImageUrls);
+        if (previewImageUrls.length > 0) {
+            setImageUrls(previewImageUrls);
+        }
     }, [previewImageUrls]);
 
     const triggerChange = (urls: string[], files: File[]) => {

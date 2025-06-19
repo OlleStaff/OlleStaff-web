@@ -17,7 +17,7 @@ export default function UserModeSwitcher() {
 
     const handleToggleMode = () => {
         const nextType = userType === "STAFF" ? "GUESTHOUSE" : "STAFF";
-        setUser(nickname, nextType, profileImage);
+        setUser({ nickname, type: nextType, profileImage });
 
         if (nextType === "STAFF") {
             navigate("/staff");

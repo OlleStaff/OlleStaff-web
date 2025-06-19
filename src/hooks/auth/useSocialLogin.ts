@@ -38,7 +38,11 @@ export const useSocialLogin = (provider: "kakao" | "naver" | "dev") => {
             if (res.status === "USER_NEED_SIGNUP") {
                 navigate("/agreements");
             } else {
-                useUserStore.getState().setUser(res.nickname, res.userType, res.profileImage);
+                useUserStore.getState().setUser({
+                    nickname: res.nickname,
+                    type: res.userType,
+                    profileImage: res.profileImage,
+                });
                 if (res.userType === "UNDECIDED") {
                     navigate("/type-select");
                 } else if (res.userType === "STAFF") {

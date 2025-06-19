@@ -34,6 +34,12 @@ export default function RecruitListPage() {
         setCheckedIds(prev => (prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]));
     };
 
+    const isDeletable = checkedIds.length > 0;
+    const handleDeleteRecruitItem = () => {
+        // 공고 삭제
+        console.log("눌림");
+    };
+
     useEffect(() => {
         setCheckedIds([]);
     }, [sort]);
@@ -49,25 +55,37 @@ export default function RecruitListPage() {
                         onChange={value => setSort(value as OwnerTabTypes["MY_RECRUIT"])}
                         variant="bold"
                     />
-                    <TrashIcon
-                        src={isTrashIconClicked ? "/icons/trashActive.svg" : "/icons/trash.svg"}
-                        alt="휴지통"
-                        onClick={toggleTrashMode}
-                    />
+                    {filteredRecruits.length > 0 && (
+                        <TrashIcon
+                            src={isTrashIconClicked ? "/icons/trashActive.svg" : "/icons/trash.svg"}
+                            alt="휴지통"
+                            onClick={toggleTrashMode}
+                        />
+                    )}
                 </Wrapper.FlexBox>
 
                 {isTrashIconClicked && filteredRecruits.length > 0 && (
-                    <SelectAllWrapper
-                        onClick={() => {
-                            const allIds = filteredRecruits.map(item => item.employmentId);
-                            const isAllSelected = allIds.every(id => checkedIds.includes(id));
-                            setCheckedIds(isAllSelected ? [] : allIds);
-                        }}
-                    >
-                        <Text.Body1 color={checkedIds.length === filteredRecruits.length ? "Black" : "Gray2"}>
-                            전체 선택
-                        </Text.Body1>
-                    </SelectAllWrapper>
+                    <>
+                        <Wrapper.FlexBox justifyContent="space-between">
+                            <SelectAllWrapper
+                                onClick={() => {
+                                    const allIds = filteredRecruits.map(item => item.employmentId);
+                                    const isAllSelected = allIds.every(id => checkedIds.includes(id));
+                                    setCheckedIds(isAllSelected ? [] : allIds);
+                                }}
+                            >
+                                <Text.Body1 color={checkedIds.length === filteredRecruits.length ? "Black" : "Gray2"}>
+                                    전체 선택
+                                </Text.Body1>
+                            </SelectAllWrapper>
+                            <Text.Body1
+                                color={isDeletable ? "Main" : "Gray2"}
+                                onClick={isDeletable ? handleDeleteRecruitItem : undefined}
+                            >
+                                삭제
+                            </Text.Body1>
+                        </Wrapper.FlexBox>
+                    </>
                 )}
 
                 <Wrapper.FlexBox direction="column" gap="20px">
@@ -105,4 +123,5 @@ const SelectAllWrapper = styled.div`
     display: flex;
     padding-bottom: 10px;
     cursor: pointer;
+    width: 80px;
 `;

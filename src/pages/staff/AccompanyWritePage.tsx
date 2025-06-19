@@ -71,7 +71,7 @@ export default function AccompanyWritePage() {
                         variant="flat-lg"
                         onChange={e => setFormData(prev => ({ ...prev, content: e.target.value }))}
                     />
-                    <ImageUploader maxImages={4} onChange={({ files }) => setImages(files)} />{" "}
+                    <ImageUploader maxImages={4} onChange={({ files }) => setImages(files)} />
                 </FormWrapper>
                 <ButtonWrapper>
                     <Button

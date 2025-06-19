@@ -20,7 +20,7 @@ export default function HomePage() {
 
     useEffect(() => {
         setReviewData(mockdata_reviews);
-    }, []);
+    }, [data]);
 
     useEffect(() => {
         const checkApplicationStatus = async () => {
@@ -45,7 +45,7 @@ export default function HomePage() {
 
     return (
         <Wrapper.FlexBox direction="column" gap="32px">
-            <PartnerRecruitmentCard />
+            {data && data.length > 0 && <PartnerRecruitmentCard data={data.filter(item => !item.closed)} />}
 
             <Wrapper.FlexBox direction="column" gap="16px">
                 <SectionTitle title="진행 중인 나의 공고" link="/owner/recruitments-ongoing" />
