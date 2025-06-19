@@ -1,14 +1,16 @@
 import Input from "@/components/Input";
 import { Text } from "@/styles/Text";
+import theme from "@/styles/theme";
 import { Wrapper } from "@/styles/Wrapper";
 import styled from "@emotion/styled";
 import { useEffect } from "react";
 interface BenefitListEditorProps {
     values: string[];
     onChange: (updated: string[]) => void;
+    required?: boolean;
 }
 
-export default function BenefitListEditor({ values, onChange }: BenefitListEditorProps) {
+export default function BenefitListEditor({ values, onChange, required }: BenefitListEditorProps) {
     const handleAddBenefit = () => {
         if (values.length >= 5) return;
         onChange([...values, ""]);
@@ -33,7 +35,10 @@ export default function BenefitListEditor({ values, onChange }: BenefitListEdito
     return (
         <>
             <Wrapper.FlexBox alignItems="flex-start" justifyContent="space-between">
-                <Text.Body1_1>복리후생</Text.Body1_1>
+                <Text.Body1_1>
+                    복리후생
+                    {required && <RequiredStar>*</RequiredStar>}
+                </Text.Body1_1>
                 <Text.Body3_1 color="Gray4">* 최대 5개의 복리후생 조건을 작성할 수 있습니다.</Text.Body3_1>
             </Wrapper.FlexBox>
 
@@ -90,3 +95,8 @@ const Style = {
         cursor: pointer;
     `,
 };
+
+const RequiredStar = styled.span`
+    margin-left: 4px;
+    color: ${theme.color.Main};
+`;

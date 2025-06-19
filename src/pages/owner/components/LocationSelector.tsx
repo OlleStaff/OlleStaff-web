@@ -12,9 +12,10 @@ interface LocationSelectorProps {
     longitude: number;
     locationName: string;
     onChange: (lat: number, lng: number, locationName: string) => void;
+    required?: boolean;
 }
 
-export default function LocationSelector({ locationName, onChange }: LocationSelectorProps) {
+export default function LocationSelector({ locationName, onChange, required }: LocationSelectorProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [address, setAddress] = useState("");
 
@@ -60,7 +61,7 @@ export default function LocationSelector({ locationName, onChange }: LocationSel
 
     return (
         <>
-            <Text.Body1_1>위치 선택</Text.Body1_1>
+            <Text.Body1_1>위치 선택 {required && <RequiredStar>*</RequiredStar>}</Text.Body1_1>
 
             <Style.AddressSelectorWrapper onClick={onToggleModal}>
                 {address === "" ? (
@@ -100,3 +101,8 @@ const Style = {
         overflow: auto;
     `,
 };
+
+const RequiredStar = styled.span`
+    margin-left: 4px;
+    color: ${theme.color.Main};
+`;

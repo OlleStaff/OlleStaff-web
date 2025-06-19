@@ -66,17 +66,18 @@ export default function ApplicationWritePage() {
                     </ProfileSection>
 
                     <FieldGroup>
-                        <Text.Body1_1>MBTI</Text.Body1_1>
                         <Input
+                            inputTitle="MBTI"
                             value={formData.mbti}
                             onChange={e => setFormData(prev => ({ ...prev, mbti: e.target.value }))}
                             placeholder="MBTI를 입력하세요."
+                            required
                         />
                     </FieldGroup>
 
                     <FieldGroup>
-                        <Text.Body1_1>링크 첨부</Text.Body1_1>
                         <Input
+                            inputTitle="링크 첨부"
                             value={formData.link}
                             onChange={e => setFormData(prev => ({ ...prev, link: e.target.value }))}
                             placeholder="인스타 링크 및 링크 1개를 첨부해주세요."
@@ -88,18 +89,21 @@ export default function ApplicationWritePage() {
                         value={formData.introduction}
                         onChange={e => setFormData(prev => ({ ...prev, introduction: e.target.value }))}
                         placeholder="나를 소개할 수 있는 자기소개를 작성하세요."
+                        required
                     />
                     <Textarea
                         textareaTitle="지원 동기 작성"
                         value={formData.motivation}
                         onChange={e => setFormData(prev => ({ ...prev, motivation: e.target.value }))}
                         placeholder="지원 동기를 작성하세요."
+                        required
                     />
                     <Textarea
                         textareaTitle="어필 사항"
                         value={formData.appeal}
                         onChange={e => setFormData(prev => ({ ...prev, appeal: e.target.value }))}
                         placeholder="ex) 이전 스텝 경험, 언어 능력 등"
+                        required
                     />
 
                     <FieldGroup>

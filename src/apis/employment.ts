@@ -69,4 +69,11 @@ export const EmploymentApi = {
 
         return res.data;
     },
+
+    // deleteEmployment: async (employmentId: number) =>
+    //     await axios
+    //         .delete(`${import.meta.env.VITE_API_BASE_URL}/employments/${employmentId}`, {
+    //             withCredentials: true,
+    //         })
+    //         .then(res => res.data),
 };

@@ -20,6 +20,7 @@ type InputProps = {
     bottomMessage?: string;
     messageColor?: keyof typeof theme.color;
     readOnly?: boolean;
+    required?: boolean; // 필수값이면 별 달기
 };
 
 export default function Input(props: InputProps) {
@@ -38,13 +39,19 @@ export default function Input(props: InputProps) {
         bottomMessage,
         messageColor = "Red1",
         readOnly,
+        required,
     } = props;
 
     const hasBottomMessage = "bottomMessage" in props;
 
     return (
         <InputContainer>
-            {inputTitle !== "" && <Text.Body1_1>{inputTitle}</Text.Body1_1>}
+            {inputTitle !== "" && (
+                <Text.Body1_1>
+                    {inputTitle}
+                    {required && <RequiredStar>*</RequiredStar>}
+                </Text.Body1_1>
+            )}
 
             <section>
                 <Wrapper variant={variant}>
@@ -113,6 +120,11 @@ const LeftIconArea = styled.div`
     padding-right: 8px;
     display: flex;
     align-items: center;
+`;
+
+const RequiredStar = styled.span`
+    margin-left: 4px;
+    color: ${theme.color.Main};
 `;
 
 const BottomMessage = styled(Text.Body3_1)<{
