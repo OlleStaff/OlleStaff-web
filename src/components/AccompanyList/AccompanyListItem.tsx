@@ -3,6 +3,7 @@ import { Text } from "@/styles/Text";
 import { useNavigate } from "react-router-dom";
 import { AccompanyListItemProps } from "@/types/accompany";
 import { timeAgo } from "@/utils/date";
+import { Wrapper } from "@/styles/Wrapper";
 
 export const AccompanyListItem = ({
     id,
@@ -12,7 +13,6 @@ export const AccompanyListItem = ({
     updatedAt,
     images,
     userNickname,
-    like,
     likeCount,
     commentCount,
     userImage,
@@ -29,7 +29,6 @@ export const AccompanyListItem = ({
                     updatedAt,
                     images,
                     userNickname,
-                    like,
                     likeCount,
                     commentCount,
                     userImage,
@@ -47,7 +46,7 @@ export const AccompanyListItem = ({
                     <StyledImage src={thumbnail} alt="thumbnail" />
                 </ImageWrapper>
             )}
-            <ContentWrapper>
+            <Wrapper.FlexBox direction="column" justifyContent="space-between">
                 <Text.Title3_1>{title}</Text.Title3_1>
                 <Text.Body3_1
                     color="Gray4"
@@ -62,14 +61,26 @@ export const AccompanyListItem = ({
                 >
                     {content}
                 </Text.Body3_1>
-                <Footer>
-                    <IconGroup>
-                        <Icon src="/icons/comment.svg" alt="comment" />
-                        <Icon src="/icons/heart.svg" alt="heart" />
-                    </IconGroup>
-                    <Text.Body3 color="Gray4">{timeAgo(createdAt)}</Text.Body3>
-                </Footer>
-            </ContentWrapper>
+                <Wrapper.FlexBox justifyContent="space-between">
+                    <Wrapper.FlexBox justifyContent="space-between" gap="4px" width="fit">
+                        <Wrapper.FlexBox alignItems="center">
+                            <Icon src="/icons/comment.svg" alt="comment" />
+                            <Text.Body2_1 color="Gray4" style={{ marginTop: "4px" }}>
+                                {commentCount}
+                            </Text.Body2_1>
+                        </Wrapper.FlexBox>
+                        <Wrapper.FlexBox alignItems="center">
+                            <Icon src="/icons/heart.svg" alt="heart" />
+                            <Text.Body2_1 color="Gray4" style={{ marginTop: "4px" }}>
+                                {likeCount}
+                            </Text.Body2_1>
+                        </Wrapper.FlexBox>
+                    </Wrapper.FlexBox>
+                    <Text.Body3 color="Gray4" style={{ marginTop: "4px" }}>
+                        {timeAgo(createdAt)}
+                    </Text.Body3>
+                </Wrapper.FlexBox>
+            </Wrapper.FlexBox>
         </Card>
     );
 };
@@ -97,24 +108,6 @@ const StyledImage = styled.img`
     height: 100%;
     object-fit: cover;
     display: block;
-`;
-
-const ContentWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    flex: 1;
-`;
-
-const Footer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const IconGroup = styled.div`
-    display: flex;
-    gap: 4px;
 `;
 
 const Icon = styled.img`
