@@ -52,6 +52,12 @@ export default function SignupPage() {
         });
     };
 
+    const formatPhoneNumber = (value: string) => {
+        const digits = value.replace(/\D/g, "").slice(0, 11);
+        const matched = digits.match(/^(\d{3})(\d{0,4})(\d{0,4})$/);
+        return matched ? [matched[1], matched[2], matched[3]].filter(Boolean).join("-") : digits;
+    };
+
     useEffect(() => {
         sessionStorage.removeItem("kakao_login_sent");
     }, []);
@@ -86,8 +92,18 @@ export default function SignupPage() {
                         <Wrapper.FlexBox gap="4px" alignItems="center">
                             <Input
                                 inputTitle="전화번호"
-                                value={userInfo.phone}
-                                onChange={handleInputChange("phone")}
+                                value={formatPhoneNumber(userInfo.phone)}
+                                onChange={e => {
+                                    const onlyDigits = e.target.value.replace(/\D/g, "").slice(0, 11);
+                                    const formattedEvent = {
+                                        ...e,
+                                        target: {
+                                            ...e.target,
+                                            value: onlyDigits,
+                                        },
+                                    };
+                                    handleInputChange("phone")(formattedEvent as React.ChangeEvent<HTMLInputElement>);
+                                }}
                                 placeholder="전화번호를 입력하세요."
                                 bottomMessage={errors.phone || verificationMessage}
                                 messageColor={errors.phone ? "Red1" : "Gray4"}
