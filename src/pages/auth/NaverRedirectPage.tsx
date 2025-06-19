@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useSocialLogin } from "@/hooks/auth/useSocialLogin";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function NaverRedirectPage() {
     const { mutate: naverLogin } = useSocialLogin("naver");
@@ -23,5 +24,5 @@ export default function NaverRedirectPage() {
         naverLogin({ code, state: state ?? undefined });
     }, []);
 
-    return <div>로그인 처리 중입니다...</div>;
+    return <LoadingSpinner />;
 }

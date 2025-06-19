@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function GoogleRedirectPage() {
     const navigate = useNavigate();
@@ -30,5 +31,5 @@ export default function GoogleRedirectPage() {
             });
     }, []);
 
-    return <div>로그인 처리 중입니다...</div>;
+    return <LoadingSpinner />;
 }
