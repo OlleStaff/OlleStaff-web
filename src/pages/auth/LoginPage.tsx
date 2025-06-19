@@ -45,13 +45,13 @@ export default function LoginPage() {
     return (
         <Background>
             <TopSection>
-                <Text.Title3_1 color="White" style={{ textAlign: "center" }}>
-                    제주도 숙박공간과 스텝의 연결고리
-                </Text.Title3_1>
                 <LogoArea>
-                    <img src="/images/logo.svg" alt="올래스텝 로고" />
+                    <img src="/images/logo.png" alt="올래스텝 로고" />
                     <img src="/images/logo_text.png" alt="올래스텝" />
                 </LogoArea>
+                <Text.Title3_1 color="Gray3" style={{ textAlign: "center" }}>
+                    제주도 숙박공간과 스텝의 연결고리
+                </Text.Title3_1>
             </TopSection>
 
             <ButtonContainer>
@@ -67,9 +67,9 @@ export default function LoginPage() {
                     </Text.Title3_1>
                 </LoginButton>
 
-                <LoginButton bgColor="White" onClick={handleGoogleLogin}>
-                    <LoginButtonIcon src="/icons/google.svg" alt="구글 아이콘" />
-                    <Text.Title3_1 style={{ marginTop: "3px" }}>구글 로그인</Text.Title3_1>{" "}
+                <LoginButton style={{ border: "1px solid #E2E2E2" }} bgColor="White" onClick={handleGoogleLogin}>
+                    <LoginButtonIcon src="/icons/google.svg" alt="이메일 아이콘" />
+                    <Text.Title3_1 style={{ marginTop: "3px" }}>이메일 로그인</Text.Title3_1>
                 </LoginButton>
             </ButtonContainer>
         </Background>
@@ -79,7 +79,7 @@ export default function LoginPage() {
 const Background = styled.div`
     width: 100%;
     height: 100%;
-    background: url("/images/login.png") no-repeat center center;
+    background-color: white;
     background-size: cover;
     display: flex;
     flex-direction: column;
