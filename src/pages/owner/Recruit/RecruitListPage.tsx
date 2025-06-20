@@ -5,7 +5,7 @@ import TabSelector from "@/components/TabSelector";
 import { OwnerTabTypes, TAB_LABELS } from "@/constants/tabs";
 import { Wrapper } from "@/styles/Wrapper";
 import { useEffect, useMemo, useState } from "react";
-import { useMyEmploymentList } from "@/hooks/owner/employment/useMyEmploymentList";
+import { useMyEmploymentList } from "@/hooks/owner/employment/useGetMyEmploymentList";
 import styled from "@emotion/styled";
 import { Text } from "@/styles/Text";
 import { GuesthouseListItem } from "@/components/GuesthouseList/GuesthouseListItem";

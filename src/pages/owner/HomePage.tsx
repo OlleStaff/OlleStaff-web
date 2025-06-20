@@ -9,7 +9,7 @@ import ReviewList from "@/components/ReviewList";
 import { ReviewListItemProps } from "@/types/reviews";
 import Oops from "@/components/Oops";
 import { mockdata_reviews } from "./mock";
-import { useMyEmploymentList } from "@/hooks/owner/employment/useMyEmploymentList";
+import { useMyEmploymentList } from "@/hooks/owner/employment/useGetMyEmploymentList";
 
 export default function HomePage() {
     const navigate = useNavigate();
