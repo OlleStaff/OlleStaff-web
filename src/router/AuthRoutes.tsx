@@ -15,6 +15,8 @@ import NotFoundPage from "@/pages/NotFoundPage";
 import RecruitDetailPage from "@/pages/owner/Recruit/RecruitDetailPage";
 import FullscreenLayout from "@/layout/FullScreenLayout";
 import TermsDetailPage from "@/pages/auth/TermsDetailPage";
+import ChatPage from "@/chat/pages/ChatListPage";
+import ChatRoomPage from "@/chat/pages/ChatRoomPage";
 
 const AuthRoutes: RouteObject[] = [
     {
@@ -42,6 +44,14 @@ const AuthRoutes: RouteObject[] = [
             {
                 path: "/type-select",
                 element: <TypeSelectPage />,
+            },
+            {
+                path: "chat",
+                element: <ChatPage />,
+            },
+            {
+                path: "/chat/:chatRoomId",
+                element: <ChatRoomPage />,
             },
         ],
     },
