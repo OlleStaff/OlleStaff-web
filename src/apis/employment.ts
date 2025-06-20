@@ -47,6 +47,7 @@ export const EmploymentApi = {
             throw error; // 필요 시 상위 컴포넌트에서 에러 처리 가능하도록
         }
     },
+    // PUT: 나의 공고 수정
     putEmployment: async (formData: EmploymentPutProps, imageFiles: File[]) => {
         const payload = new FormData();
 

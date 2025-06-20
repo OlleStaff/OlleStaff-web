@@ -11,5 +11,24 @@ export const ReviewApi = {
                     pageSize: 10,
                 },
             })
-            .then(res => res.data),
+            .then(res => res.data.data),
+
+    // POST: 게스트하우스 리뷰에 답 댓글 달기
+    postReCommentForGuesthouseReview: async (reviewId: number, reviewComment: string) => {
+        try {
+            const res = await axios.post(
+                `${import.meta.env.VITE_API_BASE_URL}/reviews/${reviewId}/comments`,
+                { reviewComment },
+                {
+                    withCredentials: true,
+                }
+            );
+
+            console.log("답 댓글 등록 완료", res.data);
+            return res.data;
+        } catch (error) {
+            console.error("답 댓글 등록 실패", error);
+            throw error;
+        }
+    },
 };

@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import RecruitPrecautionPage from "./RecruitPrecautionPage";
 import RecruitBasicInfoPage from "./RecruitBasicInfoPage";
 import { EmploymentPostProps } from "@/types/employment";
-import { EmploymentApi } from "@/apis/employment";
+import { usePostEmployment } from "@/hooks/owner/employment/usePostEmployment";
 
 const initialFormData: EmploymentPostProps = {
     instarUrl: "",
@@ -28,14 +28,21 @@ export default function RecruitCreateContainer() {
     const [imageFiles, setImageFiles] = useState<File[]>([]);
 
     const navigate = useNavigate();
+    const createMutation = usePostEmployment();
 
     const handleSubmit = async () => {
-        try {
-            await EmploymentApi.postEmployment(formData, imageFiles); // imageFiles는 상태로 보관한 File[]
-            alert("공고 등록 완료");
-        } catch (error) {
-            console.error("공고 등록 실패", error);
-        }
+        createMutation.mutate(
+            {
+                employment: formData,
+                imageFiles,
+            },
+            {
+                onSuccess: () => {
+                    alert("공고 등록 완료!");
+                    navigate("/owner");
+                },
+            }
+        );
     };
 
     return (
