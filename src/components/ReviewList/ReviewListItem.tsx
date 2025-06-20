@@ -7,6 +7,7 @@ import { useState } from "react";
 import { timeAgo } from "@/utils/date";
 import Input from "../Input";
 import ExpandableText from "../ExpandableText";
+import { usePostReComment } from "@/hooks/owner/review/usePostReComment";
 interface ReviewListItemProps {
     data: ReviewInfo;
     openedReviewId: number | null;
@@ -32,8 +33,13 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
     };
 
     const [text, setText] = useState<string>("");
-    const handleSubmit = () => {
-        //
+
+    const { mutate: submitReComment } = usePostReComment();
+
+    const handleReCommentSubmit = () => {
+        if (!text.trim()) return alert("댓글을 입력해주세요!");
+        submitReComment({ reviewId, reviewComment: text });
+        setOpenedReviewId(null);
     };
 
     return (
@@ -60,7 +66,15 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                     </>
                 )}
                 <Text.Body2_1>
-                    <ExpandableText text={review} maxLength={100} />
+                    <Wrapper.FlexBox
+                        style={{
+                            overflow: "auto",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-word",
+                        }}
+                    >
+                        <ExpandableText text={review} maxLength={100} />
+                    </Wrapper.FlexBox>
                 </Text.Body2_1>
 
                 <Wrapper.FlexBox direction="column" gap="8px">
@@ -86,7 +100,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                             onChange={e => setText(e.target.value)}
                             placeholder="댓글을 입력하세요."
                             rightIcon={<img src="/icons/arrow_top.svg" />}
-                            onRightIconClick={handleSubmit}
+                            onRightIconClick={handleReCommentSubmit}
                         />
                     )}
                 </Wrapper.FlexBox>
