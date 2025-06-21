@@ -88,7 +88,7 @@ export const Text = {
         cursor: ${props => props.pointer && "pointer"};
         line-height: 23px;
         letter-spacing: 0.36px;
- 
+    `,
     Title4: styled.span<StyleText>`
         ${baseTextStyle};
         font-weight: 600;
