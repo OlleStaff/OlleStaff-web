@@ -9,10 +9,11 @@ import { useMyEmploymentList } from "@/hooks/owner/employment/useGetMyEmployment
 import styled from "@emotion/styled";
 import { Text } from "@/styles/Text";
 import { GuesthouseListItem } from "@/components/GuesthouseList/GuesthouseListItem";
+import { useDeleteEmployment } from "@/hooks/owner/employment/useDeleteEmployment";
 
 export default function RecruitListPage() {
     const [sort, setSort] = useState<OwnerTabTypes["MY_RECRUIT"]>("전체");
-    const [isTrashIconClicked, setIsTrashIconClicked] = useState(false);
+    const [isEditTextClicked, setIsEditTextClicked] = useState(false);
 
     const { data } = useMyEmploymentList();
 
@@ -25,8 +26,8 @@ export default function RecruitListPage() {
     }, [sort, data]);
     const [checkedIds, setCheckedIds] = useState<number[]>([]);
 
-    const toggleTrashMode = () => {
-        setIsTrashIconClicked(prev => !prev);
+    const toggleEditMode = () => {
+        setIsEditTextClicked(prev => !prev);
         setCheckedIds([]);
     };
 
@@ -35,9 +36,19 @@ export default function RecruitListPage() {
     };
 
     const isDeletable = checkedIds.length > 0;
+    const { mutate: deleteEmployments } = useDeleteEmployment();
+
     const handleDeleteRecruitItem = () => {
-        // 공고 삭제
-        console.log("눌림");
+        deleteEmployments(checkedIds, {
+            onSuccess: () => {
+                alert("공고 삭제 완료");
+                setIsEditTextClicked(false);
+            },
+            onError: error => {
+                console.error("삭제 실패", error);
+                alert("삭제 중 오류가 발생했습니다.");
+            },
+        });
     };
 
     useEffect(() => {
@@ -46,7 +57,16 @@ export default function RecruitListPage() {
 
     return (
         <>
-            <Header title="나의 공고" />
+            <Header
+                title="나의 공고"
+                rightText={
+                    filteredRecruits.length > 0 && (
+                        <EditTextBox onClick={toggleEditMode}>
+                            <Text.Body1 color={isEditTextClicked ? "Black" : "Gray2"}>편집</Text.Body1>
+                        </EditTextBox>
+                    )
+                }
+            />
             <PageWrapper hasHeader>
                 <Wrapper.FlexBox>
                     <TabSelector
@@ -55,16 +75,9 @@ export default function RecruitListPage() {
                         onChange={value => setSort(value as OwnerTabTypes["MY_RECRUIT"])}
                         variant="bold"
                     />
-                    {filteredRecruits.length > 0 && (
-                        <TrashIcon
-                            src={isTrashIconClicked ? "/icons/trashActive.svg" : "/icons/trash.svg"}
-                            alt="휴지통"
-                            onClick={toggleTrashMode}
-                        />
-                    )}
                 </Wrapper.FlexBox>
 
-                {isTrashIconClicked && filteredRecruits.length > 0 && (
+                {isEditTextClicked && filteredRecruits.length > 0 && (
                     <>
                         <Wrapper.FlexBox justifyContent="space-between">
                             <SelectAllWrapper
@@ -81,6 +94,7 @@ export default function RecruitListPage() {
                             <Text.Body1
                                 color={isDeletable ? "Main" : "Gray2"}
                                 onClick={isDeletable ? handleDeleteRecruitItem : undefined}
+                                style={{ cursor: "pointer" }}
                             >
                                 삭제
                             </Text.Body1>
@@ -94,7 +108,7 @@ export default function RecruitListPage() {
                             <GuesthouseListItem
                                 key={item.employmentId}
                                 {...item}
-                                isTrashIconActive={isTrashIconClicked}
+                                isEditActive={isEditTextClicked}
                                 isChecked={checkedIds.includes(item.employmentId)}
                                 onCheckToggle={handleToggleCheck}
                             />
@@ -113,8 +127,8 @@ export default function RecruitListPage() {
     );
 }
 
-const TrashIcon = styled.img`
-    width: 22px;
+const EditTextBox = styled.div`
+    width: 34px;
     height: 100%;
     cursor: pointer;
 `;
