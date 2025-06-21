@@ -1,17 +1,16 @@
+import { EmploymentApi } from "@/apis/employment";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 
 export const useDeleteEmployment = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (employmentIds: number[]) =>
-            axios.delete(`${import.meta.env.VITE_API_BASE_URL}/employments`, {
-                withCredentials: true,
-                data: employmentIds,
-            }),
+        mutationFn: (employmentIds: number[]) => EmploymentApi.deleteEmployment(employmentIds),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["employmentList"] });
+        },
+        onError: error => {
+            console.error("공고 삭제 실패", error);
         },
     });
 };
