@@ -15,7 +15,7 @@ export default function SectionTitle({ title, link, type = "default", onCopyClic
     if (type === "copy") {
         return (
             <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
-                <Text.Body1_1>{title}</Text.Body1_1>
+                <Text.Body1_2>{title}</Text.Body1_2>
                 <CopyButton onClick={onCopyClick}>
                     <img src="/icons/copy.svg" alt="복사 아이콘" />
                 </CopyButton>
