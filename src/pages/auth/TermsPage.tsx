@@ -85,7 +85,7 @@ export default function TermsPage() {
                             isActive={allRequiredChecked}
                             onClick={handleSubmit}
                         >
-                            동의 완료
+                            다음으로
                         </Button>
                     </ButtonWrapper>
                 </Wrapper.FlexBox>

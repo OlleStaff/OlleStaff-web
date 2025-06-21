@@ -31,7 +31,7 @@ export default function NotFoundPage() {
             >
                 <img src="/icons/oops.svg" alt="404페이지" style={{ width: "32px" }} />
                 <Wrapper.FlexBox gap="8px" direction="column" alignItems="center">
-                    <Text.Title3_1>페이지를 찾을 수 없습니다.</Text.Title3_1>
+                    <Text.Title3_1 color="Gray3">페이지를 찾을 수 없습니다.</Text.Title3_1>
                     <Text.Body2_1 color="Gray3">죄송합니다. 더 이상 존재하지 않는 페이지 입니다.</Text.Body2_1>
                 </Wrapper.FlexBox>
                 <Wrapper.FlexBox width="138px">

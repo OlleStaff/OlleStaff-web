@@ -18,7 +18,7 @@ const items = {
     staff: [
         { src: "/icons/navHome.svg", alt: "홈", label: "홈", path: "/staff" },
         { src: "/icons/navCompanion.svg", alt: "동행", label: "동행", path: "/staff/accompany" },
-        { src: "/icons/navChat.svg", alt: "채팅", label: "채팅", path: "/staff/chat" },
+        { src: "/icons/navChat.svg", alt: "채팅", label: "채팅", path: "/chat" },
         { src: "/icons/navUser.svg", alt: "내 정보", label: "내 정보", path: "/staff/userinfo" },
     ],
 };
@@ -48,14 +48,14 @@ export default function Nav({ version }: NavProps) {
                             direction="column"
                             alignItems="center"
                             justifyContent="center"
-                            gap="14px"
+                            gap="12px"
                             pointer
                             onClick={() => handleClick(item.path)}
                         >
                             <img src={isActive ? activeSrc : item.src} alt={item.alt} />
-                            <Text.Body1_1 style={{ color: isActive ? theme.color.Main : theme.color.Gray3 }}>
+                            <Text.Body2_1 style={{ color: isActive ? theme.color.Main : theme.color.Gray3 }}>
                                 {item.label}
-                            </Text.Body1_1>
+                            </Text.Body2_1>
                         </Wrapper.FlexBox>
                     );
                 })}

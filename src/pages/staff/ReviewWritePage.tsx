@@ -71,9 +71,11 @@ export default function ReviewWritePage() {
                     height={`calc(100vh - ${theme.size.HeaderHeight})`}
                 >
                     <Wrapper.FlexBox direction="column" gap="24px">
-                        <Text.Body3_1 color="Gray4">“필게스트 하우스"의 생생한 후기를 작성해주세요!</Text.Body3_1>
+                        <Wrapper.FlexBox justifyContent="center">
+                            <Text.Body3_1 color="Gray4">“필게스트 하우스"의 생생한 후기를 작성해주세요!</Text.Body3_1>
+                        </Wrapper.FlexBox>
                         <Wrapper.FlexBox direction="column" alignItems="center" gap="12px">
-                            <Text.Body1_1>게스트하우스 평점</Text.Body1_1>
+                            <Text.Body1_2>게스트하우스 평점</Text.Body1_2>
                             <Star onChange={setRating} />
                         </Wrapper.FlexBox>
                         <ImageUploader maxImages={3} onChange={({ files }) => setImages(files)} />
@@ -81,11 +83,13 @@ export default function ReviewWritePage() {
                             value={review}
                             placeholder="게스트 하우스의 솔직후기를 남겨주세요!"
                             onChange={e => setReview(e.target.value)}
+                            minLength={10}
                         />
                         <RadioButton
                             labelList={labelList}
                             selectedIndex={selectedIndex}
                             onSelect={index => setSelectedIndex(index)}
+                            grayText
                         />
                     </Wrapper.FlexBox>
                     <Wrapper.FlexBox padding="0px 0px 40px 0px" justifyContent="center">
@@ -115,7 +119,7 @@ export default function ReviewWritePage() {
                 {isCompleteModalOpen && (
                     <Modal variant="page" handleModalClose={() => setIsCompleteModalOpen(false)}>
                         <Wrapper.FlexBox direction="column" justifyContent="center" alignItems="center" gap="12px">
-                            <img src="/icons/checked.svg" alt="완료 아이콘" />
+                            <img src="/icons/success.svg" alt="완료 아이콘" />
                             <Text.Title3_1>후기 등록 완료</Text.Title3_1>
                         </Wrapper.FlexBox>
                     </Modal>

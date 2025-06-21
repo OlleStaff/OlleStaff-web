@@ -10,6 +10,7 @@ export interface RadioButtonProps {
     onSelect?: (index: number) => void;
     radioTitle?: string;
     required?: boolean;
+    grayText?: boolean;
 }
 
 export default function RadioButton({
@@ -18,6 +19,7 @@ export default function RadioButton({
     onSelect,
     radioTitle,
     required,
+    grayText = false,
 }: RadioButtonProps) {
     const [selected, setSelected] = useState<number>(selectedIndex);
 
@@ -44,7 +46,7 @@ export default function RadioButton({
                                 onChange={() => handleSelect(index)}
                             />
                             <Style.RadioCircle>{selected === index && <Style.RadioInnerCircle />}</Style.RadioCircle>
-                            <Text.Body1_1>{name}</Text.Body1_1>
+                            <Text.Body1_1 color={grayText ? "Gray5" : "Black"}>{name}</Text.Body1_1>{" "}
                         </Style.RadioButton>
                     ))}
                 </Wrapper.FlexBox>
@@ -61,7 +63,7 @@ const Style = {
         margin-bottom: 8px;
 
         input[type="radio"] {
-            display: none; // 실제 라디오 버튼 숨김
+            display: none;
         }
     `,
     RadioCircle: styled.div`
@@ -77,7 +79,7 @@ const Style = {
     RadioInnerCircle: styled.div`
         width: 11px;
         height: 11px;
-        background-color: #6ed0e9;
+        background-color: ${theme.color.Main};
         border-radius: 50%;
     `,
 };

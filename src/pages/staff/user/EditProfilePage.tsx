@@ -96,6 +96,12 @@ export default function EditProfilePage() {
     const isPhoneChanged = userInfo.phone !== user.phone;
     const isVerificationRequired = isEditMode && isPhoneChanged;
 
+    const formatPhoneNumber = (value: string) => {
+        const digits = value.replace(/\D/g, "").slice(0, 11);
+        const matched = digits.match(/^(\d{3})(\d{0,4})(\d{0,4})$/);
+        return matched ? [matched[1], matched[2], matched[3]].filter(Boolean).join("-") : digits;
+    };
+
     const isFormModified =
         userInfo.nickname !== user.nickname || userInfo.phone !== user.phone || selectedImage !== null;
 
@@ -139,16 +145,29 @@ export default function EditProfilePage() {
                                 bottomMessage={""}
                             />
 
-                            <Wrapper.FlexBox gap="4px" alignItems="center">
+                            <Wrapper.FlexBox gap="2px" alignItems="center">
                                 <Input
                                     readOnly={!isEditMode}
                                     inputTitle="전화번호"
-                                    value={userInfo.phone}
-                                    onChange={handleInputChange("phone")}
+                                    value={formatPhoneNumber(userInfo.phone)}
+                                    onChange={e => {
+                                        const onlyDigits = e.target.value.replace(/\D/g, "").slice(0, 11);
+                                        const formattedEvent = {
+                                            ...e,
+                                            target: {
+                                                ...e.target,
+                                                value: onlyDigits,
+                                            },
+                                        };
+                                        handleInputChange("phone")(
+                                            formattedEvent as React.ChangeEvent<HTMLInputElement>
+                                        );
+                                    }}
                                     placeholder="전화번호를 입력하세요."
                                     bottomMessage={errors.phone || (isVerificationRequired ? verificationMessage : "")}
                                     messageColor={errors.phone ? "Red1" : "Gray4"}
                                 />
+
                                 {isVerificationRequired && (
                                     <Button
                                         width="small"
@@ -197,8 +216,8 @@ export default function EditProfilePage() {
                 {isConfirmModalOpen && (
                     <Modal
                         variant="confirm"
-                        title="개인정보 수정"
-                        message="개인정보 수정을 완료 하시겠습니까?"
+                        title="개인정보 수정을 완료하시겠습니까?"
+                        message="확인 버튼 클릭 시 작성된 개인정보가 수정됩니다."
                         cancelText="취소"
                         confirmText="확인"
                         handleModalClose={() => setIsConfirmModalOpen(false)}
@@ -211,7 +230,7 @@ export default function EditProfilePage() {
                 {isCompleteModalOpen && (
                     <Modal variant="page" handleModalClose={() => setIsCompleteModalOpen(false)}>
                         <Wrapper.FlexBox direction="column" justifyContent="center" alignItems="center" gap="12px">
-                            <img src="/icons/checked.svg" alt="완료 아이콘" />
+                            <img src="/icons/success.svg" alt="완료 아이콘" />
                             <Text.Title3_1>개인정보 수정 완료</Text.Title3_1>
                         </Wrapper.FlexBox>
                     </Modal>

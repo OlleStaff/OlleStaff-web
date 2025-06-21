@@ -71,6 +71,7 @@ const MessageWrapper = styled.div`
     width: 100%;
     display: flex;
     text-align: center;
+    justify-content: center;
 `;
 
 const Button = styled.button<{ variant?: "cancel" | "okay" }>`
