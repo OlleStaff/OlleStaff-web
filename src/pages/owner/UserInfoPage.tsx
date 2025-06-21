@@ -9,11 +9,13 @@ import UserModeSwitcher from "../auth/components/UserModeSwitcher";
 const MenuList = [
     {
         id: 1,
-        title: "게시글 관리",
-        content: [
-            { title: "주의사항 수정하기", link: "/owner/recruit/write/step2" },
-            { title: "후기 관리", link: "/owner/userinfo/reviews" },
-        ],
+        title: "내 정보 관리",
+        content: [{ title: "개인정보 수정", link: "/user/edit-profile" }],
+    },
+    {
+        id: 2,
+        title: "내 활동",
+        content: [{ title: "후기 관리", link: "/owner/userinfo/reviews" }],
     },
 ];
 

@@ -8,7 +8,7 @@ type HeaderProps = {
     onBackClick?: () => void;
     rightIconSrc?: string;
     onRightClick?: () => void;
-    rightText?: string;
+    rightText?: string | React.ReactNode;
 };
 
 export default function Header({

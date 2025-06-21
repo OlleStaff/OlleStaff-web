@@ -6,7 +6,7 @@ import axios from "axios";
 // owner 관점에서 사용하는 내 공고 조회 (전체 | 진행중 | 마감)
 export const useMyEmploymentList = () => {
     return useQuery<GuesthouseListItemProps[]>({
-        queryKey: ["guesthouseList"],
+        queryKey: ["employmentList"],
         queryFn: async () => {
             const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/employments`, {
                 params: {

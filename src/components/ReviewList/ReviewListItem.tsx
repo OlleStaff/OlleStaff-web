@@ -7,6 +7,8 @@ import { useState } from "react";
 import { timeAgo } from "@/utils/date";
 import Input from "../Input";
 import ExpandableText from "../ExpandableText";
+import { usePostReComment } from "@/hooks/owner/review/usePostReComment";
+import ImageViewer from "../ImageViewer";
 interface ReviewListItemProps {
     data: ReviewInfo;
     openedReviewId: number | null;
@@ -32,8 +34,20 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
     };
 
     const [text, setText] = useState<string>("");
-    const handleSubmit = () => {
-        //
+
+    const { mutate: submitReComment } = usePostReComment();
+
+    const handleReCommentSubmit = () => {
+        if (!text.trim()) return alert("댓글을 입력해주세요!");
+        submitReComment({ reviewId, reviewComment: text });
+        setOpenedReviewId(null);
+    };
+
+    const [isViewerOpen, setViewerOpen] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const handleImageClick = (idx: number) => {
+        setCurrentImageIndex(idx);
+        setViewerOpen(true);
     };
 
     return (
@@ -54,13 +68,26 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                     <>
                         <ImageList>
                             {images.map((imgUrl, idx) => (
-                                <img key={idx} src={imgUrl} alt={`리뷰이미지${idx + 1}`} />
+                                <div onClick={() => handleImageClick(idx)}>
+                                    <img key={idx} src={imgUrl} alt={`리뷰이미지${idx + 1}`} />
+                                </div>
                             ))}
                         </ImageList>
                     </>
                 )}
+                {isViewerOpen && (
+                    <ImageViewer images={images} startIndex={currentImageIndex} onClose={() => setViewerOpen(false)} />
+                )}
                 <Text.Body2_1>
-                    <ExpandableText text={review} maxLength={100} />
+                    <Wrapper.FlexBox
+                        style={{
+                            overflow: "auto",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-word",
+                        }}
+                    >
+                        <ExpandableText text={review} maxLength={100} />
+                    </Wrapper.FlexBox>
                 </Text.Body2_1>
 
                 <Wrapper.FlexBox direction="column" gap="8px">
@@ -86,7 +113,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                             onChange={e => setText(e.target.value)}
                             placeholder="댓글을 입력하세요."
                             rightIcon={<img src="/icons/arrow_top.svg" />}
-                            onRightIconClick={handleSubmit}
+                            onRightIconClick={handleReCommentSubmit}
                         />
                     )}
                 </Wrapper.FlexBox>
