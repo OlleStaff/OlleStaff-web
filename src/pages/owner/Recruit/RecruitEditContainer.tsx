@@ -3,8 +3,8 @@ import { Routes, Route, useNavigate, useParams } from "react-router-dom";
 import RecruitPrecautionPage from "./RecruitPrecautionPage";
 import RecruitBasicInfoPage from "./RecruitBasicInfoPage";
 import { EmploymentPutProps } from "@/types/employment";
-import { EmploymentApi } from "@/apis/employment";
 import { useEmploymentDetail } from "@/hooks/owner/employment/useGetEmploymentDetail";
+import { usePutEmployment } from "@/hooks/owner/employment/usePutEmployment";
 
 export default function RecruitEditContainer() {
     const { employmentId } = useParams();
@@ -18,15 +18,11 @@ export default function RecruitEditContainer() {
     const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [imageUrls, setImageUrls] = useState<string[]>([]);
 
-    const handleEdit = async () => {
-        if (!formData) return;
+    const { mutate } = usePutEmployment();
 
-        try {
-            await EmploymentApi.putEmployment(formData, imageFiles);
-            alert("공고 수정 완료");
-        } catch (error) {
-            console.error("공고 수정 실패", error);
-        }
+    const handleEdit = () => {
+        if (!formData) return;
+        mutate({ formData, imageFiles });
     };
 
     useEffect(() => {
