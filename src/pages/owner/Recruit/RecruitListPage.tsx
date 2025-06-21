@@ -10,6 +10,10 @@ import styled from "@emotion/styled";
 import { Text } from "@/styles/Text";
 import { GuesthouseListItem } from "@/components/GuesthouseList/GuesthouseListItem";
 import { useDeleteEmployment } from "@/hooks/owner/employment/useDeleteEmployment";
+import { useNavigate } from "react-router-dom";
+import Modal from "@/components/Modal";
+
+type ModalType = "confirm" | "success" | null;
 
 export default function RecruitListPage() {
     const [sort, setSort] = useState<OwnerTabTypes["MY_RECRUIT"]>("전체");
@@ -38,11 +42,13 @@ export default function RecruitListPage() {
     const isDeletable = checkedIds.length > 0;
     const { mutate: deleteEmployments } = useDeleteEmployment();
 
+    const navigate = useNavigate();
     const handleDeleteRecruitItem = () => {
         deleteEmployments(checkedIds, {
             onSuccess: () => {
-                alert("공고 삭제 완료");
+                openModal("success");
                 setIsEditTextClicked(false);
+                navigate("/owner/recruitments-ongoing");
             },
             onError: error => {
                 console.error("삭제 실패", error);
@@ -51,12 +57,40 @@ export default function RecruitListPage() {
         });
     };
 
+    const [modalType, setModalType] = useState<ModalType>(null);
+
+    const openModal = (type: ModalType) => setModalType(type);
+    const closeModal = () => setModalType(null);
+
     useEffect(() => {
         setCheckedIds([]);
     }, [sort]);
 
     return (
         <>
+            {modalType === "confirm" && (
+                <Modal
+                    variant="confirm"
+                    title="등록된 게시글을 삭제하시겠습니까?"
+                    message={`삭제 버튼 클릭 시 등록된 게시글이 \n영구히 삭제됩니다.`}
+                    cancelText="취소"
+                    confirmText="삭제"
+                    handleModalClose={closeModal}
+                    onConfirm={() => {
+                        handleDeleteRecruitItem();
+                    }}
+                />
+            )}
+
+            {modalType === "success" && (
+                <Modal
+                    variant="default"
+                    title="게시글 삭제 완료"
+                    confirmText="확인"
+                    handleModalClose={closeModal}
+                    onConfirm={closeModal}
+                />
+            )}
             <Header
                 title="나의 공고"
                 rightText={
@@ -93,7 +127,7 @@ export default function RecruitListPage() {
                             </SelectAllWrapper>
                             <Text.Body1
                                 color={isDeletable ? "Main" : "Gray2"}
-                                onClick={isDeletable ? handleDeleteRecruitItem : undefined}
+                                onClick={isDeletable ? () => openModal("confirm") : undefined}
                                 style={{ cursor: "pointer" }}
                             >
                                 삭제

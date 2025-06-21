@@ -11,7 +11,7 @@ export const useDeleteEmployment = () => {
                 data: employmentIds,
             }),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["employment"] });
+            queryClient.invalidateQueries({ queryKey: ["employmentList"] });
         },
     });
 };
