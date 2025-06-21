@@ -48,14 +48,14 @@ export default function Nav({ version }: NavProps) {
                             direction="column"
                             alignItems="center"
                             justifyContent="center"
-                            gap="14px"
+                            gap="12px"
                             pointer
                             onClick={() => handleClick(item.path)}
                         >
                             <img src={isActive ? activeSrc : item.src} alt={item.alt} />
-                            <Text.Body1_1 style={{ color: isActive ? theme.color.Main : theme.color.Gray3 }}>
+                            <Text.Body2_1 style={{ color: isActive ? theme.color.Main : theme.color.Gray3 }}>
                                 {item.label}
-                            </Text.Body1_1>
+                            </Text.Body2_1>
                         </Wrapper.FlexBox>
                     );
                 })}

@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import theme from "@/styles/theme";
+import { Text } from "@/styles/Text";
 
 export interface ButtonProps {
     children: React.ReactNode;
@@ -22,6 +23,9 @@ export const Button = ({
     iconSrc,
     ...props
 }: ButtonProps) => {
+    const TextComponent = isActive ? Text.Body1_2 : Text.Body1_1;
+    const textColor = isActive ? "White" : "Gray5";
+
     return (
         <Style.Button
             $isActive={isActive}
@@ -31,7 +35,7 @@ export const Button = ({
             {...props}
         >
             {iconSrc && <Style.Icon src={iconSrc} alt="button icon" />}
-            {children}
+            <TextComponent color={textColor}>{children}</TextComponent>
         </Style.Button>
     );
 };
@@ -53,7 +57,7 @@ const Style = {
         border: 0;
         border-radius: 8px;
         background-color: ${({ $isActive }) => ($isActive ? theme.color.Main : theme.color.Gray2)};
-        color: ${({ $isActive }) => ($isActive ? "white" : "gray")};
+        color: ${({ $isActive }) => ($isActive ? theme.color.White : theme.color.Gray5)};
         opacity: ${({ $isActive }) => ($isActive ? 1 : 0.6)};
         width: ${({ width }) => (width === "small" ? "91px" : width === "medium" ? "50%" : "100%")};
         height: ${({ height }) => (height === "small" ? "40px" : height === "medium" ? "44px" : "48px")};

@@ -177,7 +177,7 @@ export default function EditApplicationPage() {
                 <Modal
                     variant="confirm"
                     title="지원서 수정을 완료하시겠습니까?"
-                    message="확인시 작성된 지원서가 수정됩니다."
+                    message="확인 버튼 클릭 시 작성된 지원서가 수정됩니다."
                     cancelText="취소"
                     confirmText="확인"
                     handleModalClose={() => setIsConfirmModalOpen(false)}
@@ -191,7 +191,7 @@ export default function EditApplicationPage() {
             {isCompleteModalOpen && (
                 <Modal variant="page" handleModalClose={() => setIsCompleteModalOpen(false)}>
                     <Wrapper.FlexBox direction="column" justifyContent="center" alignItems="center" gap="12px">
-                        <img src="/icons/checked.svg" alt="완료 아이콘" />
+                        <img src="/icons/success.svg" alt="완료 아이콘" />
                         <Text.Title3_1>지원서 수정 완료</Text.Title3_1>
                     </Wrapper.FlexBox>
                 </Modal>

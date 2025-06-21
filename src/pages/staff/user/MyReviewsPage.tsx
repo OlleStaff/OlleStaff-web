@@ -9,6 +9,7 @@ import { useMyReviewList } from "@/hooks/staff/useMyReviewList";
 import { StaffTabTypes, TAB_LABELS } from "@/constants/tabs";
 import { useState } from "react";
 import TabSelector from "@/components/TabSelector";
+import theme from "@/styles/theme";
 
 export default function MyReviewsPage() {
     const [filter, setFilter] = useState<StaffTabTypes["MY_REVIEW"]>("1주일");
@@ -21,8 +22,8 @@ export default function MyReviewsPage() {
                 <Wrapper.FlexBox
                     direction="column"
                     padding="16px 20px"
-                    border="1px solid #E4E4E4"
-                    borderRadius="8px"
+                    border={`1px solid ${theme.color.Main}`}
+                    borderRadius="12px"
                     gap="20px"
                     bgColor="white"
                     margin="0px 0px 16px 0px"

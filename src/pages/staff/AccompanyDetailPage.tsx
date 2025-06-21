@@ -86,7 +86,7 @@ const MetaInfoText = styled.div`
     row-gap: 2px;
 `;
 
-const Title = styled(Text.Title2_1)`
+const Title = styled(Text.Title3_2)`
     margin-bottom: 12px;
 `;
 

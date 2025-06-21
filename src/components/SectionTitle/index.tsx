@@ -9,31 +9,31 @@ interface SectionTitleProps {
     type?: "default" | "copy";
     onCopyClick?: () => void;
 }
-
 export default function SectionTitle({ title, link, type = "default", onCopyClick }: SectionTitleProps) {
     const navigate = useNavigate();
 
+    if (type === "copy") {
+        return (
+            <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
+                <Text.Body1_2>{title}</Text.Body1_2>
+                <CopyButton onClick={onCopyClick}>
+                    <img src="/icons/copy.svg" alt="복사 아이콘" />
+                </CopyButton>
+            </Wrapper.FlexBox>
+        );
+    }
+
     return (
         <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
-            {type === "default" && link && (
-                <>
-                    <Text.Title2_1>{title}</Text.Title2_1>
-                    <MoreButton onClick={() => navigate(link, { relative: "path" })}>
-                        <Text.Body3_1 color="Gray4" style={{ marginTop: "2px" }}>
-                            더보기
-                        </Text.Body3_1>
-                        <img style={{ width: "17px", height: "17px" }} src="/icons/backbtn.svg" alt="더보기 아이콘" />
-                    </MoreButton>
-                </>
-            )}
+            <Text.Title2_2>{title}</Text.Title2_2>
 
-            {type === "copy" && (
-                <>
-                    <Text.Body1_1>{title}</Text.Body1_1>
-                    <CopyButton onClick={onCopyClick}>
-                        <img src="/icons/copy.svg" alt="복사 아이콘" />
-                    </CopyButton>
-                </>
+            {link && (
+                <MoreButton onClick={() => navigate(link, { relative: "path" })}>
+                    <Text.Body3_1 color="Gray4" style={{ marginTop: "2px" }}>
+                        더보기
+                    </Text.Body3_1>
+                    <img style={{ width: "17px", height: "17px" }} src="/icons/backbtn.svg" alt="더보기 아이콘" />
+                </MoreButton>
             )}
         </Wrapper.FlexBox>
     );

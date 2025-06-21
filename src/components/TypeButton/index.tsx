@@ -2,23 +2,21 @@ import styled from "@emotion/styled";
 import { Text } from "@/styles/Text";
 
 export interface TypeButtonProps {
-    emoji: string;
+    iconSrc: string;
     label: string;
     subLabel: string;
     isActive?: boolean;
     onClick?: () => void;
 }
 
-export const TypeButton = ({ emoji, label, subLabel, isActive = false, onClick }: TypeButtonProps) => {
+export const TypeButton = ({ iconSrc, label, subLabel, isActive = false, onClick }: TypeButtonProps) => {
     return (
         <Wrapper $isActive={isActive} onClick={onClick}>
-            <Emoji role="img" aria-label={label}>
-                {emoji}
-            </Emoji>
+            <IconImage src={iconSrc} alt={label} />
             <Text.Body1>
                 {label} <br />
-                {subLabel}
             </Text.Body1>
+            <Text.Body2_1 color="Gray2">{subLabel}</Text.Body2_1>
         </Wrapper>
     );
 };
@@ -38,7 +36,9 @@ const Wrapper = styled.button<{ $isActive: boolean }>`
     transition: all 0.2s ease;
 `;
 
-const Emoji = styled.span`
-    font-size: 48px;
-    margin-bottom: 32px;
+const IconImage = styled.img`
+    width: 88px;
+    height: 88px;
+    margin-bottom: 16px;
+    object-fit: contain;
 `;
