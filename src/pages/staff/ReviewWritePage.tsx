@@ -119,7 +119,7 @@ export default function ReviewWritePage() {
                 {isCompleteModalOpen && (
                     <Modal variant="page" handleModalClose={() => setIsCompleteModalOpen(false)}>
                         <Wrapper.FlexBox direction="column" justifyContent="center" alignItems="center" gap="12px">
-                            <img src="/icons/checked.svg" alt="완료 아이콘" />
+                            <img src="/icons/success.svg" alt="완료 아이콘" />
                             <Text.Title3_1>후기 등록 완료</Text.Title3_1>
                         </Wrapper.FlexBox>
                     </Modal>
