@@ -16,6 +16,9 @@ import RecruitDetailPage from "@/pages/owner/Recruit/RecruitDetailPage";
 import FullscreenLayout from "@/layout/FullScreenLayout";
 import RecruitEditContainer from "@/pages/owner/Recruit/RecruitEditContainer";
 import TermsDetailPage from "@/pages/auth/TermsDetailPage";
+import ChatPage from "@/chat/pages/ChatListPage";
+import ChatRoomPage from "@/chat/pages/ChatRoomPage";
+import ChatLayout from "@/layout/ChatLayout";
 
 const AuthRoutes: RouteObject[] = [
     {
@@ -43,6 +46,20 @@ const AuthRoutes: RouteObject[] = [
             {
                 path: "/type-select",
                 element: <TypeSelectPage />,
+            },
+            {
+                path: "/chat/:chatRoomId",
+                element: <ChatRoomPage />,
+            },
+        ],
+    },
+    {
+        path: "/chat",
+        element: <ChatLayout />,
+        children: [
+            {
+                index: true,
+                element: <ChatPage />,
             },
         ],
     },

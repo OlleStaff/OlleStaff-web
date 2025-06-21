@@ -79,6 +79,7 @@ export const Text = {
         line-height: 23px;
         letter-spacing: 0.36px;
     `,
+ 
     Title3_2: styled.span<StyleText>`
         ${baseTextStyle};
         font-weight: 600;
@@ -87,6 +88,16 @@ export const Text = {
         cursor: ${props => props.pointer && "pointer"};
         line-height: 23px;
         letter-spacing: 0.36px;
+ 
+    Title4: styled.span<StyleText>`
+        ${baseTextStyle};
+        font-weight: 600;
+        font-size: 16px;
+        color: ${({ color }) => (color ? theme.color[color] : theme.color.Black)};
+        cursor: ${props => props.pointer && "pointer"};
+        line-height: 20px;
+        letter-spacing: 0.32px;
+ 
     `,
     Body1: styled.span<StyleText>`
         ${baseTextStyle};
