@@ -39,8 +39,7 @@ export interface EmploymentGetProps {
     phoneNum: string;
     locationName: string;
     category: string;
-    precaution: {
-        // s 없음
+    precautions: {
         precautionsTitle: string;
         precautionsContent: string;
     }[];

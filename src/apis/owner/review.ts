@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const ReviewApi = {
     // GET: 게스트하우스의 모든 리뷰 조회
-    getAllReviewsForGuesthouse: async (reviewType: "ALL" | "COMMENTED") =>
+    getAllReviewsForGuesthouse: async (reviewType: "전체" | "완료됨") =>
         await axios
             .get(`${import.meta.env.VITE_API_BASE_URL}/reviews/host`, {
                 withCredentials: true,

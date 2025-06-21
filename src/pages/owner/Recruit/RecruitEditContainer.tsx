@@ -4,7 +4,7 @@ import RecruitPrecautionPage from "./RecruitPrecautionPage";
 import RecruitBasicInfoPage from "./RecruitBasicInfoPage";
 import { EmploymentPutProps } from "@/types/employment";
 import { EmploymentApi } from "@/apis/employment";
-import { useEmploymentDetail } from "@/hooks/owner/employment/useEmploymentDetail";
+import { useEmploymentDetail } from "@/hooks/owner/employment/useGetEmploymentDetail";
 
 export default function RecruitEditContainer() {
     const { employmentId } = useParams();
@@ -47,7 +47,7 @@ export default function RecruitEditContainer() {
                 hashtagName: employmentData.hashtagName,
                 benefitsContent: employmentData.benefitsContent,
                 category: employmentData.category,
-                precautions: [],
+                precautions: employmentData.precautions,
                 images: employmentData.images ?? [],
             };
 

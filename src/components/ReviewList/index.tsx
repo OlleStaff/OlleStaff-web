@@ -18,6 +18,7 @@ export default function ReviewList({ data }: ReviewListProps) {
     const [openedReviewId, setOpenedReviewId] = useState<number | null>(null);
     const location = useLocation();
     const isOwnerRoot = location.pathname.startsWith("/owner");
+    const isOwnerHome = location.pathname === "/owner";
 
     const completedReviews = useMemo(() => {
         return data.allReviewInfoDTOS.filter(item => !!item.reviewComment?.trim());
@@ -32,7 +33,7 @@ export default function ReviewList({ data }: ReviewListProps) {
 
     return (
         <div>
-            {isOwnerRoot && (
+            {isOwnerRoot && !isOwnerHome && (
                 <TabSelector
                     variant="bold"
                     labels={[...TAB_LABELS.OWNER.REVIEW_MANAGE]}

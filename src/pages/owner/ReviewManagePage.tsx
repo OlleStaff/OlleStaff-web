@@ -9,14 +9,9 @@ import { Wrapper } from "@/styles/Wrapper";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-type ReviewTab = OwnerTabTypes["REVIEW_MANAGE"]; // "전체" | "완료됨"
-
 export default function ReviewManagePage() {
     const navigate = useNavigate();
     const [nickname, setNickname] = useState("");
-
-    const [filter, _setFilter] = useState<ReviewTab>("전체");
-    const reviewType = filter === "전체" ? "ALL" : "COMMENTED";
 
     useEffect(() => {
         const getNickname = async () => {
@@ -36,7 +31,8 @@ export default function ReviewManagePage() {
         getNickname();
     }, []);
 
-    const { data, isLoading, isError } = useAllReviewsForGuesthouse(reviewType);
+    const [filter, _setFilter] = useState<OwnerTabTypes["REVIEW_MANAGE"]>("전체");
+    const { data, isLoading, isError } = useAllReviewsForGuesthouse(filter);
 
     if (isLoading) return <div>로딩 중...</div>;
     if (isError || !data) return <div>리뷰를 불러오는 데 실패했습니다.</div>;
