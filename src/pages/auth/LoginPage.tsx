@@ -44,14 +44,15 @@ export default function LoginPage() {
 
     return (
         <Background>
+            <BackImage src="/images/BackImage.png" />
             <TopSection>
-                <LogoArea>
-                    <img src="/images/logo.png" alt="올래스텝 로고" />
-                    <img src="/images/logo_text.png" alt="올래스텝" />
-                </LogoArea>
-                <Text.Title3_1 color="Gray3" style={{ textAlign: "center" }}>
+                <Text.Title3_1 color="White" style={{ textAlign: "center" }}>
                     제주도 숙박공간과 스텝의 연결고리
                 </Text.Title3_1>
+                <LogoArea>
+                    <img src="/images/logo_white.svg" alt="올래스텝 로고" />
+                    <LogoText>올래스텝</LogoText>
+                </LogoArea>
             </TopSection>
 
             <ButtonContainer>
@@ -77,16 +78,24 @@ export default function LoginPage() {
 }
 
 const Background = styled.div`
+    position: relative;
     width: 100%;
     height: 100%;
-    background-color: white;
-    background-size: cover;
+    background: linear-gradient(180deg, #00dae9 0%, #02ccda 100%);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     padding: 80px 16px 40px;
     box-sizing: border-box;
+`;
+
+const BackImage = styled.img`
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    pointer-events: none;
+    user-select: none;
 `;
 
 const TopSection = styled.div`
@@ -101,6 +110,16 @@ const LogoArea = styled.div`
     display: flex;
     align-items: center;
     gap: 10px;
+`;
+
+const LogoText = styled.p`
+    color: var(--white, #fff);
+    font-family: "NEXON Lv1 Gothic OTF";
+    font-size: 43.433px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.869px;
 `;
 
 const ButtonContainer = styled.div`
