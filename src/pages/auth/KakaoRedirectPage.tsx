@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useSocialLogin } from "@/hooks/auth/useSocialLogin";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function KakaoRedirectPage() {
     const { mutate: kakaoLogin } = useSocialLogin("kakao");
@@ -13,5 +14,5 @@ export default function KakaoRedirectPage() {
         }
     }, []);
 
-    return <div>로그인 처리 중입니다...</div>;
+    return <LoadingSpinner />;
 }

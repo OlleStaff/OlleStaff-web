@@ -19,13 +19,11 @@ export default function TermsDetailPage() {
             <PageWrapper hasHeader>
                 <Wrapper.FlexBox padding="30px" direction="column" gap="12px">
                     <Text.Body1_1>{term.title}</Text.Body1_1>
-                    <Text.Body2_1 color="Gray4">
-                        <Wrapper.FlexBox margin="0 0 30px 0" direction="column">
-                            <MarkdownWrapper>
-                                <ReactMarkdown children={term.content} remarkPlugins={[remarkGfm]} />
-                            </MarkdownWrapper>
-                        </Wrapper.FlexBox>
-                    </Text.Body2_1>
+                    <Wrapper.FlexBox margin="0 0 30px 0" direction="column">
+                        <MarkdownWrapper>
+                            <ReactMarkdown children={term.content} remarkPlugins={[remarkGfm]} />
+                        </MarkdownWrapper>
+                    </Wrapper.FlexBox>
                 </Wrapper.FlexBox>
             </PageWrapper>
         </>
@@ -33,6 +31,25 @@ export default function TermsDetailPage() {
 }
 
 const MarkdownWrapper = styled.div`
+    display: inline-block;
+    font-family: "Pretendard", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    color: ${theme.color.Gray4};
+    line-height: 20px;
+    letter-spacing: 0.28px;
+
+    ul,
+    ol {
+        margin-left: 1em;
+        list-style-type: disc;
+    }
+
+    p {
+        margin: 0 0 1em 0;
+    }
+
     table {
         width: 100%;
         border-collapse: collapse;

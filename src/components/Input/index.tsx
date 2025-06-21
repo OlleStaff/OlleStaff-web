@@ -102,11 +102,13 @@ const StyledInput = styled.input`
     border: none;
     outline: none;
     font-size: 16px;
-    font-weight: 400;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0.32px;
     color: ${theme.color.Black};
 
     &::placeholder {
-        color: ${theme.color.Gray3};
+        color: ${theme.color.Gray4};
     }
 `;
 

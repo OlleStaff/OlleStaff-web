@@ -11,8 +11,8 @@ const MenuList = [
         id: 1,
         title: "내 정보 관리",
         content: [
-            { title: "개인정보 수정", link: "/staff/user/edit-profile" },
-            { title: "지원서 수정", link: "/staff/user/edit-application" },
+            { title: "개인정보 보기", link: "/staff/user/edit-profile" },
+            { title: "지원서 보기", link: "/staff/user/edit-application" },
         ],
     },
     {
@@ -22,7 +22,7 @@ const MenuList = [
             { title: "내가 작성한 게시글", link: "/staff/user/my-posts" },
             { title: "내가 작성한 댓글", link: "/staff/user/my-comments" },
             { title: "내가 작성한 후기", link: "/staff/user/my-reviews" },
-            { title: "내가 저장한 글", link: "/staff/user/my-likes" },
+            { title: "내가 좋아요 누른 글", link: "/staff/user/my-likes" },
         ],
     },
 ];

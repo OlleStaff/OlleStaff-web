@@ -30,7 +30,7 @@ export default function AgreementCheck({
                 <Text.Body1_1 style={{ textDecoration: "underline" }}>{label}</Text.Body1_1>
                 <Text.Body1_1 color="Main">{requirementType}</Text.Body1_1>
             </TextWrapper>
-            <CheckBox src={`/icons/${isChecked ? "checked" : "unChecked"}.svg`} alt="체크박스" onClick={onToggle} />
+            <CheckImage src={`/icons/${isChecked ? "checked" : "unChecked"}.svg`} alt="체크박스" onClick={onToggle} />
         </Wrapper.FlexBox>
     );
 }
@@ -38,10 +38,13 @@ export default function AgreementCheck({
 const TextWrapper = styled.div`
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
     cursor: pointer;
 `;
 
-const CheckBox = styled.img`
+const CheckImage = styled.img`
+    width: 20px;
+    height: 20px;
     cursor: pointer;
+    flex-shrink: 0;
 `;

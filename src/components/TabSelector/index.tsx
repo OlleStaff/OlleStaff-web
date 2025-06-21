@@ -19,7 +19,7 @@ export default function TabSelector({ labels, selected, onChange, variant = "und
 
                 return (
                     <TabButton key={label} onClick={() => onChange(label)} isSelected={isSelected} variant={variant}>
-                        <Text.Body1 color={color}>{label}</Text.Body1>
+                        <Text.Body1_2 color={color}>{label}</Text.Body1_2>
                     </TabButton>
                 );
             })}
