@@ -45,8 +45,12 @@ export default function RadioButton({
                                 checked={selected === index}
                                 onChange={() => handleSelect(index)}
                             />
-                            <Style.RadioCircle>{selected === index && <Style.RadioInnerCircle />}</Style.RadioCircle>
-                            <Text.Body1_1 color={grayText ? "Gray5" : "Black"}>{name}</Text.Body1_1>{" "}
+                            <Wrapper.FlexBox alignItems="center" gap="8px">
+                                <Style.RadioCircle>
+                                    {selected === index && <Style.RadioInnerCircle />}
+                                </Style.RadioCircle>
+                                <Text.Body1_1 color={grayText ? "Gray5" : "Black"}>{name}</Text.Body1_1>
+                            </Wrapper.FlexBox>
                         </Style.RadioButton>
                     ))}
                 </Wrapper.FlexBox>
@@ -55,7 +59,7 @@ export default function RadioButton({
     );
 }
 
-const Style = {
+export const Style = {
     RadioButton: styled.label`
         display: flex;
         align-items: center;
@@ -74,7 +78,6 @@ const Style = {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 8px;
     `,
     RadioInnerCircle: styled.div`
         width: 11px;
