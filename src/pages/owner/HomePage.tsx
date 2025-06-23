@@ -1,26 +1,20 @@
 import SectionTitle from "@/components/SectionTitle";
 import { fetchMinimumUserInfo } from "@/hooks/user/useFetchMinumumUserInfo";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PartnerRecruitmentCard from "./components/PartnerRecruitmentCard";
 import { Wrapper } from "@/styles/Wrapper";
 import { GuesthouseList } from "@/components/GuesthouseList";
 import ReviewList from "@/components/ReviewList";
-import { ReviewListItemProps } from "@/types/reviews";
 import Oops from "@/components/Oops";
-import { mockdata_reviews } from "./mock";
-import { useMyEmploymentList } from "@/hooks/owner/employment/useMyEmploymentList";
+import { useMyEmploymentList } from "@/hooks/owner/employment/useGetMyEmploymentList";
+import { useAllReviewsForGuesthouse } from "@/hooks/owner/review/useGetAllReviewsForGuesthouse";
 
 export default function HomePage() {
     const navigate = useNavigate();
 
     const { data } = useMyEmploymentList();
-
-    const [reviewData, setReviewData] = useState<ReviewListItemProps | null>(null);
-
-    useEffect(() => {
-        setReviewData(mockdata_reviews);
-    }, [data]);
+    const { data: reviewData } = useAllReviewsForGuesthouse("전체");
 
     useEffect(() => {
         const checkApplicationStatus = async () => {
@@ -65,7 +59,7 @@ export default function HomePage() {
                     <ReviewList
                         data={{
                             ...reviewData,
-                            allReviewInfoDTOS: reviewData.allReviewInfoDTOS.slice(0, 1),
+                            allReviewInfoDTOS: reviewData.allReviewInfoDTOS.slice(0, 2),
                         }}
                     />
                 ) : (

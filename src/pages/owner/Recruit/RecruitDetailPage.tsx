@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Text } from "@/styles/Text";
-import { useEmploymentDetail } from "@/hooks/owner/employment/useEmploymentDetail";
+import { useEmploymentDetail } from "@/hooks/owner/employment/useGetEmploymentDetail";
 import Header from "@/components/Header";
 import { useUserStore } from "@/store/useUserStore";
 import { Wrapper } from "@/styles/Wrapper";

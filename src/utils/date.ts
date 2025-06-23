@@ -35,7 +35,7 @@ export function calculateDDay(targetDateStr: string): string {
     const diffTime = target.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    return diffDays >= 0 ? `D - ${diffDays}` : "마감됨";
+    return diffDays > 0 ? `D - ${diffDays}` : "마감됨";
 }
 
 // 20251010 입력하면 10월 10일 형태로 바뀌도록

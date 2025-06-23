@@ -110,7 +110,7 @@ export const GlobalStyle = () => css`
         display: flex;
         justify-content: center;
         align-items: center;
-        font-family: "Pretendard-Regular";
+        font-family: "Pretendard", sans-serif;
         overflow: hidden;
         scroll-behavior: smooth;
         background-color: #efefef;
