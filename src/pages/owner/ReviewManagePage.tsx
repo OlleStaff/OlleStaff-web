@@ -2,12 +2,15 @@ import Header from "@/components/Header";
 import PageWrapper from "@/components/PageWrapper";
 import ReviewList from "@/components/ReviewList";
 import { OwnerTabTypes } from "@/constants/tabs";
-import { useAllReviewsForGuesthouse } from "@/hooks/owner/review/useGetAllReviewsForGuesthouse";
+import { useGetAllReviewsForGuesthouse } from "@/hooks/owner/review";
 import { fetchMinimumUserInfo } from "@/hooks/user/useFetchMinumumUserInfo";
 import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+type ReviewTab = OwnerTabTypes["REVIEW_MANAGE"];
+type ReviewFilter = "ALL" | "COMMENTED";
 
 export default function ReviewManagePage() {
     const navigate = useNavigate();
@@ -31,8 +34,14 @@ export default function ReviewManagePage() {
         getNickname();
     }, []);
 
-    const [filter, _setFilter] = useState<OwnerTabTypes["REVIEW_MANAGE"]>("전체");
-    const { data, isLoading, isError } = useAllReviewsForGuesthouse(filter);
+    const convertTabToFilter = (label: ReviewTab): ReviewFilter => {
+        return label === "전체" ? "ALL" : "COMMENTED";
+    };
+
+    const [tab, _setTab] = useState<ReviewTab>("전체");
+    const filter = convertTabToFilter(tab);
+
+    const { data, isLoading, isError } = useGetAllReviewsForGuesthouse(filter);
 
     if (isLoading) return <div>로딩 중...</div>;
     if (isError || !data) return <div>리뷰를 불러오는 데 실패했습니다.</div>;

@@ -9,6 +9,8 @@ import Input from "../Input";
 import ExpandableText from "../ExpandableText";
 import { usePostReComment } from "@/hooks/owner/review/usePostReComment";
 import ImageViewer from "../ImageViewer";
+import OptionButton from "../OptionButton";
+import { useDeleteReview, useDeleteReviewComment } from "@/hooks/owner/review";
 interface ReviewListItemProps {
     data: ReviewInfo;
     openedReviewId: number | null;
@@ -50,11 +52,26 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
         setViewerOpen(true);
     };
 
+    const { mutate: deleteReview } = useDeleteReview();
+    const handleDeleteReview = () => {
+        console.log("삭제 요청 URL:", `${import.meta.env.VITE_API_BASE_URL}/reviews/${reviewId}`);
+        if (!reviewId) {
+            console.error("reviewId가 없습니다!");
+            return;
+        }
+        deleteReview(reviewId);
+    };
+
+    const { mutate: deleteReviewComment } = useDeleteReviewComment();
+    const handleDeleteReviewComment = () => {
+        deleteReviewComment(reviewId);
+    };
+
     return (
         <Card>
             <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                 <Text.Body1_1>{title}</Text.Body1_1>
-                <img src="/icons/more.svg" alt="더보기" />
+                <OptionButton items={[{ label: "후기 삭제", onClick: handleDeleteReview }]} />
             </Wrapper.FlexBox>
 
             <ContentWrapper>
@@ -68,8 +85,8 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                     <>
                         <ImageList>
                             {images.map((imgUrl, idx) => (
-                                <div onClick={() => handleImageClick(idx)}>
-                                    <img key={idx} src={imgUrl} alt={`리뷰이미지${idx + 1}`} />
+                                <div key={idx} onClick={() => handleImageClick(idx)}>
+                                    <img src={imgUrl} alt={`리뷰이미지${idx + 1}`} />
                                 </div>
                             ))}
                         </ImageList>
@@ -122,7 +139,9 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
             {reviewComment && (
                 <CommentWrapper>
                     <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
-                        <Text.Body1_1>{hostNickName}</Text.Body1_1> <img src="/icons/more.svg" alt="더보기" />
+                        <Text.Body1_1>{hostNickName}</Text.Body1_1>
+
+                        <OptionButton items={[{ label: "댓글 삭제", onClick: handleDeleteReviewComment }]} />
                     </Wrapper.FlexBox>
                     <Text.Body2_1>
                         <ExpandableText text={reviewComment} maxLength={70} />
