@@ -3,17 +3,21 @@ import PageWrapper from "@/components/PageWrapper";
 import { Wrapper } from "@/styles/Wrapper";
 import { Text } from "@/styles/Text";
 import { Button } from "@/components/Button";
-import ReviewList from "@/components/ReviewList";
 import Oops from "@/components/Oops";
 import { useMyReviewList } from "@/hooks/staff/useMyReviewList";
 import { StaffTabTypes, TAB_LABELS } from "@/constants/tabs";
 import { useState } from "react";
 import TabSelector from "@/components/TabSelector";
 import theme from "@/styles/theme";
+import { SkeletonList } from "@/components/Skeleton/SkeletonList";
+import ReviewListItem from "@/components/ReviewList/ReviewListItem";
+import { ReviewInfo } from "@/types/reviews";
 
 export default function MyReviewsPage() {
     const [filter, setFilter] = useState<StaffTabTypes["MY_REVIEW"]>("1주일");
     const { data, isLoading } = useMyReviewList(filter);
+    const [openedReviewId, setOpenedReviewId] = useState<number | null>(null);
+    const reviews = data?.allReviewInfoDTOS ?? [];
 
     return (
         <>
@@ -47,11 +51,18 @@ export default function MyReviewsPage() {
                     variant="bold"
                 />
 
-                <Wrapper.FlexBox margin="20px 0">
+                <Wrapper.FlexBox margin="20px 0" direction="column" gap="20px">
                     {isLoading ? (
-                        <Text.Body1_1>로딩 중...</Text.Body1_1>
-                    ) : data?.allReviewInfoDTOS?.length > 0 ? (
-                        <ReviewList data={data} />
+                        <SkeletonList variant="review" count={3} />
+                    ) : reviews.length > 0 ? (
+                        reviews.map((review: ReviewInfo) => (
+                            <ReviewListItem
+                                key={review.reviewId}
+                                data={review}
+                                openedReviewId={openedReviewId}
+                                setOpenedReviewId={setOpenedReviewId}
+                            />
+                        ))
                     ) : (
                         <Oops message="작성된 나의 후기가 없어요." description="후기가 올라올 때까지 기다려주세요!" />
                     )}
