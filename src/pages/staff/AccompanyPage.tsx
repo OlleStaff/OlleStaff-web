@@ -6,6 +6,7 @@ import TabSelector from "@/components/TabSelector";
 import { useNavigate } from "react-router-dom";
 import { useAccompanyList } from "@/hooks/staff/useAccompanyList";
 import { StaffTabTypes, TAB_LABELS } from "@/constants/tabs";
+import { SkeletonList } from "@/components/Skeleton/SkeletonList";
 
 type CompanionTab = StaffTabTypes["COMPANION"]; // "전체", "인기순"
 
@@ -27,7 +28,7 @@ export default function AccompanyPage() {
                     onChange={value => setSort(value as CompanionTab)}
                     variant="bold"
                 />
-                {isLoading ? <div>로딩 중...</div> : <AccompanyList data={data || []} />}
+                {isLoading ? <SkeletonList variant="accompany" count={5} /> : <AccompanyList data={data || []} />}
             </PageWrapper>
         </>
     );
