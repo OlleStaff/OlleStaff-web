@@ -1,20 +1,23 @@
 import { Wrapper } from "@/styles/Wrapper";
 import { SkeletonAccompanyItem } from "./SkeletonAccompanyItem";
 import { SkeletonGuesthouseItem } from "./SkeletonGuesthouseItem";
+import DeferredComponent from "./base/DeferredComponent";
 
 interface SkeletonListProps {
     variant: "accompany" | "guesthouse";
     count?: number;
+    delay?: number;
 }
 
-export const SkeletonList = ({ variant, count = 5 }: SkeletonListProps) => {
+export const SkeletonList = ({ variant, count = 5, delay = 500 }: SkeletonListProps) => {
     const SkeletonItem = variant === "accompany" ? SkeletonAccompanyItem : SkeletonGuesthouseItem;
 
-    return (
+    const content = (
         <Wrapper.FlexBox direction="column" gap="12px">
             {Array.from({ length: count }).map((_, idx) => (
                 <SkeletonItem key={idx} />
             ))}
         </Wrapper.FlexBox>
     );
+    return <DeferredComponent delay={delay}>{content}</DeferredComponent>;
 };
