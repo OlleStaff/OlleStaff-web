@@ -11,13 +11,18 @@ import { isClosed } from "@/utils/date";
 import { useGetMyEmploymentList } from "@/hooks/owner/employment";
 import { useGetAllReviewsForGuesthouse } from "@/hooks/owner/review";
 
+import { SkeletonGuesthouseItem } from "@/components/Skeleton/SkeletonGuesthouseItem";
+import { SkeletonReviewItem } from "@/components/Skeleton/SkeletonReviewItem";
+import { SkeletonBox } from "@/components/Skeleton/base/SkeletonBox";
+
 export default function HomePage() {
+    const PREVIEW_COUNT = 2;
     const navigate = useNavigate();
 
-    const { data: employmentData } = useGetMyEmploymentList();
-    const { data: reviewData } = useGetAllReviewsForGuesthouse("ALL");
+    const { data: employmentData, isLoading: isEmploymentLoading } = useGetMyEmploymentList();
+    const { data: reviewData, isLoading: isReviewLoading } = useGetAllReviewsForGuesthouse("ALL");
 
-    const isClosedRecruit = employmentData?.forEach(item => isClosed(item.recruitmentEnd));
+    const isAllClosed = employmentData?.every(item => isClosed(item.recruitmentEnd));
 
     useEffect(() => {
         const checkApplicationStatus = async () => {
@@ -42,43 +47,49 @@ export default function HomePage() {
 
     return (
         <Wrapper.FlexBox direction="column" gap="32px">
-            {employmentData && employmentData.length > 0 && (
-                <PartnerRecruitmentCard data={employmentData.filter(item => !item.closed)} />
+            {isEmploymentLoading ? (
+                <SkeletonBox width="100%" height="185px" />
+            ) : (
+                employmentData &&
+                employmentData.length > 0 && (
+                    <PartnerRecruitmentCard data={employmentData.filter(item => !item.closed)} />
+                )
             )}
-
             <Wrapper.FlexBox direction="column" gap="16px">
-                {employmentData && employmentData.length > 0 && !isClosedRecruit ? (
+                <SectionTitle title="진행 중인 나의 공고" link="/owner/recruitments-ongoing" />
+                {isEmploymentLoading ? (
                     <>
-                        <SectionTitle title="진행 중인 나의 공고" link="/owner/recruitments-ongoing" />
-                        <GuesthouseList data={employmentData.filter(item => !item.closed).slice(0, 2)} />
+                        {Array.from({ length: PREVIEW_COUNT }).map((_, idx) => (
+                            <SkeletonGuesthouseItem key={idx} />
+                        ))}
                     </>
+                ) : employmentData && employmentData.length > 0 && !isAllClosed ? (
+                    <GuesthouseList data={employmentData.filter(item => !item.closed).slice(0, PREVIEW_COUNT)} />
                 ) : (
-                    <>
-                        <SectionTitle title="진행 중인 나의 공고" />
-                        <Oops
-                            message="작성된 나의 공고가 없어요."
-                            description={`홈 > 게시글 작성하기로\n새로운 공고를 등록해 보세요!`}
-                        />
-                    </>
+                    <Oops
+                        message="작성된 나의 공고가 없어요."
+                        description={`홈 > 게시글 작성하기로\n새로운 공고를 등록해 보세요!`}
+                    />
                 )}
             </Wrapper.FlexBox>
 
             <Wrapper.FlexBox direction="column" gap="16px">
-                {reviewData && reviewData.allReviewInfoDTOS.length > 0 ? (
+                <SectionTitle title="작성된 후기" link="/owner/userinfo/reviews" />
+                {isReviewLoading ? (
                     <>
-                        <SectionTitle title="작성된 후기" link="/owner/userinfo/reviews" />
-                        <ReviewList
-                            data={{
-                                ...reviewData,
-                                allReviewInfoDTOS: reviewData.allReviewInfoDTOS.slice(0, 2),
-                            }}
-                        />
+                        {Array.from({ length: PREVIEW_COUNT }).map((_, idx) => (
+                            <SkeletonReviewItem key={idx} />
+                        ))}
                     </>
+                ) : reviewData && reviewData.allReviewInfoDTOS.length > 0 ? (
+                    <ReviewList
+                        data={{
+                            ...reviewData,
+                            allReviewInfoDTOS: reviewData.allReviewInfoDTOS.slice(0, PREVIEW_COUNT),
+                        }}
+                    />
                 ) : (
-                    <>
-                        <SectionTitle title="작성된 후기" />
-                        <Oops message="작성된 나의 후기가 없어요." description="후기가 올라올 때까지 기다려주세요!" />
-                    </>
+                    <Oops message="작성된 나의 후기가 없어요." description="후기가 올라올 때까지 기다려주세요!" />
                 )}
             </Wrapper.FlexBox>
         </Wrapper.FlexBox>
