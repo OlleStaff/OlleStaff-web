@@ -99,7 +99,7 @@ export const GuesthouseListItem = ({
     );
 };
 
-const Card = styled.div`
+export const Card = styled.div`
     display: flex;
     gap: 12px;
     padding: 13px;

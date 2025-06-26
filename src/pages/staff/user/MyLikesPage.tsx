@@ -1,6 +1,7 @@
 import { AccompanyList } from "@/components/AccompanyList";
 import Header from "@/components/Header";
 import PageWrapper from "@/components/PageWrapper";
+import { SkeletonList } from "@/components/Skeleton/SkeletonList";
 import TabSelector from "@/components/TabSelector";
 import { StaffTabTypes, TAB_LABELS } from "@/constants/tabs";
 import { useMyLikeAccompany } from "@/hooks/staff/useMyLikeAccompny";
@@ -50,7 +51,11 @@ export default function MyLikesPage() {
                 )}
 
                 {filter === "동행" &&
-                    (accompanyLoading ? <div>로딩 중</div> : <AccompanyList data={accompanyData || []} />)}
+                    (accompanyLoading ? (
+                        <SkeletonList variant="accompany" count={5} />
+                    ) : (
+                        <AccompanyList data={accompanyData || []} />
+                    ))}
 
                 {filter === "공고" && (
                     <div>
