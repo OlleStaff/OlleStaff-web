@@ -3,20 +3,15 @@ import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
 import theme from "@/styles/theme";
 import { Style as RadioStyle } from "@/components/RadioButton";
+import { ChatRoomPreview } from "../types/common";
+import { timeAgo } from "@/utils/date";
 
 interface ChatListItemProps {
-    room: {
-        id: number;
-        name: string;
-        lastMessage: string;
-        time: string;
-        unreadCount: number;
-        profileImage: string;
-    };
+    room: ChatRoomPreview;
     onEditMode: boolean;
     isSelected?: boolean;
     onSelectToggle?: () => void;
-    onClick?: () => void;
+    onClick: () => void;
 }
 
 export default function ChatListItem({ room, onEditMode, onClick, isSelected, onSelectToggle }: ChatListItemProps) {
@@ -28,11 +23,11 @@ export default function ChatListItem({ room, onEditMode, onClick, isSelected, on
                     <RadioStyle.RadioCircle>{isSelected && <RadioStyle.RadioInnerCircle />}</RadioStyle.RadioCircle>
                 </CheckboxWrapper>
             )}
-            <ProfileImg src={room.profileImage} alt="프로필" />
+            <ProfileImg src={room.image} alt="프로필" />
             <Wrapper.FlexBox direction="column" gap="8px" style={{ minWidth: 0 }}>
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
-                    <Text.Title4>{room.name}</Text.Title4>
-                    <Text.Body3_1 color="Gray4">{room.time}</Text.Body3_1>
+                    <Text.Title4>{room.title}</Text.Title4>
+                    <Text.Body3_1 color="Gray4">{timeAgo(room.timestamp)}</Text.Body3_1>
                 </Wrapper.FlexBox>
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                     <LastMessage>{room.lastMessage}</LastMessage>

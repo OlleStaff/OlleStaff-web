@@ -6,6 +6,14 @@ import { useState } from "react";
 import theme from "@/styles/theme";
 import { Wrapper } from "@/styles/Wrapper";
 import PageWrapper from "@/components/PageWrapper";
+import { ChatRoomDetail } from "../types/common";
+
+const mockChatRoom: ChatRoomDetail = {
+    id: 1,
+    title: "일등 게하",
+    detail: "🏠 결 게스트하우스",
+    image: "/icons/defaultUser.svg",
+};
 
 export default function ChatRoomPage() {
     const { chatRoomId } = useParams();
@@ -20,7 +28,9 @@ export default function ChatRoomPage() {
                     justifyContent="space-between"
                     height={`calc(100vh - ${theme.size.HeaderHeight})`}
                 >
-                    <ProfileSection>프로필 {chatRoomId}</ProfileSection>
+                    <ProfileSection>
+                        프로필 {chatRoomId} {mockChatRoom.title} {mockChatRoom.detail}
+                    </ProfileSection>
                     <ChatScrollArea>스크롤 되는 메시지영역</ChatScrollArea>
                     <InputWrapper>
                         <Input
