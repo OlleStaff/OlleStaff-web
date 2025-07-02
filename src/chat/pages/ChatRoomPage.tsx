@@ -7,6 +7,7 @@ import theme from "@/styles/theme";
 import { Wrapper } from "@/styles/Wrapper";
 import PageWrapper from "@/components/PageWrapper";
 import { ChatRoomDetail } from "../types/common";
+import { Text } from "@/styles/Text";
 
 const mockChatRoom: ChatRoomDetail = {
     id: 1,
@@ -29,9 +30,15 @@ export default function ChatRoomPage() {
                     height={`calc(100vh - ${theme.size.HeaderHeight})`}
                 >
                     <ProfileSection>
-                        프로필 {chatRoomId} {mockChatRoom.title} {mockChatRoom.detail}
+                        <Wrapper.FlexBox gap="8px">
+                            <ProfileImage src={mockChatRoom.image} />
+                            <Wrapper.FlexBox direction="column" gap="4px">
+                                <Text.Body2_1>{mockChatRoom.title}</Text.Body2_1>
+                                <Text.Body2_1 color="Gray4">{mockChatRoom.detail}</Text.Body2_1>
+                            </Wrapper.FlexBox>
+                        </Wrapper.FlexBox>
                     </ProfileSection>
-                    <ChatScrollArea>스크롤 되는 메시지영역</ChatScrollArea>
+                    <ChatScrollArea>스크롤 되는 메시지영역 {chatRoomId}</ChatScrollArea>
                     <InputWrapper>
                         <Input
                             value={message}
@@ -51,8 +58,16 @@ export default function ChatRoomPage() {
 }
 
 const ProfileSection = styled.div`
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid ${theme.color.Gray1};
     padding: 16px 0;
+    margin-bottom: 10px;
+`;
+
+const ProfileImage = styled.img`
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
+    object-fit: cover;
 `;
 
 const ChatScrollArea = styled.div`
