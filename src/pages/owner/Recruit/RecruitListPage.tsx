@@ -13,6 +13,7 @@ import { useDeleteEmployment } from "@/hooks/owner/employment/useDeleteEmploymen
 import { useNavigate } from "react-router-dom";
 import Modal from "@/components/Modal";
 import { useGetMyEmploymentList } from "@/hooks/owner/employment";
+import { SkeletonList } from "@/components/Skeleton/SkeletonList";
 
 type ModalType = "confirm" | "success" | null;
 
@@ -20,7 +21,7 @@ export default function RecruitListPage() {
     const [sort, setSort] = useState<OwnerTabTypes["MY_RECRUIT"]>("전체");
     const [isEditTextClicked, setIsEditTextClicked] = useState(false);
 
-    const { data } = useGetMyEmploymentList();
+    const { data, isLoading } = useGetMyEmploymentList();
 
     const filteredRecruits = useMemo(() => {
         if (!data) return [];
@@ -138,7 +139,9 @@ export default function RecruitListPage() {
                 )}
 
                 <Wrapper.FlexBox direction="column" gap="20px">
-                    {filteredRecruits.length > 0 ? (
+                    {isLoading ? (
+                        <SkeletonList variant="guesthouse" count={12} />
+                    ) : filteredRecruits.length > 0 ? (
                         filteredRecruits.map(item => (
                             <GuesthouseListItem
                                 key={item.employmentId}
