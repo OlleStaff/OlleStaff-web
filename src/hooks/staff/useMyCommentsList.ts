@@ -1,18 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useMyCommentsList = () => {
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: ["myCommentsList"],
-        queryFn: async () => {
-            const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/accompanies/comment-reply`, {
-                params: {
-                    cursor: null,
-                    size: 20,
-                },
-                withCredentials: true,
-            });
-            return data.data.accompanies;
+        queryFn: async ({ pageParam = null }) => {
+            const { data } = await axios.get(
+                `${import.meta.env.VITE_API_BASE_URL}/accompanies/comment-reply`,
+                {
+                    params: { cursor: pageParam, size: 6 },
+                    withCredentials: true,
+                }
+            );
+            return data.data;
         },
+        initialPageParam: null,
+        getNextPageParam: (lastPage) =>
+            lastPage.hasNext ? lastPage.cursor : null,
     });
 };
