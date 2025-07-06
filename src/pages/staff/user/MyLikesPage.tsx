@@ -12,7 +12,14 @@ export default function MyLikesPage() {
     const [filter, setFilter] = useState<StaffTabTypes["SAVED_POSTS"]>("공고");
     const [sfilter, ssetFilter] = useState<StaffTabTypes["SEARCH"]>("진행중인 공고");
 
-    const { data: accompanyData, isLoading: accompanyLoading, refetch: refetchAccompany } = useMyLikeAccompany();
+    const {
+        data: accompanyData,
+        isLoading: accompanyLoading,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        refetch: refetchAccompany,
+    } = useMyLikeAccompany();
 
     const { data: openRecruitData, refetch: refetchOpenRecruit } = useMyLikeRecruitOpen();
 
@@ -29,6 +36,8 @@ export default function MyLikesPage() {
             }
         }
     }, [filter, sfilter]);
+
+    const items = accompanyData?.pages ? accompanyData.pages.flatMap(page => page.accompanies) : [];
 
     return (
         <>
@@ -54,7 +63,12 @@ export default function MyLikesPage() {
                     (accompanyLoading ? (
                         <SkeletonList variant="accompany" count={5} />
                     ) : (
-                        <AccompanyList data={accompanyData || []} />
+                        <AccompanyList
+                            data={items}
+                            fetchNextPage={fetchNextPage}
+                            hasNextPage={hasNextPage}
+                            isFetchingNextPage={isFetchingNextPage}
+                        />
                     ))}
 
                 {filter === "공고" && (
