@@ -53,14 +53,10 @@ export default function HomePage() {
     const navigate = useNavigate();
     const [sort, setSort] = useState<SearchTab>("진행중인 공고");
 
-    const {
-        data: searchResults = [],
-        isLoading,
-        isError,
-    } = useEmploymentAll({
+    const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useEmploymentAll({
         type: sort === "마감공고" ? "END" : "IN_PROGRESS",
         search: debouncedSearch || undefined,
-        pageSize: 10,
+        pageSize: 6,
         enabled: !!debouncedSearch,
     });
 
@@ -87,6 +83,7 @@ export default function HomePage() {
     }, [debouncedSearch]);
 
     const isDebouncing = searchValue !== debouncedSearch;
+    const searchResults = data?.pages ? data.pages.flatMap(page => page.items) : [];
 
     return (
         <>
@@ -118,7 +115,12 @@ export default function HomePage() {
                                 description="새로운 검색어로 다시 시도해보세요."
                             />
                         ) : (
-                            <GuesthouseList data={searchResults} />
+                            <GuesthouseList
+                                data={searchResults}
+                                fetchNextPage={fetchNextPage}
+                                hasNextPage={hasNextPage}
+                                isFetchingNextPage={isFetchingNextPage}
+                            />
                         )}
                     </Section>
                 ) : (
