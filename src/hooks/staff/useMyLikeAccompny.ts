@@ -1,18 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useMyLikeAccompany = () => {
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: ["myLikeAccompany"],
-        queryFn: async () => {
+        queryFn: async ({ pageParam = null }) => {
             const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/accompanies/like`, {
-                params: {
-                    cursor: null,
-                    size: 20,
-                },
+                params: { cursor: pageParam, size: 6 },
                 withCredentials: true,
             });
-            return data.data.accompanies;
+            return data.data;
         },
+        initialPageParam: null,
+        getNextPageParam: lastPage => (lastPage.hasNext ? lastPage.cursor : null),
     });
 };
