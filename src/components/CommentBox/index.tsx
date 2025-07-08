@@ -5,18 +5,20 @@ import CommentInput from "./CommentInput";
 import ReplyingNotice from "./ReplyingNotice";
 import { Text } from "@/styles/Text";
 import { useCommentList } from "./useCommentQuery";
+import { SkeletonList } from "../Skeleton/SkeletonList";
 
 export const CommentBox = ({ accompanyId, commentCount }: { accompanyId: number; commentCount: number }) => {
     const { openReplies, toggleReplies, startReplyTo, activeReply, cancelReply } = useCommentState();
-    const { data: comments = [], isLoading } = useCommentList(accompanyId);
+    const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useCommentList(accompanyId);
+
+    const comments = data?.pages ? data.pages.flatMap(page => page.items) : [];
 
     return (
         <>
             <Text.Body1_1>댓글 {commentCount}</Text.Body1_1>
             <ScrollableArea>
                 {isLoading ? (
-                    // TODO: 추후 스켈레톤 적용
-                    <div>댓글 불러오는 중</div>
+                    <SkeletonList variant="comment" count={3} />
                 ) : (
                     <CommentList
                         comments={comments}
@@ -24,6 +26,9 @@ export const CommentBox = ({ accompanyId, commentCount }: { accompanyId: number;
                         onToggleReplies={toggleReplies}
                         onReplyClick={startReplyTo}
                         accompanyId={accompanyId}
+                        fetchNextPage={fetchNextPage}
+                        hasNextPage={hasNextPage}
+                        isFetchingNextPage={isFetchingNextPage}
                     />
                 )}
             </ScrollableArea>

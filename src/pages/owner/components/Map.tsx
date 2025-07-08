@@ -44,7 +44,7 @@ const MapComponent = ({ latitude, longitude }: MapComponentProps) => {
         } else {
             const script = document.createElement("script");
             script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${
-                import.meta.env.VITE_KAKAO_JS_KEY
+                import.meta.env.VITE_KAKAO_CLIENT_ID
             }&autoload=false&libraries=services`;
             script.async = true;
             script.onload = () => {

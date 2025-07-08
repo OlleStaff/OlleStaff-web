@@ -44,7 +44,7 @@ export default function LocationSelector({ locationName, onChange, required }: L
     useEffect(() => {
         if (!window.kakao || !window.kakao.maps) {
             const script = document.createElement("script");
-            script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_JS_KEY}&autoload=false&libraries=services`;
+            script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_CLIENT_ID}&autoload=false&libraries=services`;
             script.async = true;
             script.onload = () => {
                 window.kakao.maps.load(() => {
