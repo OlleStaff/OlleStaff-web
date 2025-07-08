@@ -2,29 +2,33 @@ import styled from "@emotion/styled";
 import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
 import theme from "@/styles/theme";
+import { Style as RadioStyle } from "@/components/RadioButton";
+import { ChatRoomPreview } from "../types/common";
+import { timeAgo } from "@/utils/date";
 
 interface ChatListItemProps {
-    room: {
-        id: number;
-        name: string;
-        lastMessage: string;
-        time: string;
-        unreadCount: number;
-        profileImage: string;
-    };
-    onClick?: () => void;
+    room: ChatRoomPreview;
+    onEditMode: boolean;
+    isSelected?: boolean;
+    onSelectToggle?: () => void;
+    onClick: () => void;
 }
 
-export default function ChatListItem({ room, onClick }: ChatListItemProps) {
+export default function ChatListItem({ room, onEditMode, onClick, isSelected, onSelectToggle }: ChatListItemProps) {
     return (
-        <ItemContainer onClick={onClick}>
-            <ProfileImg src={room.profileImage} alt="프로필" />
+        <ItemContainer onClick={onEditMode ? onSelectToggle : onClick}>
+            {onEditMode && (
+                <CheckboxWrapper onClick={e => e.stopPropagation()}>
+                    <CheckboxInput type="checkbox" checked={isSelected} onChange={onSelectToggle} />
+                    <RadioStyle.RadioCircle>{isSelected && <RadioStyle.RadioInnerCircle />}</RadioStyle.RadioCircle>
+                </CheckboxWrapper>
+            )}
+            <ProfileImg src={room.image} alt="프로필" />
             <Wrapper.FlexBox direction="column" gap="8px" style={{ minWidth: 0 }}>
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
-                    <Text.Title4>{room.name}</Text.Title4>
-                    <Text.Body3_1 color="Gray4">{room.time}</Text.Body3_1>
+                    <Text.Title4>{room.title}</Text.Title4>
+                    <Text.Body3_1 color="Gray4">{timeAgo(room.timestamp)}</Text.Body3_1>
                 </Wrapper.FlexBox>
-
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                     <LastMessage>{room.lastMessage}</LastMessage>
                     {room.unreadCount > 0 && <Unread>{room.unreadCount}</Unread>}
@@ -40,6 +44,20 @@ const ItemContainer = styled(Wrapper.FlexBox)`
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #f2f2f2;
+`;
+
+const CheckboxWrapper = styled.label`
+    position: relative;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+`;
+
+const CheckboxInput = styled.input`
+    display: none;
 `;
 
 const ProfileImg = styled.img`

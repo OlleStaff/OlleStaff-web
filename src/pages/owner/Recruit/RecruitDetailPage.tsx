@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Text } from "@/styles/Text";
-import { useEmploymentDetail } from "@/hooks/owner/employment/useEmploymentDetail";
 import Header from "@/components/Header";
 import { useUserStore } from "@/store/useUserStore";
 import { Wrapper } from "@/styles/Wrapper";
@@ -14,6 +13,7 @@ import { useState } from "react";
 import ImageViewer from "@/components/ImageViewer";
 import MapComponent from "../components/Map";
 import ImageCarousel from "@/components/ImageCarousel";
+import { useGetEmploymentDetail } from "@/hooks/owner/employment";
 
 export default function RecruitDetailPage() {
     const navigate = useNavigate();
@@ -26,7 +26,7 @@ export default function RecruitDetailPage() {
     };
     const userType = useUserStore(state => state.type);
     const { employmentId } = useParams<{ employmentId: string }>();
-    const { data: detail, isLoading, error } = useEmploymentDetail(Number(employmentId));
+    const { data: detail, isLoading, error } = useGetEmploymentDetail(Number(employmentId));
     if (!detail?.data || isLoading) return <p>불러오는 중...</p>;
     if (error) return <p>불러오기 실패</p>;
     const {

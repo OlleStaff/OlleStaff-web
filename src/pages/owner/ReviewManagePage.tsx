@@ -1,23 +1,20 @@
 import Header from "@/components/Header";
-import Oops from "@/components/Oops";
 import PageWrapper from "@/components/PageWrapper";
 import ReviewList from "@/components/ReviewList";
 import { OwnerTabTypes } from "@/constants/tabs";
-import { useAllReviewsForGuesthouse } from "@/hooks/owner/review/useAllReviewsForGuesthouse";
+import { useGetAllReviewsForGuesthouse } from "@/hooks/owner/review";
 import { fetchMinimumUserInfo } from "@/hooks/user/useFetchMinumumUserInfo";
 import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-type ReviewTab = OwnerTabTypes["REVIEW_MANAGE"]; // "전체" | "완료됨"
+type ReviewTab = OwnerTabTypes["REVIEW_MANAGE"];
+type ReviewFilter = "ALL" | "COMMENTED";
 
 export default function ReviewManagePage() {
     const navigate = useNavigate();
     const [nickname, setNickname] = useState("");
-
-    const [filter, _setFilter] = useState<ReviewTab>("전체");
-    const reviewType = filter === "전체" ? "ALL" : "COMMENTED";
 
     useEffect(() => {
         const getNickname = async () => {
@@ -37,9 +34,14 @@ export default function ReviewManagePage() {
         getNickname();
     }, []);
 
-    const { data, isLoading, isError } = useAllReviewsForGuesthouse(reviewType);
+    const convertTabToFilter = (label: ReviewTab): ReviewFilter => {
+        return label === "전체" ? "ALL" : "COMMENTED";
+    };
 
-    const hasReview = (data?.countReview ?? 0) > 0 && (data?.allReviewInfoDTOS?.length ?? 0) > 0;
+    const [tab, _setTab] = useState<ReviewTab>("전체");
+    const filter = convertTabToFilter(tab);
+
+    const { data, isLoading, isError } = useGetAllReviewsForGuesthouse(filter);
 
     if (isLoading) return <div>로딩 중...</div>;
     if (isError || !data) return <div>리뷰를 불러오는 데 실패했습니다.</div>;
@@ -59,16 +61,7 @@ export default function ReviewManagePage() {
                         </Wrapper.FlexBox>
                     </Wrapper.FlexBox>
 
-                    {hasReview ? (
-                        <ReviewList data={data} />
-                    ) : (
-                        <Wrapper.FlexBox gap="12px" alignItems="center" direction="column" padding="50% 0">
-                            <Oops
-                                message="작성된 나의 후기가 없어요."
-                                description="후기가 올라올 때까지 기다려주세요!"
-                            />
-                        </Wrapper.FlexBox>
-                    )}
+                    <ReviewList data={data} />
                 </Wrapper.FlexBox>
             </PageWrapper>
         </>

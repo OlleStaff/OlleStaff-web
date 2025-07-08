@@ -6,7 +6,7 @@ import { truncateText } from "@/utils/truncateText";
 import { Wrapper } from "@/styles/Wrapper";
 
 interface Props extends GuesthouseListItemProps {
-    isTrashIconActive?: boolean;
+    isEditActive?: boolean;
     isChecked?: boolean;
     onCheckToggle?: (employmentId: number) => void;
 }
@@ -21,14 +21,14 @@ export const GuesthouseListItem = ({
     personNum,
     sex,
     closed = false,
-    isTrashIconActive = false,
+    isEditActive = false,
     isChecked = false,
     onCheckToggle,
 }: Props) => {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        if (!isTrashIconActive) {
+        if (!isEditActive) {
             navigate(`/guesthouse/${employmentId}`);
         }
     };
@@ -40,7 +40,7 @@ export const GuesthouseListItem = ({
 
     return (
         <Wrapper.FlexBox alignItems="center" gap="10px">
-            {isTrashIconActive && (
+            {isEditActive && (
                 <CheckBoxWrapper onClick={handleCheckToggle}>
                     <img src={isChecked ? "/icons/circle.svg" : "/icons/emptyCircle.svg"} alt="선택 체크박스" />
                 </CheckBoxWrapper>
@@ -54,9 +54,7 @@ export const GuesthouseListItem = ({
                     <TagWrapper>
                         {hashtagName.slice(0, 2).map(tag => (
                             <Tag key={tag}>
-                                <Text.Body3_1 color="Gray4">
-                                    {truncateText(tag, isTrashIconActive ? 2 : 4)}
-                                </Text.Body3_1>
+                                <Text.Body3_1 color="Gray4">{truncateText(tag, isEditActive ? 2 : 4)}</Text.Body3_1>
                             </Tag>
                         ))}
                         {hashtagName.length > 2 && (
@@ -66,8 +64,8 @@ export const GuesthouseListItem = ({
                         )}
                     </TagWrapper>
                     <Wrapper.FlexBox direction="column">
-                        <Text.Title3_1>{truncateText(title, isTrashIconActive ? 9 : 11)}</Text.Title3_1>
-                        <Text.Body3_1 color="Gray4">{truncateText(content, isTrashIconActive ? 15 : 18)}</Text.Body3_1>
+                        <Text.Title3_1>{truncateText(title, isEditActive ? 9 : 11)}</Text.Title3_1>
+                        <Text.Body3_1 color="Gray4">{truncateText(content, isEditActive ? 15 : 18)}</Text.Body3_1>
                     </Wrapper.FlexBox>
                     <Footer>
                         {closed ? (
@@ -82,7 +80,7 @@ export const GuesthouseListItem = ({
                                 <IconText>
                                     <Icon src="/icons/locationIcon.svg" />
                                     <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
-                                        {truncateText(locationName, isTrashIconActive ? 5 : 9)}
+                                        {truncateText(locationName, isEditActive ? 5 : 9)}
                                     </Text.Body3>
                                 </IconText>
                                 <IconText>
@@ -101,7 +99,7 @@ export const GuesthouseListItem = ({
     );
 };
 
-const Card = styled.div`
+export const Card = styled.div`
     display: flex;
     gap: 12px;
     padding: 13px;

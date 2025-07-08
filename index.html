@@ -10,10 +10,22 @@
         <meta property="og:description" content="제주 게스트하우스와 스텝을 연결하는 플랫폼" />
         <meta property="og:image" content="/images/logo_text.png" />
         <meta property="og:url" content="https://ollestaff.com" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+        />
+
         <!-- PWA 아이폰 설정 -->
         <link rel="apple-touch-icon" href="/images/logo_192.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+        <!-- Amplitude 설정 -->
+        <script src="https://cdn.amplitude.com/script/8bf234b45cea56bcbed5bff9c4b72530.js"></script>
+        <script>
+            window.amplitude.add(window.sessionReplay.plugin({ sampleRate: 1 }));
+            window.amplitude.init("8bf234b45cea56bcbed5bff9c4b72530", { fetchRemoteConfig: true, autocapture: false });
+        </script>
     </head>
     <body>
         <div id="root"></div>

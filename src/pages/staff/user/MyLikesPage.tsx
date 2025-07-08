@@ -1,6 +1,7 @@
 import { AccompanyList } from "@/components/AccompanyList";
 import Header from "@/components/Header";
 import PageWrapper from "@/components/PageWrapper";
+import { SkeletonList } from "@/components/Skeleton/SkeletonList";
 import TabSelector from "@/components/TabSelector";
 import { StaffTabTypes, TAB_LABELS } from "@/constants/tabs";
 import { useMyLikeAccompany } from "@/hooks/staff/useMyLikeAccompny";
@@ -11,7 +12,14 @@ export default function MyLikesPage() {
     const [filter, setFilter] = useState<StaffTabTypes["SAVED_POSTS"]>("공고");
     const [sfilter, ssetFilter] = useState<StaffTabTypes["SEARCH"]>("진행중인 공고");
 
-    const { data: accompanyData, isLoading: accompanyLoading, refetch: refetchAccompany } = useMyLikeAccompany();
+    const {
+        data: accompanyData,
+        isLoading: accompanyLoading,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        refetch: refetchAccompany,
+    } = useMyLikeAccompany();
 
     const { data: openRecruitData, refetch: refetchOpenRecruit } = useMyLikeRecruitOpen();
 
@@ -28,6 +36,8 @@ export default function MyLikesPage() {
             }
         }
     }, [filter, sfilter]);
+
+    const items = accompanyData?.pages ? accompanyData.pages.flatMap(page => page.accompanies) : [];
 
     return (
         <>
@@ -50,7 +60,16 @@ export default function MyLikesPage() {
                 )}
 
                 {filter === "동행" &&
-                    (accompanyLoading ? <div>로딩 중</div> : <AccompanyList data={accompanyData || []} />)}
+                    (accompanyLoading ? (
+                        <SkeletonList variant="accompany" count={5} />
+                    ) : (
+                        <AccompanyList
+                            data={items}
+                            fetchNextPage={fetchNextPage}
+                            hasNextPage={hasNextPage}
+                            isFetchingNextPage={isFetchingNextPage}
+                        />
+                    ))}
 
                 {filter === "공고" && (
                     <div>

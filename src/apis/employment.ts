@@ -47,6 +47,7 @@ export const EmploymentApi = {
             throw error; // 필요 시 상위 컴포넌트에서 에러 처리 가능하도록
         }
     },
+    // PUT: 나의 공고 수정
     putEmployment: async (formData: EmploymentPutProps, imageFiles: File[]) => {
         const payload = new FormData();
 
@@ -70,10 +71,11 @@ export const EmploymentApi = {
         return res.data;
     },
 
-    // deleteEmployment: async (employmentId: number) =>
-    //     await axios
-    //         .delete(`${import.meta.env.VITE_API_BASE_URL}/employments/${employmentId}`, {
-    //             withCredentials: true,
-    //         })
-    //         .then(res => res.data),
+    deleteEmployment: async (employmentIds: number[]) =>
+        await axios
+            .delete(`${import.meta.env.VITE_API_BASE_URL}/employments`, {
+                withCredentials: true,
+                data: employmentIds,
+            })
+            .then(res => res.data),
 };

@@ -14,6 +14,7 @@ import { GuesthouseList } from "@/components/GuesthouseList";
 import { useDebounce } from "@/hooks/useDebounce";
 import TabSelector from "@/components/TabSelector";
 import { StaffTabTypes, TAB_LABELS } from "@/constants/tabs";
+import { SkeletonList } from "@/components/Skeleton/SkeletonList";
 
 const mockAccompanyData = [
     {
@@ -52,14 +53,10 @@ export default function HomePage() {
     const navigate = useNavigate();
     const [sort, setSort] = useState<SearchTab>("진행중인 공고");
 
-    const {
-        data: searchResults = [],
-        isLoading,
-        isError,
-    } = useEmploymentAll({
+    const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useEmploymentAll({
         type: sort === "마감공고" ? "END" : "IN_PROGRESS",
         search: debouncedSearch || undefined,
-        pageSize: 10,
+        pageSize: 6,
         enabled: !!debouncedSearch,
     });
 
@@ -85,6 +82,9 @@ export default function HomePage() {
         }
     }, [debouncedSearch]);
 
+    const isDebouncing = searchValue !== debouncedSearch;
+    const searchResults = data?.pages ? data.pages.flatMap(page => page.items) : [];
+
     return (
         <>
             <PageWrapper>
@@ -105,19 +105,22 @@ export default function HomePage() {
                             onChange={value => setSort(value as SearchTab)}
                             variant="bold"
                         ></TabSelector>
-                        {isLoading ? (
-                            <p>검색 중...</p>
+                        {isDebouncing || isLoading ? (
+                            <SkeletonList variant="guesthouse" count={5} />
                         ) : isError ? (
-                            <p>에러가 발생했습니다.</p>
+                            <Oops message="에러가 발생했어요" description="다시 시도해주세요" />
                         ) : searchResults.length === 0 ? (
                             <Oops
                                 message={`"${searchValue}"에 대한 검색 결과가 없습니다.`}
                                 description="새로운 검색어로 다시 시도해보세요."
                             />
                         ) : (
-                            <>
-                                <GuesthouseList data={searchResults} />
-                            </>
+                            <GuesthouseList
+                                data={searchResults}
+                                fetchNextPage={fetchNextPage}
+                                hasNextPage={hasNextPage}
+                                isFetchingNextPage={isFetchingNextPage}
+                            />
                         )}
                     </Section>
                 ) : (

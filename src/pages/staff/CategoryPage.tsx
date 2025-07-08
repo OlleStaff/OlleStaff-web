@@ -9,6 +9,7 @@ import { categoryMap } from "@/constants/categories";
 import { useEmploymentAll } from "@/hooks/staff/useEmploymentAll";
 import Oops from "@/components/Oops";
 import { Wrapper } from "@/styles/Wrapper";
+import { SkeletonList } from "@/components/Skeleton/SkeletonList";
 
 type SearchTab = StaffTabTypes["SEARCH"]; // "진행중인 공고", "마감공고"
 
@@ -18,15 +19,13 @@ export default function CategoryPage() {
     const label = params.get("label") || "";
     const category = categoryMap[label];
 
-    const {
-        data = [],
-        isLoading,
-        isError,
-    } = useEmploymentAll({
+    const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useEmploymentAll({
         type: sort === "마감공고" ? "END" : "IN_PROGRESS",
         category,
-        pageSize: 10,
+        pageSize: 6,
     });
+
+    const items = data?.pages ? data.pages.flatMap(page => page.items) : [];
 
     return (
         <>
@@ -39,10 +38,10 @@ export default function CategoryPage() {
                     variant="bold"
                 />
                 {isLoading ? (
-                    <p>로딩중...</p>
+                    <SkeletonList variant="guesthouse" count={5} />
                 ) : isError ? (
-                    <p>에러가 발생했습니다. 다시 시도해주세요.</p>
-                ) : data.length === 0 ? (
+                    <Oops message="에러가 발생했어요" description="다시 시도해주세요"></Oops>
+                ) : items.length === 0 ? (
                     <Wrapper.FlexBox gap="12px" alignItems="center" direction="column" padding="50% 0">
                         <Oops
                             message="등록된 공고가 없어요."
@@ -50,7 +49,12 @@ export default function CategoryPage() {
                         />
                     </Wrapper.FlexBox>
                 ) : (
-                    <GuesthouseList data={data} />
+                    <GuesthouseList
+                        data={items}
+                        fetchNextPage={fetchNextPage}
+                        hasNextPage={hasNextPage}
+                        isFetchingNextPage={isFetchingNextPage}
+                    />
                 )}
             </PageWrapper>
         </>

@@ -1,19 +1,36 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { CommentType, ReplyType } from "@/types/comment";
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
+interface LastPage {
+    items: CommentType[];
+    nextCursor: number | null;
+    hasNext: boolean;
+}
+
 export const useCommentList = (accompanyId: number) => {
-    return useQuery<CommentType[]>({
+    return useInfiniteQuery<LastPage>({
         queryKey: ["comments", accompanyId],
-        queryFn: async () => {
+        queryFn: async ({ pageParam = null }) => {
             const res = await axios.get(`${API}/accompanies/${accompanyId}/comments`, {
-                params: { cursor: null, size: 20 },
+                params: { cursor: pageParam, size: 5 },
                 withCredentials: true,
             });
-            return res.data.data.comments;
+
+            const list = res.data.data.comments;
+            const nextCursor = res.data.data.cursor;
+            const hasNext = res.data.data.hasNext;
+
+            return {
+                items: list,
+                nextCursor,
+                hasNext,
+            };
         },
+        initialPageParam: null,
+        getNextPageParam: lastPage => (lastPage.hasNext ? lastPage.nextCursor : null),
         enabled: !!accompanyId,
     });
 };

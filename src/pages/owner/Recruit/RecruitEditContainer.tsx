@@ -3,14 +3,15 @@ import { Routes, Route, useNavigate, useParams } from "react-router-dom";
 import RecruitPrecautionPage from "./RecruitPrecautionPage";
 import RecruitBasicInfoPage from "./RecruitBasicInfoPage";
 import { EmploymentPutProps } from "@/types/employment";
-import { EmploymentApi } from "@/apis/employment";
-import { useEmploymentDetail } from "@/hooks/owner/employment/useEmploymentDetail";
+
+import { usePutEmployment } from "@/hooks/owner/employment/usePutEmployment";
+import { useGetEmploymentDetail } from "@/hooks/owner/employment";
 
 export default function RecruitEditContainer() {
     const { employmentId } = useParams();
     const navigate = useNavigate();
 
-    const { data } = useEmploymentDetail(Number(employmentId));
+    const { data } = useGetEmploymentDetail(Number(employmentId));
     const employmentData = data?.data;
 
     const [formData, setFormData] = useState<EmploymentPutProps | null>(null);
@@ -18,15 +19,11 @@ export default function RecruitEditContainer() {
     const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [imageUrls, setImageUrls] = useState<string[]>([]);
 
-    const handleEdit = async () => {
-        if (!formData) return;
+    const { mutate } = usePutEmployment();
 
-        try {
-            await EmploymentApi.putEmployment(formData, imageFiles);
-            alert("공고 수정 완료");
-        } catch (error) {
-            console.error("공고 수정 실패", error);
-        }
+    const handleEdit = () => {
+        if (!formData) return;
+        mutate({ formData, imageFiles });
     };
 
     useEffect(() => {
@@ -47,7 +44,7 @@ export default function RecruitEditContainer() {
                 hashtagName: employmentData.hashtagName,
                 benefitsContent: employmentData.benefitsContent,
                 category: employmentData.category,
-                precautions: [],
+                precautions: employmentData.precautions,
                 images: employmentData.images ?? [],
             };
 

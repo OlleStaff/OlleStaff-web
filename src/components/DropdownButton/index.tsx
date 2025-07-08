@@ -89,6 +89,7 @@ const Style = {
         z-index: 999;
         max-height: 300px;
         overflow: scroll;
+        scrollbar-width: none;
     `,
     DropdownItem: styled.div`
         padding: 8px 12px;
