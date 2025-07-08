@@ -8,7 +8,9 @@ import { useCommentList } from "./useCommentQuery";
 
 export const CommentBox = ({ accompanyId, commentCount }: { accompanyId: number; commentCount: number }) => {
     const { openReplies, toggleReplies, startReplyTo, activeReply, cancelReply } = useCommentState();
-    const { data: comments = [], isLoading } = useCommentList(accompanyId);
+    const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useCommentList(accompanyId);
+
+    const comments = data?.pages ? data.pages.flatMap(page => page.items) : [];
 
     return (
         <>
@@ -24,6 +26,9 @@ export const CommentBox = ({ accompanyId, commentCount }: { accompanyId: number;
                         onToggleReplies={toggleReplies}
                         onReplyClick={startReplyTo}
                         accompanyId={accompanyId}
+                        fetchNextPage={fetchNextPage}
+                        hasNextPage={hasNextPage}
+                        isFetchingNextPage={isFetchingNextPage}
                     />
                 )}
             </ScrollableArea>
