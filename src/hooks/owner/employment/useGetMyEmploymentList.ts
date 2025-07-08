@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 // owner 관점에서 사용하는 내 공고 조회 (전체 | 진행중 | 마감)
-export const useMyEmploymentList = () => {
+export const useGetMyEmploymentList = () => {
     return useQuery<GuesthouseListItemProps[]>({
         queryKey: ["employmentList"],
         queryFn: async () => {

@@ -9,6 +9,11 @@ import Input from "../Input";
 import ExpandableText from "../ExpandableText";
 import { usePostReComment } from "@/hooks/owner/review/usePostReComment";
 import ImageViewer from "../ImageViewer";
+import OptionButton from "../OptionButton";
+import { useDeleteReview, useDeleteReviewComment } from "@/hooks/owner/review";
+import Modal from "../Modal";
+
+type ModalType = "confirm" | "success" | null;
 interface ReviewListItemProps {
     data: ReviewInfo;
     openedReviewId: number | null;
@@ -50,89 +55,157 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
         setViewerOpen(true);
     };
 
+    const { mutate: deleteReview } = useDeleteReview();
+    const handleDeleteReview = () => {
+        deleteReview(reviewId, {
+            onSuccess: () => {
+                openModal("success");
+            },
+            onError: error => {
+                console.error("삭제 실패", error);
+                alert("삭제 중 오류가 발생했습니다.");
+            },
+        });
+    };
+
+    const [modalType, setModalType] = useState<ModalType>(null);
+
+    const openModal = (type: ModalType) => setModalType(type);
+    const closeModal = () => setModalType(null);
+
+    // const { mutate: deleteReviewComment } = useDeleteReviewComment();
+    // const handleDeleteReviewComment = () => {
+    //     deleteReviewComment(reviewId, {
+    //         onSuccess: () => {
+    //             openModal("success");
+    //             window.location.reload();
+    //         },
+    //         onError: error => {
+    //             console.error("삭제 실패", error);
+    //             alert("삭제 중 오류가 발생했습니다.");
+    //         },
+    //     });
+    // };
+
     return (
-        <Card>
-            <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
-                <Text.Body1_1>{title}</Text.Body1_1>
-                <img src="/icons/more.svg" alt="더보기" />
-            </Wrapper.FlexBox>
+        <>
+            {modalType === "confirm" && (
+                <Modal
+                    variant="confirm"
+                    title="등록된 후기를 삭제하시겠습니까?"
+                    message={`삭제 버튼 클릭 시 등록된 후기가 영구히 삭제됩니다.`}
+                    cancelText="취소"
+                    confirmText="삭제"
+                    handleModalClose={closeModal}
+                    onConfirm={() => {
+                        handleDeleteReview();
+                    }}
+                />
+            )}
 
-            <ContentWrapper>
-                <UserWrapper>
-                    <Text.Body2_1>{nickName}님</Text.Body2_1>
-                    <img src="/icons/fullStar.svg" alt="별" style={{ width: "15px" }} />
-                    <Text.Body2_1>{rating}</Text.Body2_1>
-                </UserWrapper>
+            {modalType === "success" && (
+                <Modal
+                    variant="default"
+                    title="후기 삭제 완료"
+                    confirmText="확인"
+                    handleModalClose={closeModal}
+                    onConfirm={() => {
+                        closeModal();
+                        window.location.reload();
+                    }}
+                />
+            )}
+            <Card>
+                <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
+                    <Text.Body1_1>{title}</Text.Body1_1>
+                    <OptionButton items={[{ label: "댓글 삭제", onClick: () => openModal("confirm") }]} />
+                </Wrapper.FlexBox>
 
-                {images.length > 0 && (
-                    <>
-                        <ImageList>
-                            {images.map((imgUrl, idx) => (
-                                <div onClick={() => handleImageClick(idx)}>
-                                    <img key={idx} src={imgUrl} alt={`리뷰이미지${idx + 1}`} />
-                                </div>
-                            ))}
-                        </ImageList>
-                    </>
-                )}
-                {isViewerOpen && (
-                    <ImageViewer images={images} startIndex={currentImageIndex} onClose={() => setViewerOpen(false)} />
-                )}
-                <Text.Body2_1>
-                    <Wrapper.FlexBox
-                        style={{
-                            overflow: "auto",
-                            whiteSpace: "pre-wrap",
-                            wordBreak: "break-word",
-                        }}
-                    >
-                        <ExpandableText text={review} maxLength={100} />
-                    </Wrapper.FlexBox>
-                </Text.Body2_1>
+                <ContentWrapper>
+                    <UserWrapper>
+                        <Text.Body2_1>{nickName}님</Text.Body2_1>
+                        <img src="/icons/fullStar.svg" alt="별" style={{ width: "15px" }} />
+                        <Text.Body2_1>{rating}</Text.Body2_1>
+                    </UserWrapper>
 
-                <Wrapper.FlexBox direction="column" gap="8px">
-                    <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
-                        <Text.Body3_1 color="Gray3">
-                            {disclosure ? `게스트하우스에게만 공개 | ${timeAgo(reviewDate)}` : `${timeAgo(reviewDate)}`}
-                        </Text.Body3_1>
+                    {images.length > 0 && (
+                        <>
+                            <ImageList>
+                                {images.map((imgUrl, idx) => (
+                                    <div key={idx} onClick={() => handleImageClick(idx)}>
+                                        <img src={imgUrl} alt={`리뷰이미지${idx + 1}`} />
+                                    </div>
+                                ))}
+                            </ImageList>
+                        </>
+                    )}
+                    {isViewerOpen && (
+                        <ImageViewer
+                            images={images}
+                            startIndex={currentImageIndex}
+                            onClose={() => setViewerOpen(false)}
+                        />
+                    )}
+                    <Text.Body2_1>
+                        <Wrapper.FlexBox
+                            style={{
+                                overflow: "auto",
+                                whiteSpace: "pre-wrap",
+                                wordBreak: "break-word",
+                            }}
+                        >
+                            <ExpandableText text={review} maxLength={100} />
+                        </Wrapper.FlexBox>
+                    </Text.Body2_1>
 
-                        {!reviewComment && openedReviewId !== reviewId && (
-                            <img
-                                src="/icons/comment_gray.svg"
-                                alt="댓글 버튼"
-                                onClick={handleOpenComment}
-                                style={{ cursor: "pointer" }}
+                    <Wrapper.FlexBox direction="column" gap="8px">
+                        <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
+                            <Text.Body3_1 color="Gray3">
+                                {disclosure
+                                    ? `게스트하우스에게만 공개 | ${timeAgo(reviewDate)}`
+                                    : `${timeAgo(reviewDate)}`}
+                            </Text.Body3_1>
+
+                            {!reviewComment && openedReviewId !== reviewId && (
+                                <img
+                                    src="/icons/comment_gray.svg"
+                                    alt="댓글 버튼"
+                                    onClick={handleOpenComment}
+                                    style={{ cursor: "pointer" }}
+                                />
+                            )}
+                        </Wrapper.FlexBox>
+
+                        {!reviewComment && openedReviewId === reviewId && (
+                            <Input
+                                variant="comment"
+                                value={text}
+                                onChange={e => setText(e.target.value)}
+                                placeholder="댓글을 입력하세요."
+                                rightIcon={<img src="/icons/arrow_top.svg" />}
+                                onRightIconClick={handleReCommentSubmit}
                             />
                         )}
                     </Wrapper.FlexBox>
+                </ContentWrapper>
 
-                    {!reviewComment && openedReviewId === reviewId && (
-                        <Input
-                            variant="comment"
-                            value={text}
-                            onChange={e => setText(e.target.value)}
-                            placeholder="댓글을 입력하세요."
-                            rightIcon={<img src="/icons/arrow_top.svg" />}
-                            onRightIconClick={handleReCommentSubmit}
-                        />
-                    )}
-                </Wrapper.FlexBox>
-            </ContentWrapper>
+                {reviewComment && (
+                    <CommentWrapper>
+                        <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
+                            <Text.Body1_1>{hostNickName}</Text.Body1_1>
 
-            {reviewComment && (
-                <CommentWrapper>
-                    <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
-                        <Text.Body1_1>{hostNickName}</Text.Body1_1> <img src="/icons/more.svg" alt="더보기" />
-                    </Wrapper.FlexBox>
-                    <Text.Body2_1>
-                        <ExpandableText text={reviewComment} maxLength={70} />
-                    </Text.Body2_1>
-                    <Wrapper.FlexBox justifyContent="flex-end">
-                        <Text.Body3 color="Gray4">{timeAgo(reviewCommentDate)}</Text.Body3>
-                    </Wrapper.FlexBox>
-                </CommentWrapper>
-            )}
-        </Card>
+                            <OptionButton items={[{ label: "댓글 삭제", onClick: () => openModal("confirm") }]} />
+                        </Wrapper.FlexBox>
+                        <Text.Body2_1>
+                            <ExpandableText text={reviewComment} maxLength={70} />
+                        </Text.Body2_1>
+                        <Wrapper.FlexBox justifyContent="flex-end">
+                            <Text.Body3 color="Gray4">{timeAgo(reviewCommentDate)}</Text.Body3>
+                        </Wrapper.FlexBox>
+                    </CommentWrapper>
+                )}
+            </Card>
+        </>
     );
 }
 

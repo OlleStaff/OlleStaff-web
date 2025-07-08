@@ -7,14 +7,22 @@ import { Wrapper } from "@/styles/Wrapper";
 import { GuesthouseList } from "@/components/GuesthouseList";
 import ReviewList from "@/components/ReviewList";
 import Oops from "@/components/Oops";
-import { useMyEmploymentList } from "@/hooks/owner/employment/useGetMyEmploymentList";
-import { useAllReviewsForGuesthouse } from "@/hooks/owner/review/useGetAllReviewsForGuesthouse";
+import { isClosed } from "@/utils/date";
+import { useGetMyEmploymentList } from "@/hooks/owner/employment";
+import { useGetAllReviewsForGuesthouse } from "@/hooks/owner/review";
+
+import { SkeletonGuesthouseItem } from "@/components/Skeleton/SkeletonGuesthouseItem";
+import { SkeletonReviewItem } from "@/components/Skeleton/SkeletonReviewItem";
+import { SkeletonBox } from "@/components/Skeleton/base/SkeletonBox";
 
 export default function HomePage() {
+    const PREVIEW_COUNT = 2;
     const navigate = useNavigate();
 
-    const { data } = useMyEmploymentList();
-    const { data: reviewData } = useAllReviewsForGuesthouse("전체");
+    const { data: employmentData, isLoading: isEmploymentLoading } = useGetMyEmploymentList();
+    const { data: reviewData, isLoading: isReviewLoading } = useGetAllReviewsForGuesthouse("ALL");
+
+    const isAllClosed = employmentData?.every(item => isClosed(item.recruitmentEnd));
 
     useEffect(() => {
         const checkApplicationStatus = async () => {
@@ -39,12 +47,24 @@ export default function HomePage() {
 
     return (
         <Wrapper.FlexBox direction="column" gap="32px">
-            {data && data.length > 0 && <PartnerRecruitmentCard data={data.filter(item => !item.closed)} />}
-
+            {isEmploymentLoading ? (
+                <SkeletonBox width="100%" height="185px" />
+            ) : (
+                employmentData &&
+                employmentData.length > 0 && (
+                    <PartnerRecruitmentCard data={employmentData.filter(item => !item.closed)} />
+                )
+            )}
             <Wrapper.FlexBox direction="column" gap="16px">
                 <SectionTitle title="진행 중인 나의 공고" link="/owner/recruitments-ongoing" />
-                {data && data.length > 0 ? (
-                    <GuesthouseList data={data.filter(item => !item.closed).slice(0, 2)} />
+                {isEmploymentLoading ? (
+                    <>
+                        {Array.from({ length: PREVIEW_COUNT }).map((_, idx) => (
+                            <SkeletonGuesthouseItem key={idx} />
+                        ))}
+                    </>
+                ) : employmentData && employmentData.length > 0 && !isAllClosed ? (
+                    <GuesthouseList data={employmentData.filter(item => !item.closed).slice(0, PREVIEW_COUNT)} />
                 ) : (
                     <Oops
                         message="작성된 나의 공고가 없어요."
@@ -55,11 +75,17 @@ export default function HomePage() {
 
             <Wrapper.FlexBox direction="column" gap="16px">
                 <SectionTitle title="작성된 후기" link="/owner/userinfo/reviews" />
-                {reviewData && reviewData.allReviewInfoDTOS.length > 0 ? (
+                {isReviewLoading ? (
+                    <>
+                        {Array.from({ length: PREVIEW_COUNT }).map((_, idx) => (
+                            <SkeletonReviewItem key={idx} />
+                        ))}
+                    </>
+                ) : reviewData && reviewData.allReviewInfoDTOS.length > 0 ? (
                     <ReviewList
                         data={{
                             ...reviewData,
-                            allReviewInfoDTOS: reviewData.allReviewInfoDTOS.slice(0, 2),
+                            allReviewInfoDTOS: reviewData.allReviewInfoDTOS.slice(0, PREVIEW_COUNT),
                         }}
                     />
                 ) : (

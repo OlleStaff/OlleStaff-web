@@ -3,14 +3,15 @@ import { Routes, Route, useNavigate, useParams } from "react-router-dom";
 import RecruitPrecautionPage from "./RecruitPrecautionPage";
 import RecruitBasicInfoPage from "./RecruitBasicInfoPage";
 import { EmploymentPutProps } from "@/types/employment";
-import { useEmploymentDetail } from "@/hooks/owner/employment/useGetEmploymentDetail";
+
 import { usePutEmployment } from "@/hooks/owner/employment/usePutEmployment";
+import { useGetEmploymentDetail } from "@/hooks/owner/employment";
 
 export default function RecruitEditContainer() {
     const { employmentId } = useParams();
     const navigate = useNavigate();
 
-    const { data } = useEmploymentDetail(Number(employmentId));
+    const { data } = useGetEmploymentDetail(Number(employmentId));
     const employmentData = data?.data;
 
     const [formData, setFormData] = useState<EmploymentPutProps | null>(null);
