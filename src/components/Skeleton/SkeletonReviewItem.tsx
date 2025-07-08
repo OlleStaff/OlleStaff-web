@@ -7,8 +7,8 @@ export const SkeletonReviewItem = () => {
     return (
         <Card>
             <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
-                <SkeletonBox width="60%" height="18px" /> 
-                <SkeletonBox width="20px" height="20px" borderRadius="50%" /> 
+                <SkeletonBox width="60%" height="18px" />
+                <SkeletonBox width="20px" height="20px" borderRadius="50%" />
             </Wrapper.FlexBox>
 
             <ContentWrapper>
@@ -22,7 +22,7 @@ export const SkeletonReviewItem = () => {
 
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                     <SkeletonBox width="60%" height="12px" />
-                    <SkeletonBox width="20px" height="20px" borderRadius="50%" /> 
+                    <SkeletonBox width="20px" height="20px" borderRadius="50%" />
                 </Wrapper.FlexBox>
             </ContentWrapper>
 
