@@ -10,7 +10,7 @@ import ExpandableText from "../ExpandableText";
 import { usePostReComment } from "@/hooks/owner/review/usePostReComment";
 import ImageViewer from "../ImageViewer";
 import OptionButton from "../OptionButton";
-import { useDeleteReview, useDeleteReviewComment } from "@/hooks/owner/review";
+import { useDeleteReview } from "@/hooks/owner/review";
 import Modal from "../Modal";
 
 type ModalType = "confirm" | "success" | null;

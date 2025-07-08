@@ -38,7 +38,7 @@ export const GuesthouseList = ({
                 <GuesthouseListItem
                     key={item.employmentId}
                     {...item}
-                    isTrashIconActive={isTrashIconClicked}
+                    isEditActive={isTrashIconClicked}
                     isChecked={checkedIds?.includes(item.employmentId)}
                     onCheckToggle={onToggleCheck}
                 />
