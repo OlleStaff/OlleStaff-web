@@ -2,6 +2,7 @@ import { useInView } from "react-intersection-observer";
 import CommentItem from "./CommentItem";
 import { CommentType } from "@/types/comment";
 import { useEffect } from "react";
+import { SkeletonList } from "../Skeleton/SkeletonList";
 
 interface CommentListProps {
     comments: CommentType[];
@@ -31,6 +32,7 @@ export default function CommentList({
             fetchNextPage();
         }
     }, [inView, hasNextPage, fetchNextPage]);
+
     return (
         <div>
             {comments.map(comment => (
@@ -44,7 +46,7 @@ export default function CommentList({
                 />
             ))}
             {hasNextPage && <div ref={ref} style={{ height: 1 }} />}
-            {isFetchingNextPage && <div>댓글 더 불러오는 중...</div>}
+            {isFetchingNextPage && <SkeletonList variant="comment" count={3} />}
         </div>
     );
 }

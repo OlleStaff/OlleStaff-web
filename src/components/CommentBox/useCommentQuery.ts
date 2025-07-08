@@ -14,8 +14,6 @@ export const useCommentList = (accompanyId: number) => {
     return useInfiniteQuery<LastPage>({
         queryKey: ["comments", accompanyId],
         queryFn: async ({ pageParam = null }) => {
-            await new Promise(resolve => setTimeout(resolve, 1000)); // 테스트용 지연코드
-
             const res = await axios.get(`${API}/accompanies/${accompanyId}/comments`, {
                 params: { cursor: pageParam, size: 5 },
                 withCredentials: true,
