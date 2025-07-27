@@ -21,8 +21,8 @@ export default function HomePage() {
     const { data: employmentData, isLoading: isEmploymentLoading } = useGetMyEmploymentList();
     const { data: reviewData, isLoading: isReviewLoading } = useGetAllReviewsForGuesthouse("ALL");
 
-    const isAllClosed = employmentData!.every(item => isClosed(item.recruitmentEnd));
-
+    const isAllClosed = employmentData?.every(item => isClosed(item.recruitmentEnd));
+    const isReviewEmpty = reviewData?.allReviewInfoDTOS?.length === 0;
     useEffect(() => {
         const checkApplicationStatus = async () => {
             try {
@@ -55,7 +55,11 @@ export default function HomePage() {
                 )
             )}
             <Wrapper.FlexBox direction="column" gap="16px">
-                <SectionTitle title="진행 중인 나의 공고" link="/owner/recruitments-ongoing" isEmpty={isAllClosed} />
+                <SectionTitle
+                    title="진행 중인 나의 공고"
+                    link="/owner/recruitments-ongoing"
+                    isEmpty={isAllClosed ?? true}
+                />
                 {isEmploymentLoading ? (
                     <>
                         {Array.from({ length: PREVIEW_COUNT }).map((_, idx) => (
@@ -73,11 +77,7 @@ export default function HomePage() {
             </Wrapper.FlexBox>
 
             <Wrapper.FlexBox direction="column" gap="16px">
-                <SectionTitle
-                    title="작성된 후기"
-                    link="/owner/userinfo/reviews"
-                    isEmpty={reviewData!.allReviewInfoDTOS.length === 0}
-                />
+                <SectionTitle title="작성된 후기" link="/owner/userinfo/reviews" isEmpty={isReviewEmpty} />
                 {isReviewLoading ? (
                     <>
                         {Array.from({ length: PREVIEW_COUNT }).map((_, idx) => (

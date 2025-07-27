@@ -43,7 +43,7 @@ export default function Nav({ version }: NavProps) {
                     return (
                         <Wrapper.FlexBox
                             key={index}
-                            width="70px"
+                            width="83.2px"
                             height="78px"
                             direction="column"
                             alignItems="center"
@@ -67,8 +67,8 @@ export default function Nav({ version }: NavProps) {
 const NavWrapper = styled.div`
     position: fixed;
     bottom: 0;
-    width: 100%;
-    max-width: 393px;
+    /* width: 100%; */
+
     margin: 0 auto; // 가운데 정렬
     height: 78px;
     z-index: 10;
