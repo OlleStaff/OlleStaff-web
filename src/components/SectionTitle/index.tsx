@@ -5,11 +5,12 @@ import { useNavigate } from "react-router-dom";
 
 interface SectionTitleProps {
     title: string;
-    link?: string;
+    link: string;
     type?: "default" | "copy";
     onCopyClick?: () => void;
+    isEmpty: boolean;
 }
-export default function SectionTitle({ title, link, type = "default", onCopyClick }: SectionTitleProps) {
+export default function SectionTitle({ title, link, type = "default", onCopyClick, isEmpty }: SectionTitleProps) {
     const navigate = useNavigate();
 
     if (type === "copy") {
@@ -27,7 +28,7 @@ export default function SectionTitle({ title, link, type = "default", onCopyClic
         <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
             <Text.Title2_2>{title}</Text.Title2_2>
 
-            {link && (
+            {!isEmpty && (
                 <MoreButton onClick={() => navigate(link, { relative: "path" })}>
                     <Text.Body3_1 color="Gray4" style={{ marginTop: "2px" }}>
                         더보기

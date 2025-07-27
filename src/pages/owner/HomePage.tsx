@@ -10,7 +10,6 @@ import Oops from "@/components/Oops";
 import { isClosed } from "@/utils/date";
 import { useGetMyEmploymentList } from "@/hooks/owner/employment";
 import { useGetAllReviewsForGuesthouse } from "@/hooks/owner/review";
-
 import { SkeletonGuesthouseItem } from "@/components/Skeleton/SkeletonGuesthouseItem";
 import { SkeletonReviewItem } from "@/components/Skeleton/SkeletonReviewItem";
 import { SkeletonBox } from "@/components/Skeleton/base/SkeletonBox";
@@ -22,7 +21,7 @@ export default function HomePage() {
     const { data: employmentData, isLoading: isEmploymentLoading } = useGetMyEmploymentList();
     const { data: reviewData, isLoading: isReviewLoading } = useGetAllReviewsForGuesthouse("ALL");
 
-    const isAllClosed = employmentData?.every(item => isClosed(item.recruitmentEnd));
+    const isAllClosed = employmentData!.every(item => isClosed(item.recruitmentEnd));
 
     useEffect(() => {
         const checkApplicationStatus = async () => {
@@ -56,7 +55,7 @@ export default function HomePage() {
                 )
             )}
             <Wrapper.FlexBox direction="column" gap="16px">
-                <SectionTitle title="진행 중인 나의 공고" link="/owner/recruitments-ongoing" />
+                <SectionTitle title="진행 중인 나의 공고" link="/owner/recruitments-ongoing" isEmpty={isAllClosed} />
                 {isEmploymentLoading ? (
                     <>
                         {Array.from({ length: PREVIEW_COUNT }).map((_, idx) => (
@@ -74,7 +73,11 @@ export default function HomePage() {
             </Wrapper.FlexBox>
 
             <Wrapper.FlexBox direction="column" gap="16px">
-                <SectionTitle title="작성된 후기" link="/owner/userinfo/reviews" />
+                <SectionTitle
+                    title="작성된 후기"
+                    link="/owner/userinfo/reviews"
+                    isEmpty={reviewData!.allReviewInfoDTOS.length === 0}
+                />
                 {isReviewLoading ? (
                     <>
                         {Array.from({ length: PREVIEW_COUNT }).map((_, idx) => (

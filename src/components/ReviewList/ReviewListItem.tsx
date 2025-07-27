@@ -118,7 +118,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
             <Card>
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                     <Text.Body1_1>{title}</Text.Body1_1>
-                    <OptionButton items={[{ label: "댓글 삭제", onClick: () => openModal("confirm") }]} />
+                    <OptionButton items={[{ label: "후기 삭제", onClick: () => openModal("confirm") }]} />
                 </Wrapper.FlexBox>
 
                 <ContentWrapper>
