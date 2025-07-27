@@ -37,6 +37,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
     imageFiles,
     setImageFiles,
     imageUrls,
+    setImageUrls,
     onNext,
 }: RecruitBasicInfoPageProps<T>) {
     const isImageValid = mode === "create" ? imageFiles.length > 0 : imageUrls && imageUrls.length > 0;
@@ -61,6 +62,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
     useEffect(() => {
         console.log(formData);
     }, []);
+
     return (
         <>
             <Header title={mode === "edit" ? "게시글 수정" : "게시글 작성"} showBackButton />
@@ -69,8 +71,23 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                 <Wrapper.FlexBox direction="column" padding="30px" gap="20px">
                     <ImageUploader
                         maxImages={9}
-                        onChange={({ files }) => setImageFiles(files)}
                         previewImageUrls={imageUrls}
+                        onChange={({ files, urls }) => {
+                            setImageFiles(files);
+                            if (mode === "edit" && setImageUrls) {
+                                setImageUrls(urls);
+                                setFormData(prev => ({
+                                    ...prev,
+                                    imageUrls: urls,
+                                    newImages: files,
+                                }));
+                            } else {
+                                setFormData(prev => ({
+                                    ...prev,
+                                    newImages: files,
+                                }));
+                            }
+                        }}
                     />
 
                     <HashTagEditor

@@ -48,18 +48,30 @@ export const EmploymentApi = {
         }
     },
     // PUT: 나의 공고 수정
-    putEmployment: async (formData: EmploymentPutProps, imageFiles: File[]) => {
+    putEmployment: async (formData: EmploymentPutProps) => {
         const payload = new FormData();
 
-        const employmentPayload = {
-            ...formData,
-            employmentId: formData.employmentId,
-        };
+        // 1. JSON 데이터는 newImages 빼고 전송
+        const { newImages, ...employmentPayload } = formData;
+
         payload.append("employment", new Blob([JSON.stringify(employmentPayload)], { type: "application/json" }));
 
-        imageFiles.forEach(file => {
-            payload.append("images", file);
+        // 2. 새 이미지 파일
+        newImages.forEach(file => {
+            payload.append("newImages", file);
         });
+
+        // 3. 기존 이미지 파일명 (imageUrls를 보냈다면 백엔드에서 name만 받을 수도 있음)
+        formData.imageUrls.forEach(name => {
+            payload.append("images", name);
+        });
+
+        // 4. (선택) 전체 이미지 순서 정보
+        if ("imageNames" in formData && Array.isArray(formData.imageNames)) {
+            formData.imageNames.forEach(name => {
+                payload.append("imageNames", name);
+            });
+        }
 
         const res = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/employments`, payload, {
             headers: {
@@ -70,7 +82,6 @@ export const EmploymentApi = {
 
         return res.data;
     },
-
     deleteEmployment: async (employmentIds: number[]) =>
         await axios
             .delete(`${import.meta.env.VITE_API_BASE_URL}/employments`, {

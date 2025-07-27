@@ -47,7 +47,9 @@ export default function RecruitDetailPage() {
     } = detail.data;
 
     const handleEditClick = () => {
-        navigate(`/owner/recruit/edit/${employmentId}/step1`);
+        navigate(`/owner/recruit/edit/${employmentId}/step1`, {
+            state: detail.data,
+        });
     };
 
     const metaItems = [

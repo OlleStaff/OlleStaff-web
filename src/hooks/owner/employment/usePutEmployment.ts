@@ -6,8 +6,7 @@ export const usePutEmployment = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ formData, imageFiles }: { formData: EmploymentPutProps; imageFiles: File[] }) =>
-            EmploymentApi.putEmployment(formData, imageFiles),
+        mutationFn: (formData: EmploymentPutProps) => EmploymentApi.putEmployment(formData),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["employmentList"] });
         },

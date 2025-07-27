@@ -1,5 +1,5 @@
-// 공고 게시글 작성
-export interface EmploymentPostProps {
+// 공통 필드
+interface EmploymentBase {
     instarUrl: string;
     personNum: number;
     sex: "all" | "male" | "female";
@@ -20,56 +20,24 @@ export interface EmploymentPostProps {
     }[];
 }
 
-// 공고 상세 보기
-export interface EmploymentGetProps {
+// 게시글 작성
+export interface EmploymentPostProps extends EmploymentBase {}
+
+// 게시글 수정
+export interface EmploymentPutProps extends EmploymentBase {
+    employmentId: number;
+    imageUrls: string[]; // 기존 이미지
+    newImages: File[]; // 새로 올릴 이미지
+}
+
+// 게시글 상세 보기
+export interface EmploymentGetProps extends EmploymentBase {
     employmentId: number;
     images: string[];
-    hashtagName: string[];
-    title: string;
-    instarUrl: string;
-    personNum: number;
-    sex: "all" | "male" | "female";
-    endedAt: string;
-    startedAt: string;
-    recruitmentEnd: string;
-    content: string;
-    latitude: number;
-    longitude: number;
-    benefitsContent: string[];
     phoneNum: string;
-    locationName: string;
-    category: string;
-    precautions: {
-        precautionsTitle: string;
-        precautionsContent: string;
-    }[];
 }
 
-// 공고 게시글 수정
-export interface EmploymentPutProps {
-    employmentId: number;
-    instarUrl: string;
-    personNum: number;
-    sex: "all" | "male" | "female";
-    startedAt: string;
-    endedAt: string;
-    recruitmentEnd: string;
-    title: string;
-    content: string;
-    category: string;
-    latitude: number;
-    longitude: number;
-    locationName: string;
-    hashtagName: string[];
-    benefitsContent: string[];
-    precautions: {
-        precautionsTitle: string;
-        precautionsContent: string;
-    }[];
-    images: string[];
-}
-
-// 공고 목록 조회용 (리스트, /employments/all)
+// 게시글 목록 조회용
 export interface EmploymentPreviewProps {
     employmentId: number;
     image: string;
@@ -81,3 +49,7 @@ export interface EmploymentPreviewProps {
     locationName: string;
     personNum: number;
 }
+
+export type Mode = "create" | "edit";
+
+export type EmploymentFormData<T extends Mode> = T extends "create" ? EmploymentPostProps : EmploymentPutProps;

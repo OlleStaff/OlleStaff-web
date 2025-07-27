@@ -1,58 +1,32 @@
-import { useEffect, useState } from "react";
-import { Routes, Route, useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { Routes, Route, useNavigate, useParams, useLocation } from "react-router-dom";
 import RecruitPrecautionPage from "./RecruitPrecautionPage";
 import RecruitBasicInfoPage from "./RecruitBasicInfoPage";
 import { EmploymentPutProps } from "@/types/employment";
-
 import { usePutEmployment } from "@/hooks/owner/employment/usePutEmployment";
-import { useGetEmploymentDetail } from "@/hooks/owner/employment";
 
 export default function RecruitEditContainer() {
     const { employmentId } = useParams();
     const navigate = useNavigate();
 
-    const { data } = useGetEmploymentDetail(Number(employmentId));
-    const employmentData = data?.data;
+    const location = useLocation();
+    const initialData = location.state;
 
-    const [formData, setFormData] = useState<EmploymentPutProps | null>(null);
+    const [formData, setFormData] = useState<EmploymentPutProps>({
+        ...initialData,
+        imageUrls: initialData.images ?? [],
+        newImages: [],
+    });
 
     const [imageFiles, setImageFiles] = useState<File[]>([]);
-    const [imageUrls, setImageUrls] = useState<string[]>([]);
+    const [imageUrls, setImageUrls] = useState<string[]>(initialData.images ?? []);
 
     const { mutate } = usePutEmployment();
 
     const handleEdit = () => {
         if (!formData) return;
-        mutate({ formData, imageFiles });
+        mutate(formData);
     };
-
-    useEffect(() => {
-        if (employmentData) {
-            const transformedData: EmploymentPutProps = {
-                employmentId: employmentData.employmentId,
-                title: employmentData.title,
-                content: employmentData.content,
-                instarUrl: employmentData.instarUrl,
-                personNum: employmentData.personNum,
-                sex: employmentData.sex,
-                startedAt: employmentData.startedAt,
-                endedAt: employmentData.endedAt,
-                recruitmentEnd: employmentData.recruitmentEnd,
-                latitude: employmentData.latitude,
-                longitude: employmentData.longitude,
-                locationName: employmentData.locationName,
-                hashtagName: employmentData.hashtagName,
-                benefitsContent: employmentData.benefitsContent,
-                category: employmentData.category,
-                precautions: employmentData.precautions,
-                images: employmentData.images ?? [],
-            };
-
-            setFormData(transformedData);
-            setImageUrls(data.data.images || []);
-            setImageFiles([]);
-        }
-    }, [employmentData]);
 
     if (!formData) return null;
 
@@ -69,7 +43,11 @@ export default function RecruitEditContainer() {
                         setImageFiles={setImageFiles}
                         imageUrls={imageUrls}
                         setImageUrls={setImageUrls}
-                        onNext={() => navigate(`/owner/recruit/edit/${employmentId}/step2`)}
+                        onNext={() =>
+                            navigate(`/owner/recruit/edit/${employmentId}/step2`, {
+                                state: formData,
+                            })
+                        }
                     />
                 }
             />
