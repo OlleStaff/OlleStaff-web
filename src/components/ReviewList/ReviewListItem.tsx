@@ -14,7 +14,7 @@ import { useDeleteReview, useDeleteReviewComment } from "@/hooks/owner/review";
 import Modal from "../Modal";
 
 type ModalType = "confirm" | "success" | null;
-type DeleteTarget = "review" | "comment" | null;
+type ModalPurpose = "deleteReview" | "deleteComment" | "postRecomment" | null;
 
 interface ReviewListItemProps {
     data: ReviewInfo;
@@ -22,8 +22,8 @@ interface ReviewListItemProps {
     setOpenedReviewId: (id: number | null) => void;
     modalType: ModalType;
     setModalType: (type: ModalType) => void;
-    deleteTarget: DeleteTarget;
-    setDeleteTarget: (target: DeleteTarget) => void;
+    modalPurpose: ModalPurpose;
+    setModalPurpose: (purpost: ModalPurpose) => void;
 }
 
 export default function ReviewListItem({
@@ -32,8 +32,8 @@ export default function ReviewListItem({
     setOpenedReviewId,
     modalType,
     setModalType,
-    deleteTarget,
-    setDeleteTarget,
+    modalPurpose,
+    setModalPurpose,
 }: ReviewListItemProps) {
     const {
         reviewId,
@@ -57,27 +57,34 @@ export default function ReviewListItem({
     const { mutate: deleteReview } = useDeleteReview();
     const { mutate: deleteReviewComment } = useDeleteReviewComment();
 
-    const openModal = (type: ModalType, target: DeleteTarget) => {
+    const openModal = (type: ModalType, purpose: ModalPurpose) => {
         setModalType(type);
-        setDeleteTarget(target);
+        setModalPurpose(purpose);
     };
 
     const closeModal = () => {
         setModalType(null);
-        setDeleteTarget(null);
+        setModalPurpose(null);
     };
 
     const handleReCommentSubmit = () => {
         if (!text.trim()) return alert("댓글을 입력해주세요!");
-        submitReComment({ reviewId, reviewComment: text });
-        setOpenedReviewId(null);
+        submitReComment(
+            { reviewId, reviewComment: text },
+            {
+                onSuccess: () => {
+                    setText("");
+                    setOpenedReviewId(null);
+                    setModalType("success");
+                    setModalPurpose("postRecomment");
+                },
+            }
+        );
     };
-
     const handleDeleteReview = () => {
         deleteReview(reviewId, {
             onSuccess: () => {
-                console.log("✅ 후기 삭제 성공! 모달 띄운다");
-                openModal("success", "review");
+                openModal("success", "deleteReview");
             },
             onError: error => {
                 console.error("후기 삭제 실패", error);
@@ -89,7 +96,7 @@ export default function ReviewListItem({
     const handleDeleteReviewComment = () => {
         deleteReviewComment(reviewId, {
             onSuccess: () => {
-                openModal("success", "comment");
+                openModal("success", "deleteComment");
             },
             onError: error => {
                 console.error("후기 답 댓글 삭제 실패", error);
@@ -109,12 +116,14 @@ export default function ReviewListItem({
 
     return (
         <>
-            {modalType === "confirm" && deleteTarget && (
+            {modalType === "confirm" && modalPurpose && (
                 <Modal
                     variant="confirm"
-                    title={deleteTarget === "review" ? "등록된 후기를 삭제하시겠습니까?" : "답글을 삭제하시겠습니까?"}
+                    title={
+                        modalPurpose === "deleteReview" ? "등록된 후기를 삭제하시겠습니까?" : "답글을 삭제하시겠습니까?"
+                    }
                     message={
-                        deleteTarget === "review"
+                        modalPurpose === "deleteReview"
                             ? "삭제 버튼 클릭 시 등록된 후기가 영구히 삭제됩니다."
                             : "삭제 버튼 클릭 시 답글이 영구히 삭제됩니다."
                     }
@@ -122,21 +131,32 @@ export default function ReviewListItem({
                     confirmText="삭제"
                     handleModalClose={closeModal}
                     onConfirm={() => {
-                        if (deleteTarget === "review") handleDeleteReview();
-                        if (deleteTarget === "comment") handleDeleteReviewComment();
+                        if (modalPurpose === "deleteReview") handleDeleteReview();
+                        if (modalPurpose === "deleteComment") handleDeleteReviewComment();
                     }}
                 />
             )}
 
-            {modalType === "success" && (
+            {modalType === "success" && modalPurpose && (
                 <Modal
                     variant="default"
-                    title={deleteTarget === "review" ? "후기 삭제 완료" : "답글 삭제 완료"}
+                    title={
+                        modalPurpose === "deleteReview"
+                            ? "후기 삭제 완료"
+                            : modalPurpose === "deleteComment"
+                              ? "답글 삭제 완료"
+                              : "답글이 등록되었습니다!"
+                    }
                     confirmText="확인"
                     handleModalClose={closeModal}
                     onConfirm={() => {
-                        closeModal();
-                        window.location.reload();
+                        if (modalPurpose === "postRecomment") {
+                            closeModal();
+                            setModalPurpose(null);
+                        } else {
+                            closeModal();
+                            window.location.reload();
+                        }
                     }}
                 />
             )}
@@ -144,7 +164,9 @@ export default function ReviewListItem({
             <Card>
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                     <Text.Body1_1>{title}</Text.Body1_1>
-                    <OptionButton items={[{ label: "후기 삭제", onClick: () => openModal("confirm", "review") }]} />
+                    <OptionButton
+                        items={[{ label: "후기 삭제", onClick: () => openModal("confirm", "deleteReview") }]}
+                    />
                 </Wrapper.FlexBox>
 
                 <ContentWrapper>
@@ -219,7 +241,7 @@ export default function ReviewListItem({
                         <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                             <Text.Body1_1>{hostNickName}</Text.Body1_1>
                             <OptionButton
-                                items={[{ label: "답글 삭제", onClick: () => openModal("confirm", "comment") }]}
+                                items={[{ label: "답글 삭제", onClick: () => openModal("confirm", "deleteComment") }]}
                             />
                         </Wrapper.FlexBox>
                         <Text.Body2_1>

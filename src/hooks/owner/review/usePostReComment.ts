@@ -9,7 +9,7 @@ export const usePostReComment = () => {
             ReviewApi.postReCommentForGuesthouseReview(reviewId, reviewComment),
 
         onSuccess: () => {
-            alert("댓글이 등록되었습니다!");
+            // alert("댓글이 등록되었습니다!");
             queryClient.invalidateQueries({ queryKey: ["guesthouseReviews"], exact: false });
         },
 
