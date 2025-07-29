@@ -43,7 +43,7 @@ export const ReviewApi = {
     // DELETE: 게스트하우스 리뷰에 대한 답 댓글 삭제
     deleteReCommentForGuesthouseReview: async (reviewId: number) =>
         await axios
-            .delete(`${import.meta.env.VITE_API_BASE_URL}/reviews/comments/${reviewId}`, {
+            .delete(`${import.meta.env.VITE_API_BASE_URL}/reviews/${reviewId}/comments`, {
                 withCredentials: true,
             })
             .then(res => res.data),

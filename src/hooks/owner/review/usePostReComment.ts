@@ -10,7 +10,7 @@ export const usePostReComment = () => {
 
         onSuccess: () => {
             alert("댓글이 등록되었습니다!");
-            queryClient.invalidateQueries({ queryKey: ["guesthouseReviewComment"] });
+            queryClient.invalidateQueries({ queryKey: ["guesthouseReviews"], exact: false });
         },
 
         onError: (error: unknown) => {
