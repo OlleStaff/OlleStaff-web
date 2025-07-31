@@ -20,21 +20,9 @@ interface ReviewListItemProps {
     data: ReviewInfo;
     openedReviewId: number | null;
     setOpenedReviewId: (id: number | null) => void;
-    modalType: ModalType;
-    setModalType: (type: ModalType) => void;
-    modalPurpose: ModalPurpose;
-    setModalPurpose: (purpost: ModalPurpose) => void;
 }
 
-export default function ReviewListItem({
-    data,
-    openedReviewId,
-    setOpenedReviewId,
-    modalType,
-    setModalType,
-    modalPurpose,
-    setModalPurpose,
-}: ReviewListItemProps) {
+export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId }: ReviewListItemProps) {
     const {
         reviewId,
         title,
@@ -52,6 +40,8 @@ export default function ReviewListItem({
     const [text, setText] = useState<string>("");
     const [isViewerOpen, setViewerOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [modalType, setModalType] = useState<ModalType>(null);
+    const [modalPurpose, setModalPurpose] = useState<ModalPurpose>(null);
 
     const { mutate: submitReComment } = usePostReComment();
     const { mutate: deleteReview } = useDeleteReview();
@@ -152,7 +142,6 @@ export default function ReviewListItem({
                     onConfirm={() => {
                         if (modalPurpose === "postRecomment") {
                             closeModal();
-                            setModalPurpose(null);
                         } else {
                             closeModal();
                             window.location.reload();

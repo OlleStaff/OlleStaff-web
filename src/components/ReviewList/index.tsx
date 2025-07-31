@@ -10,9 +10,6 @@ import Oops from "../Oops";
 type ReviewTab = OwnerTabTypes["REVIEW_MANAGE"]; // "전체" | "완료됨"
 type ReviewFilter = "ALL" | "COMMENTED";
 
-type ModalType = "confirm" | "success" | null;
-type ModalPurpose = "deleteReview" | "deleteComment" | "postRecomment" | null;
-
 interface ReviewListProps {
     data: ReviewListItemProps;
 }
@@ -39,10 +36,6 @@ export default function ReviewList({ data }: ReviewListProps) {
 
     const hasAllReviews = data.countReview > 0;
 
-    // 부모 컴포넌트
-    const [modalType, setModalType] = useState<ModalType>(null);
-    const [modalPurpose, setModalPurpose] = useState<ModalPurpose>(null);
-
     return (
         <div>
             {isOwnerRoot && !isOwnerHome && (
@@ -64,10 +57,6 @@ export default function ReviewList({ data }: ReviewListProps) {
                             data={item}
                             openedReviewId={openedReviewId}
                             setOpenedReviewId={setOpenedReviewId}
-                            modalType={modalType}
-                            setModalType={setModalType}
-                            modalPurpose={modalPurpose}
-                            setModalPurpose={setModalPurpose}
                         />
                     ))
                 ) : hasAllReviews && filter === "COMMENTED" ? (
