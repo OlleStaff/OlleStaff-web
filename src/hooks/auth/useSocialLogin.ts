@@ -7,20 +7,24 @@ import { ReceiveMessagePayload } from "@/chat/types/websocket";
 import { connectStomp } from "@/chat/websocket/connectStomp";
 
 type SocialLoginParams = {
-    code: string;
+    code?: string;
     state?: string;
+    accessToken?: string;
 };
 
 export const useSocialLogin = (provider: "kakao" | "naver" | "dev") => {
     const navigate = useNavigate();
 
     return useMutation({
-        mutationFn: async ({ code, state }: SocialLoginParams) => {
-            const loginRes = await axios.post(
-                `${import.meta.env.VITE_API_BASE_URL}/login/${provider}`,
-                { code, state },
-                { withCredentials: true }
-            );
+        mutationFn: async ({ code, accessToken, state }: SocialLoginParams) => {
+            const payload: Record<string, any> = {};
+            if (code) payload.code = code;
+            if (accessToken) payload.accessToken = accessToken;
+            if (state) payload.state = state;
+
+            const loginRes = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/login/${provider}`, payload, {
+                withCredentials: true,
+            });
 
             if (loginRes.data.status === "USER_NEED_SIGNUP") {
                 return { status: "USER_NEED_SIGNUP" };

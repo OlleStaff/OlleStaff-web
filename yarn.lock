@@ -1736,13 +1736,6 @@
   dependencies:
     tslib "^2.1.0"
 
-"@capacitor/core@latest":
-  version "7.4.2"
-  resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-7.4.2.tgz#9ed8f4fe80a24c51c6969dbf44b70142d1e8eb91"
-  integrity sha512-akCf9A1FUR8AWTtmgGjHEq6LmGsjA2U7igaJ9PxiCBfyxKqlDbuGHrlNdpvHEjV5tUPH3KYtkze6gtFcNKPU9A==
-  dependencies:
-    tslib "^2.1.0"
-
 "@capacitor/ios@^7.4.1":
   version "7.4.1"
   resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-7.4.1.tgz#8b2c2186fc9ddc9ed76ae53ffebb2a04d5839993"
@@ -2935,6 +2928,11 @@
   dependencies:
     "@tanstack/query-core" "5.72.2"
 
+"@team-lepisode/capacitor-kakao-login@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@team-lepisode/capacitor-kakao-login/-/capacitor-kakao-login-7.0.0.tgz#f5a9008d1efc44ca65c4453466a2f1355804beaf"
+  integrity sha512-qIjsulMOVw8wL2Jq0Cow+RbZmh1oYwVSYbTydoXp08omItdWWZLGf51+imiv/27lpm4CsRfMrOxlDTZO8enXJA==
+
 "@testing-library/dom@10.4.0", "@testing-library/dom@^10.4.0":
   version "10.4.0"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-10.4.0.tgz#82a9d9462f11d240ecadbf406607c6ceeeff43a8"
@@ -3776,13 +3774,6 @@ caniuse-lite@^1.0.30001688:
   version "1.0.30001701"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001701.tgz#ad9c90301f7153cf6b3314d16cc30757285bf9e7"
   integrity sha512-faRs/AW3jA9nTwmJBSO1PQ6L/EOgsB5HMQQq4iCu5zhPgVVgO/pZRHlmatwijZKetFw8/Pr4q6dEN8sJuq8qTw==
-
-capacitor-kakao-login@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/capacitor-kakao-login/-/capacitor-kakao-login-1.0.1.tgz#826516fd13a6a91b4d3939f6f117ad9874d71c58"
-  integrity sha512-b/q1sZlTwUiWobqVGQ0YRy5tTOy7ScwO+pchzVTl7Pyu0GbxNgsdkLO5V/Ec1l4vWloNNSEaoRRAbdUoepfRjA==
-  dependencies:
-    "@capacitor/core" latest
 
 ccount@^2.0.0:
   version "2.0.1"

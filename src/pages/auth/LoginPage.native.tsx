@@ -1,6 +1,8 @@
 import styled from "@emotion/styled";
 import { Text } from "@/styles/Text";
 import theme from "@/styles/theme";
+// @ts-ignore
+import { KakaoLogin } from "capacitor-kakao-login";
 import { useSocialLogin } from "@/hooks/auth/useSocialLogin";
 
 export default function LoginPage() {
@@ -8,32 +10,25 @@ export default function LoginPage() {
     // const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
     const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
     const NAVER_REDIRECT_URI = import.meta.env.VITE_NAVER_REDIRECT_URI;
-    const { mutate: kakaoLogin } = useSocialLogin("kakao");
 
-    // const isNativeApp = !!(window as any).Capacitor && !!(window as any).KakaoLogin;
+    console.log("native 버전 LoginPage파일 성공");
 
-    // console.log("Capacitor:", (window as any).Capacitor);
-    // console.log("KakaoLogin:", (window as any).KakaoLogin);
+    const { mutate: kakaoLogin, isPending } = useSocialLogin("kakao");
 
     const handleKakaoLogin = async () => {
-        // 네이티브 환경 플로우
         try {
-            const kakaoPlugin = (window as any).Capacitor?.Plugins?.CapacitorKakaoLogin;
-            if (!kakaoPlugin) {
-                alert("Kakao 플러그인이 없습니다!");
-                return;
-            }
-            const result = await kakaoPlugin.login();
+            const result = await (KakaoLogin as any).login();
             const { accessToken } = result;
             if (accessToken) {
                 kakaoLogin({ accessToken });
             } else {
-                alert("카카오 accessToken이 없습니다.");
+                console.error("카카오 accessToken이 없습니다.");
             }
         } catch (e) {
-            alert("카카오 로그인 에러: " + JSON.stringify(e));
+            console.error("카카오 로그인 에러:", e);
         }
     };
+
     const handleNaverLogin = () => {
         const state = crypto.randomUUID();
         sessionStorage.setItem("naver_auth_state", state);
@@ -51,27 +46,24 @@ export default function LoginPage() {
             <BackImage src="/images/BackImage.png" />
             <TopSection>
                 <Text.Title3_1 color="White" style={{ textAlign: "center" }}>
-                    제주도 숙박공간과 스텝의 연결고리
+                    제주도 숙박공간과 스텝의 연결고리입니다.
                 </Text.Title3_1>
                 <LogoArea>
                     <img src="/images/logo_white.svg" alt="올래스텝 로고" />
-                    <LogoText>올래스텝</LogoText>
+                    <LogoText>올래</LogoText>
                 </LogoArea>
             </TopSection>
-
             <ButtonContainer>
-                <LoginButton bgColor="Kakao" onClick={handleKakaoLogin}>
+                <LoginButton bgColor="Kakao" onClick={handleKakaoLogin} disabled={isPending}>
                     <LoginButtonIcon src="/icons/kakao.svg" alt="카카오 아이콘" />
                     <Text.Title3_1 style={{ marginTop: "3px" }}>카카오 로그인</Text.Title3_1>
                 </LoginButton>
-
                 <LoginButton bgColor="Naver" onClick={handleNaverLogin}>
                     <LoginButtonIcon src="/icons/naver.svg" alt="네이버 아이콘" />
                     <Text.Title3_1 color="White" style={{ marginTop: "3px" }}>
                         네이버 로그인
                     </Text.Title3_1>
                 </LoginButton>
-
                 <LoginButton style={{ border: "1px solid #E2E2E2" }} bgColor="White" onClick={handleGoogleLogin}>
                     <LoginButtonIcon src="/icons/google.svg" alt="이메일 아이콘" />
                     <Text.Title3_1 style={{ marginTop: "3px" }}>이메일 로그인</Text.Title3_1>

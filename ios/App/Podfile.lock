@@ -1,28 +1,54 @@
 PODS:
+  - Alamofire (5.9.1)
   - Capacitor (7.4.1):
     - CapacitorCordova
   - CapacitorCordova (7.4.1)
-  - CapacitorKakaoLogin (0.0.1):
+  - KakaoSDKAuth (2.22.7):
+    - KakaoSDKCommon (= 2.22.7)
+  - KakaoSDKCommon (2.22.7):
+    - KakaoSDKCommon/Common (= 2.22.7)
+    - KakaoSDKCommon/Network (= 2.22.7)
+  - KakaoSDKCommon/Common (2.22.7)
+  - KakaoSDKCommon/Network (2.22.7):
+    - Alamofire (~> 5.9.0)
+    - KakaoSDKCommon/Common (= 2.22.7)
+  - KakaoSDKUser (2.22.7):
+    - KakaoSDKAuth (= 2.22.7)
+  - TeamLepisodeCapacitorKakaoLogin (7.0.0):
     - Capacitor
+    - KakaoSDKAuth
+    - KakaoSDKCommon
+    - KakaoSDKUser
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
-  - CapacitorKakaoLogin (from `../../node_modules/capacitor-kakao-login`)
+  - "TeamLepisodeCapacitorKakaoLogin (from `../../node_modules/@team-lepisode/capacitor-kakao-login`)"
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - KakaoSDKAuth
+    - KakaoSDKCommon
+    - KakaoSDKUser
 
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
-  CapacitorKakaoLogin:
-    :path: "../../node_modules/capacitor-kakao-login"
+  TeamLepisodeCapacitorKakaoLogin:
+    :path: "../../node_modules/@team-lepisode/capacitor-kakao-login"
 
 SPEC CHECKSUMS:
+  Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
   Capacitor: 4738747ece274c45e4d9bec9ae394a6269169e64
   CapacitorCordova: 34618fa1b14b6b091fd60a7658f7654044ae8d8a
-  CapacitorKakaoLogin: c216cdd027318a156fdbae8dd39b433b18a8709f
+  KakaoSDKAuth: 45204252ff7c379c0f86c5573f97ec36885afca0
+  KakaoSDKCommon: 132164a6bac8bcd3a4346d3bf777f34f8f39fdca
+  KakaoSDKUser: 4c9cf1da78710d19d0b2c2dd32d1a44c544cdfa4
+  TeamLepisodeCapacitorKakaoLogin: 856eecb3be3dc322941c1a6e98efbb9c09e8fc8c
 
-PODFILE CHECKSUM: 0cc7d7c116e8f1c886b1b34a84c1e6f565ace31e
+PODFILE CHECKSUM: 026885aeed2b2d168b8fb518a1ab4ff5f5c10a12
 
 COCOAPODS: 1.14.3

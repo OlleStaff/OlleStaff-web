@@ -1,5 +1,7 @@
 import UIKit
 import Capacitor
+import KakaoSDKCommon
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -7,6 +9,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        KakaoSDK.initSDK(appKey: "42007a0bda31f53373f0c8d76b2167e7") // <-- 따옴표 안에 네이티브 앱키 입력
+
         // Override point for customization after application launch.
         return true
     }
