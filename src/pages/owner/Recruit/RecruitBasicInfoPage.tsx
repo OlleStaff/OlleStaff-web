@@ -91,7 +91,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                     />
 
                     <HashTagEditor
-                        values={formData.hashtagName}
+                        values={formData.hashtagName ?? []}
                         onChange={updated => setFormData(prev => ({ ...prev, hashtagName: updated }))}
                     />
 
@@ -102,6 +102,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                         value={formData.title}
                         onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
                         required
+                        maxLength={200}
                     />
 
                     <Input
@@ -111,6 +112,8 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                         value={formData.instarUrl}
                         onChange={e => setFormData(prev => ({ ...prev, instarUrl: e.target.value }))}
                         required
+                        minLength={10}
+                        maxLength={100}
                     />
 
                     <Wrapper.FlexBox gap="20px">
@@ -189,6 +192,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                         value={formData.content}
                         onChange={e => setFormData(prev => ({ ...prev, content: e.target.value }))}
                         variant="flat-lg"
+                        maxLength={500}
                         required
                     />
 
