@@ -52,7 +52,7 @@ export default function Input(props: InputProps) {
     const showCombinedLengthMessage =
         typeof minLength === "number" &&
         typeof maxLength === "number" &&
-        (value.length < minLength || value.length >= maxLength);
+        ((value.length > 0 && value.length < minLength) || value.length >= maxLength);
 
     return (
         <InputContainer>
@@ -129,6 +129,7 @@ const StyledInput = styled.input`
     line-height: 20px;
     letter-spacing: 0.32px;
     color: ${theme.color.Black};
+    width: 100%;
 
     &::placeholder {
         color: ${theme.color.Gray4};
