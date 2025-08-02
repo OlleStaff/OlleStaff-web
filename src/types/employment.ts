@@ -12,7 +12,7 @@ interface EmploymentBase {
     latitude: number;
     longitude: number;
     locationName: string;
-    hashtagName: string[];
+    hashtagName: string[] | null;
     benefitsContent: string[];
     precautions: {
         precautionsTitle: string;

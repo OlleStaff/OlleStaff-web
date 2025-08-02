@@ -14,7 +14,7 @@ interface Props extends GuesthouseListItemProps {
 export const GuesthouseListItem = ({
     employmentId,
     image,
-    hashtagName,
+    hashtagName = [],
     title,
     content,
     locationName,
@@ -51,18 +51,20 @@ export const GuesthouseListItem = ({
                     <StyledImage src={image} alt={title} />
                 </ImageWrapper>
                 <ContentWrapper>
-                    <TagWrapper>
-                        {hashtagName.slice(0, 2).map(tag => (
-                            <Tag key={tag}>
-                                <Text.Body3_1 color="Gray4">{truncateText(tag, isEditActive ? 2 : 4)}</Text.Body3_1>
-                            </Tag>
-                        ))}
-                        {hashtagName.length > 2 && (
-                            <Tag>
-                                <Text.Body3_1 color="Gray4">+{hashtagName.length - 2}</Text.Body3_1>
-                            </Tag>
-                        )}
-                    </TagWrapper>
+                    {(hashtagName ?? []).length !== 0 && (
+                        <TagWrapper>
+                            {hashtagName.slice(0, 2).map((tag, idx) => (
+                                <Tag key={`${tag}-${idx}`}>
+                                    <Text.Body3_1 color="Gray4">{truncateText(tag, isEditActive ? 2 : 4)}</Text.Body3_1>
+                                </Tag>
+                            ))}
+                            {hashtagName.length > 2 && (
+                                <Tag>
+                                    <Text.Body3_1 color="Gray4">+{hashtagName.length - 2}</Text.Body3_1>
+                                </Tag>
+                            )}
+                        </TagWrapper>
+                    )}
                     <Wrapper.FlexBox direction="column">
                         <Text.Title3_1>{truncateText(title, isEditActive ? 9 : 11)}</Text.Title3_1>
                         <Text.Body3_1 color="Gray4">{truncateText(content, isEditActive ? 15 : 18)}</Text.Body3_1>

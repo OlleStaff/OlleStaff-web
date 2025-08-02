@@ -1,12 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { EmploymentApi } from "@/apis/employment";
-import { EmploymentPutProps } from "@/types/employment";
 
 export const usePutEmployment = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (formData: EmploymentPutProps) => EmploymentApi.putEmployment(formData),
+        mutationFn: (formData: FormData) => EmploymentApi.putEmployment(formData),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["employmentList"] });
         },
