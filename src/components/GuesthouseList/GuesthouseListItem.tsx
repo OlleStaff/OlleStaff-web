@@ -38,6 +38,12 @@ export const GuesthouseListItem = ({
         onCheckToggle?.(employmentId);
     };
 
+    const hasImage = typeof image === "string" && image.length > 0;
+    const safeHashtagName = Array.isArray(hashtagName) ? hashtagName : [];
+    const hasHashtag = safeHashtagName.length > 0;
+    const visibleHashtagCount = hasImage ? 2 : 3;
+    const hiddenHashtagCount = safeHashtagName.length - visibleHashtagCount;
+
     return (
         <Wrapper.FlexBox alignItems="center" gap="10px">
             {isEditActive && (
@@ -47,29 +53,50 @@ export const GuesthouseListItem = ({
             )}
 
             <Card onClick={handleClick}>
-                <ImageWrapper $closed={closed}>
-                    <StyledImage src={image} alt={title} />
-                </ImageWrapper>
+                {hasImage && (
+                    <ImageWrapper $closed={closed}>
+                        <StyledImage src={image} alt={title} />
+                    </ImageWrapper>
+                )}
+
                 <ContentWrapper>
-                    {(hashtagName ?? []).length !== 0 && (
+                    {hasHashtag && (
                         <TagWrapper>
-                            {hashtagName.slice(0, 2).map((tag, idx) => (
+                            {safeHashtagName.slice(0, visibleHashtagCount).map((tag, idx) => (
                                 <Tag key={`${tag}-${idx}`}>
                                     <Text.Body3_1 color="Gray4">{truncateText(tag, isEditActive ? 2 : 4)}</Text.Body3_1>
                                 </Tag>
                             ))}
-                            {hashtagName.length > 2 && (
+                            {hiddenHashtagCount > 0 && (
                                 <Tag>
-                                    <Text.Body3_1 color="Gray4">+{hashtagName.length - 2}</Text.Body3_1>
+                                    <Text.Body3_1 color="Gray4">+{hiddenHashtagCount}</Text.Body3_1>
                                 </Tag>
                             )}
                         </TagWrapper>
                     )}
+
                     <Wrapper.FlexBox direction="column">
-                        <Text.Title3_1>{truncateText(title, isEditActive ? 9 : 11)}</Text.Title3_1>
-                        <Text.Body3_1 color="Gray4">{truncateText(content, isEditActive ? 15 : 18)}</Text.Body3_1>
+                        <Text.Title3_1>{truncateText(title, isEditActive ? (hasImage ? 10 : 15) : 18)}</Text.Title3_1>
+                        <Text.Body3_1 color="Gray4">
+                            {truncateText(
+                                content,
+                                hasImage
+                                    ? hasHashtag
+                                        ? isEditActive
+                                            ? 15
+                                            : 20
+                                        : 55
+                                    : hasHashtag
+                                      ? isEditActive
+                                          ? 25
+                                          : 28
+                                      : isEditActive
+                                        ? 50
+                                        : 59
+                            )}
+                        </Text.Body3_1>
                     </Wrapper.FlexBox>
-                    <Footer>
+                    <Footer hasImage={hasImage}>
                         {closed ? (
                             <IconText>
                                 <img src="/icons/unChecked.svg" alt="마감됨" width={12} height={12} />
@@ -82,7 +109,7 @@ export const GuesthouseListItem = ({
                                 <IconText>
                                     <Icon src="/icons/locationIcon.svg" />
                                     <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
-                                        {truncateText(locationName, isEditActive ? 5 : 8)}
+                                        {truncateText(locationName, isEditActive ? (hasImage ? 4 : 20) : 8)}
                                     </Text.Body3>
                                 </IconText>
                                 <IconText>
@@ -110,6 +137,7 @@ export const Card = styled.div`
     background-color: white;
     cursor: pointer;
     width: 100%;
+    height: 112px;
 `;
 
 const ImageWrapper = styled.div<{ $closed: boolean }>`
@@ -152,10 +180,11 @@ const Tag = styled.div`
     padding: 0px 10px;
 `;
 
-const Footer = styled.div`
+const Footer = styled.div<{ hasImage: boolean }>`
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: ${({ hasImage }) => (hasImage ? "space-between" : "flex-start")};
+    gap: ${({ hasImage }) => (hasImage ? "0" : "10px")};
     height: 14px;
 `;
 
