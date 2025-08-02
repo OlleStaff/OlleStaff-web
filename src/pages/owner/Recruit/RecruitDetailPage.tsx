@@ -83,6 +83,7 @@ export default function RecruitDetailPage() {
             alt: "모집 마감일",
         },
     ];
+    console.log("이미지 싹 다", images);
 
     return (
         <>
@@ -160,7 +161,9 @@ export default function RecruitDetailPage() {
                     <BenefitListWrapper>
                         {(showAllBenefits ? benefitsContent : benefitsContent.slice(0, 3)).map(
                             (benefit: string, idx: number) => (
-                                <BenefitItemBox key={idx}>{benefit}</BenefitItemBox>
+                                <BenefitItemBox key={idx}>
+                                    <ExpandableText text={benefit} maxLength={18} />
+                                </BenefitItemBox>
                             )
                         )}
                     </BenefitListWrapper>
@@ -205,7 +208,9 @@ const DDayWrapper = styled.div`
 const BenefitItemBox = styled.div`
     display: flex;
     align-items: center;
-    height: 40px;
+    flex-wrap: wrap;
+    word-break: break-word;
+    white-space: normal;
     padding: 10px 20px;
     background-color: ${theme.color.Gray0};
     border-radius: 8px;
