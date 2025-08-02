@@ -109,7 +109,10 @@ export const GuesthouseListItem = ({
                                 <IconText>
                                     <Icon src="/icons/locationIcon.svg" />
                                     <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
-                                        {truncateText(locationName, isEditActive ? (hasImage ? 4 : 20) : 8)}
+                                        {truncateText(
+                                            locationName,
+                                            isEditActive ? (hasImage ? 4 : 20) : hasImage ? 8 : 18
+                                        )}
                                     </Text.Body3>
                                 </IconText>
                                 <IconText>
