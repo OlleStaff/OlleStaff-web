@@ -13,7 +13,8 @@ import BenefitListEditor from "../components/BenefitListEditor";
 import LocationSelector from "../components/LocationSelector";
 import CategorySelector from "../components/CategorySelector";
 import { formatDateInput } from "@/utils/date";
-import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useGetEmploymentDetail } from "@/hooks/owner/employment";
 
 type Mode = "create" | "edit";
 
@@ -23,10 +24,10 @@ interface RecruitBasicInfoPageProps<T extends Mode> {
     mode: T;
     formData: FormDataType<T>;
     setFormData: React.Dispatch<React.SetStateAction<FormDataType<T>>>;
-    imageFiles: File[];
-    setImageFiles: React.Dispatch<React.SetStateAction<File[]>>;
+    setImageFiles?: React.Dispatch<React.SetStateAction<File[]>>;
     imageUrls?: T extends "edit" ? string[] : undefined;
     setImageUrls?: React.Dispatch<React.SetStateAction<string[]>>;
+    setImageNames?: React.Dispatch<React.SetStateAction<string[]>>;
     onNext: () => void;
 }
 
@@ -34,59 +35,69 @@ export default function RecruitBasicInfoPage<T extends Mode>({
     mode,
     formData,
     setFormData,
-    imageFiles,
     setImageFiles,
     imageUrls,
     setImageUrls,
+    setImageNames,
     onNext,
 }: RecruitBasicInfoPageProps<T>) {
-    const isImageValid = mode === "create" ? imageFiles.length > 0 : imageUrls && imageUrls.length > 0;
-
     const isFormValid =
-        isImageValid &&
-        formData.hashtagName.length > 0 &&
+        formData.title.trim().length > 0 &&
+        formData.instarUrl.trim().length > 0 &&
+        formData.startedAt.trim().length > 0 &&
+        formData.endedAt.trim().length > 0 &&
+        formData.recruitmentEnd.trim().length > 0 &&
+        formData.content.trim().length > 0 &&
         formData.benefitsContent.length > 0 &&
-        formData.title.trim() !== "" &&
-        formData.content.trim() !== "" &&
-        formData.instarUrl.trim() !== "" &&
-        formData.startedAt.trim() !== "" &&
-        formData.endedAt.trim() !== "" &&
-        formData.recruitmentEnd.trim() !== "" &&
-        formData.locationName.trim() !== "" &&
-        formData.category.trim() !== "" &&
-        !!formData.personNum &&
-        !!formData.sex &&
+        formData.locationName.trim().length > 0 &&
+        formData.category.trim().length > 0 &&
+        formData.personNum > 0 &&
+        formData.sex !== undefined &&
         formData.latitude !== 0 &&
-        formData.longitude !== 0;
+        formData.longitude !== 0 &&
+        formData.precautions.length > 0;
 
-    useEffect(() => {
-        console.log(formData);
-    }, []);
+    const { employmentId } = useParams<{ employmentId: string }>();
+    const { data: employment } = useGetEmploymentDetail(Number(employmentId)); // 추후 전역 상태관리 도입 !!!!!!!!
+
+    const isModified =
+        mode === "edit"
+            ? employment?.data
+                ? formData.title.trim() !== employment?.data.title.trim() ||
+                  formData.instarUrl.trim() !== employment?.data.instarUrl.trim() ||
+                  formData.startedAt.trim() !== employment?.data.startedAt.trim() ||
+                  formData.endedAt.trim() !== employment?.data.endedAt.trim() ||
+                  formData.recruitmentEnd.trim() !== employment?.data.recruitmentEnd.trim() ||
+                  formData.content.trim() !== employment?.data.content.trim() ||
+                  formData.locationName.trim() !== employment?.data.locationName.trim() ||
+                  formData.category.trim() !== employment?.data.category.trim() ||
+                  formData.personNum !== employment?.data.personNum ||
+                  formData.sex !== employment?.data.sex ||
+                  formData.latitude !== employment?.data.latitude ||
+                  formData.longitude !== employment?.data.longitude ||
+                  JSON.stringify(formData.benefitsContent) !== JSON.stringify(employment?.data.benefitsContent) ||
+                  JSON.stringify(formData.hashtagName ?? []) !== JSON.stringify(employment?.data.hashtagName ?? [])
+                : false // 아직 employment?.data 없으면 그냥 변경사항 없는 것으로 간주
+            : true;
 
     return (
         <>
             <Header title={mode === "edit" ? "게시글 수정" : "게시글 작성"} showBackButton />
-
             <PageWrapper hasHeader>
                 <Wrapper.FlexBox direction="column" padding="30px" gap="20px">
                     <ImageUploader
                         maxImages={9}
                         previewImageUrls={imageUrls}
-                        onChange={({ files, urls }) => {
-                            setImageFiles(files);
-                            if (mode === "edit" && setImageUrls) {
-                                setImageUrls(urls);
-                                setFormData(prev => ({
-                                    ...prev,
-                                    imageUrls: urls,
-                                    newImages: files,
-                                }));
-                            } else {
-                                setFormData(prev => ({
-                                    ...prev,
-                                    newImages: files,
-                                }));
-                            }
+                        onChange={({ urls, files, names }) => {
+                            const uniqueNames = [...new Set(names)];
+                            setImageUrls?.(urls);
+                            setImageFiles?.(files);
+                            setImageNames?.(uniqueNames);
+                            setFormData(prev => ({
+                                ...prev,
+                                imageUrls: urls,
+                                newImages: files,
+                            }));
                         }}
                     />
 
@@ -223,15 +234,27 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                         required
                     />
 
-                    <Button
-                        label="다음으로"
-                        width="large"
-                        onClick={onNext}
-                        disabled={!isFormValid}
-                        isActive={isFormValid}
-                    >
-                        다음으로
-                    </Button>
+                    {mode === "create" ? (
+                        <Button
+                            label="다음으로"
+                            width="large"
+                            onClick={onNext}
+                            disabled={!isFormValid}
+                            isActive={isFormValid}
+                        >
+                            다음으로
+                        </Button>
+                    ) : (
+                        <Button
+                            label="다음으로"
+                            width="large"
+                            onClick={onNext}
+                            disabled={!isFormValid || !isModified}
+                            isActive={isFormValid && isModified}
+                        >
+                            다음으로
+                        </Button>
+                    )}
                 </Wrapper.FlexBox>
             </PageWrapper>
         </>

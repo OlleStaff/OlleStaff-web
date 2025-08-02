@@ -83,7 +83,6 @@ export default function RecruitDetailPage() {
             alt: "모집 마감일",
         },
     ];
-    console.log("이미지 싹 다", images);
 
     return (
         <>

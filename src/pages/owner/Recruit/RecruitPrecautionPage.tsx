@@ -7,7 +7,8 @@ import PrecautionListItem from "../components/PrecautionListItem";
 import { EmploymentPostProps, EmploymentPutProps } from "@/types/employment";
 import { useState } from "react";
 import Modal from "@/components/Modal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetEmploymentDetail } from "@/hooks/owner/employment";
 
 export type Mode = "create" | "edit";
 
@@ -31,6 +32,16 @@ export default function RecruitPrecautionPage<T extends Mode>({
         formData.precautions.every(
             item => item.precautionsTitle.trim() !== "" && item.precautionsContent.trim() !== ""
         );
+
+    const { employmentId } = useParams<{ employmentId: string }>();
+    const { data: employment } = useGetEmploymentDetail(Number(employmentId)); // 추후 전역 상태관리 도입 !!!!!!!!
+
+    const isModified =
+        mode === "edit"
+            ? employment?.data
+                ? JSON.stringify(formData.precautions) !== JSON.stringify(employment.data.precautions)
+                : false
+            : true;
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
@@ -60,15 +71,27 @@ export default function RecruitPrecautionPage<T extends Mode>({
                         onChange={updated => setFormData(prev => ({ ...prev, precautions: updated }))}
                     />
 
-                    <Button
-                        label={mode === "edit" ? "수정 완료" : "작성 완료"}
-                        width="large"
-                        onClick={handleOpenModal}
-                        disabled={!isFormValid}
-                        isActive={isFormValid}
-                    >
-                        {mode === "edit" ? "수정 완료" : "작성 완료"}
-                    </Button>
+                    {mode === "create" ? (
+                        <Button
+                            label="작성 완료"
+                            width="large"
+                            onClick={handleOpenModal}
+                            disabled={!isFormValid}
+                            isActive={isFormValid}
+                        >
+                            작성 완료
+                        </Button>
+                    ) : (
+                        <Button
+                            label="수정 완료"
+                            width="large"
+                            onClick={handleOpenModal}
+                            disabled={!isFormValid || !isModified}
+                            isActive={isFormValid && isModified}
+                        >
+                            수정 완료
+                        </Button>
+                    )}
                 </Wrapper.FlexBox>
             </PageWrapper>
 

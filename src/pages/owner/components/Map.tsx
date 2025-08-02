@@ -15,7 +15,6 @@ const MapComponent = ({ latitude, longitude }: MapComponentProps) => {
     const mapRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        console.log(longitude, latitude);
         const loadKakaoMap = () => {
             if (!window.kakao || !window.kakao.maps) {
                 console.error("Kakao Maps API가 아직 로드되지 않았습니다.");

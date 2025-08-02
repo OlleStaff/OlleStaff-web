@@ -76,7 +76,7 @@ export const GuesthouseListItem = ({
                     )}
 
                     <Wrapper.FlexBox direction="column">
-                        <Text.Title3_1>{truncateText(title, isEditActive ? (hasImage ? 10 : 15) : 18)}</Text.Title3_1>
+                        <Text.Title3_1>{truncateText(title, isEditActive ? (hasImage ? 10 : 15) : 13)}</Text.Title3_1>
                         <Text.Body3_1 color="Gray4">
                             {truncateText(
                                 content,
@@ -85,13 +85,13 @@ export const GuesthouseListItem = ({
                                         ? isEditActive
                                             ? 15
                                             : 20
-                                        : 55
+                                        : 30
                                     : hasHashtag
                                       ? isEditActive
                                           ? 25
                                           : 28
                                       : isEditActive
-                                        ? 50
+                                        ? 10
                                         : 59
                             )}
                         </Text.Body3_1>
@@ -111,7 +111,7 @@ export const GuesthouseListItem = ({
                                     <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
                                         {truncateText(
                                             locationName,
-                                            isEditActive ? (hasImage ? 4 : 20) : hasImage ? 8 : 18
+                                            isEditActive ? (hasImage ? 6 : 20) : hasImage ? 9 : 18
                                         )}
                                     </Text.Body3>
                                 </IconText>

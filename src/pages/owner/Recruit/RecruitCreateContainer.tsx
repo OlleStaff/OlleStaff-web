@@ -29,6 +29,9 @@ export default function RecruitCreateContainer() {
 
     const navigate = useNavigate();
     const createMutation = usePostEmployment();
+    const handleNextStep = () => {
+        navigate("/owner/recruit/write/step2");
+    };
 
     const handleSubmit = async () => {
         createMutation.mutate(
@@ -55,8 +58,7 @@ export default function RecruitCreateContainer() {
                         formData={formData}
                         setFormData={setFormData}
                         setImageFiles={setImageFiles}
-                        imageFiles={imageFiles}
-                        onNext={() => navigate("/owner/recruit/write/step2")}
+                        onNext={handleNextStep}
                     />
                 }
             />
