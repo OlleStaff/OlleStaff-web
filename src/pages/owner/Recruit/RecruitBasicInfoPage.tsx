@@ -76,7 +76,10 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                   formData.latitude !== employment?.data.latitude ||
                   formData.longitude !== employment?.data.longitude ||
                   JSON.stringify(formData.benefitsContent) !== JSON.stringify(employment?.data.benefitsContent) ||
-                  JSON.stringify(formData.hashtagName ?? []) !== JSON.stringify(employment?.data.hashtagName ?? [])
+                  JSON.stringify(formData.hashtagName ?? []) !== JSON.stringify(employment?.data.hashtagName ?? []) ||
+                  JSON.stringify(employment.data.images) !==
+                      JSON.stringify((formData as EmploymentPutProps).imageUrls) ||
+                  (formData as EmploymentPutProps).newImages?.length !== 0
                 : false // 아직 employment?.data 없으면 그냥 변경사항 없는 것으로 간주
             : true;
 

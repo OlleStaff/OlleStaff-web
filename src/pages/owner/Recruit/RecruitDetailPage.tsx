@@ -106,14 +106,15 @@ export default function RecruitDetailPage() {
                         />
                     )}
 
-                    <Wrapper.FlexBox gap="6px" style={{ flexWrap: "wrap" }}>
-                        {Array.isArray(hashtagName) &&
-                            hashtagName.map((tag, idx) => (
+                    {Array.isArray(hashtagName) && hashtagName.length > 0 && (
+                        <Wrapper.FlexBox gap="6px" style={{ flexWrap: "wrap" }}>
+                            {hashtagName.map((tag, idx) => (
                                 <HashTag key={idx}>
                                     <Text.Body2 color="Main"># {tag}</Text.Body2>
                                 </HashTag>
                             ))}
-                    </Wrapper.FlexBox>
+                        </Wrapper.FlexBox>
+                    )}
 
                     <Text.Title1_1>{title}</Text.Title1_1>
 
