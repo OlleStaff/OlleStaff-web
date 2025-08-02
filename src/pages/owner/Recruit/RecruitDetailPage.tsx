@@ -143,7 +143,7 @@ export default function RecruitDetailPage() {
 
                     <Wrapper.FlexBox bgColor="#F8F8F8" borderRadius="4px" padding="14px 19px">
                         <Text.Body1>
-                            <ExpandableText text={content} maxLength={135} />
+                            <ExpandableText text={content} maxWidth={1200} />
                         </Text.Body1>
                     </Wrapper.FlexBox>
 
@@ -162,7 +162,7 @@ export default function RecruitDetailPage() {
                         {(showAllBenefits ? benefitsContent : benefitsContent.slice(0, 3)).map(
                             (benefit: string, idx: number) => (
                                 <BenefitItemBox key={idx}>
-                                    <ExpandableText text={benefit} maxLength={18} />
+                                    <ExpandableText text={benefit} maxWidth={140} />
                                 </BenefitItemBox>
                             )
                         )}

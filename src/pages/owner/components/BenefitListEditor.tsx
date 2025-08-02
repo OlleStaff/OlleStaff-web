@@ -39,7 +39,7 @@ export default function BenefitListEditor({ values, onChange, required }: Benefi
                     복리후생
                     {required && <RequiredStar>*</RequiredStar>}
                 </Text.Body1_1>
-                <Text.Body3_1 color="Gray4">* 최대 5개의 복리후생 조건을 작성할 수 있습니다.</Text.Body3_1>
+                <Text.Body3_1 color="Gray4">최대 5개의 복리후생 조건을 작성할 수 있습니다.</Text.Body3_1>
             </Wrapper.FlexBox>
 
             {values.map((benefit, index) => (

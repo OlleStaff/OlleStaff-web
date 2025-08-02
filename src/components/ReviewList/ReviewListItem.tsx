@@ -190,7 +190,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                                 wordBreak: "break-word",
                             }}
                         >
-                            <ExpandableText text={review} maxLength={100} />
+                            <ExpandableText text={review} maxWidth={500} />
                         </Wrapper.FlexBox>
                     </Text.Body2_1>
 
@@ -234,7 +234,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                             />
                         </Wrapper.FlexBox>
                         <Text.Body2_1>
-                            <ExpandableText text={reviewComment} maxLength={70} />
+                            <ExpandableText text={reviewComment} maxWidth={500} />
                         </Text.Body2_1>
                         <Wrapper.FlexBox justifyContent="flex-end">
                             <Text.Body3 color="Gray4">{timeAgo(reviewCommentDate)}</Text.Body3>
