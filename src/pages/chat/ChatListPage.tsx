@@ -3,11 +3,11 @@ import PageWrapper from "@/components/PageWrapper";
 import TabSelector from "@/components/TabSelector";
 import { StaffTabTypes, TAB_LABELS } from "@/constants/tabs";
 import { useState } from "react";
-import ChatListItem from "../components/ChatListItem";
+import ChatListItem from "./components/ChatListItem";
 import { useNavigate } from "react-router-dom";
 import { Wrapper } from "@/styles/Wrapper";
 import { Text } from "@/styles/Text";
-import { ChatRoomPreview } from "../types/common";
+import { ChatRoomPreview } from "@/types/chat/common";
 
 const mockChatRooms: ChatRoomPreview[] = [
     {

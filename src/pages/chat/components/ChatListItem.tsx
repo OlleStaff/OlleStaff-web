@@ -3,8 +3,8 @@ import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
 import theme from "@/styles/theme";
 import { Style as RadioStyle } from "@/components/RadioButton";
-import { ChatRoomPreview } from "../types/common";
 import { timeAgo } from "@/utils/date";
+import { ChatRoomPreview } from "@/types/chat/common";
 
 interface ChatListItemProps {
     room: ChatRoomPreview;

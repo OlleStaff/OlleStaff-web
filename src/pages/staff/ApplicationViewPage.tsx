@@ -63,6 +63,7 @@ export default function ApplicationView() {
                     <Wrapper.FlexBox direction="column" margin="24px 0px" gap="12px">
                         <SectionTitle
                             title="자기소개 및 지원동기"
+                            link=""
                             type="copy"
                             onCopyClick={() => copy(application.introduction)}
                         />
@@ -73,6 +74,7 @@ export default function ApplicationView() {
                         <Wrapper.FlexBox direction="column" margin="24px 0px" gap="12px">
                             <SectionTitle
                                 title="어필사항 및 경력사항"
+                                link=""
                                 type="copy"
                                 onCopyClick={() => copy(application.appeal)}
                             />

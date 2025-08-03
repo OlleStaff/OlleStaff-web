@@ -8,7 +8,7 @@ interface SectionTitleProps {
     link: string;
     type?: "default" | "copy";
     onCopyClick?: () => void;
-    isEmpty: boolean;
+    isEmpty?: boolean;
 }
 export default function SectionTitle({ title, link, type = "default", onCopyClick, isEmpty }: SectionTitleProps) {
     const navigate = useNavigate();

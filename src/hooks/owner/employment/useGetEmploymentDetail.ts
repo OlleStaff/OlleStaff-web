@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { EmploymentApi } from "@/apis/employment";
+import { EmploymentApi } from "@/apis/employment/employment";
 import { EmploymentGetProps } from "@/types/employment";
 
 export const useGetEmploymentDetail = (employmentId: number) =>

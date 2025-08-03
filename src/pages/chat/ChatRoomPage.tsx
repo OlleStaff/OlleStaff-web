@@ -6,8 +6,8 @@ import { useState } from "react";
 import theme from "@/styles/theme";
 import { Wrapper } from "@/styles/Wrapper";
 import PageWrapper from "@/components/PageWrapper";
-import { ChatRoomDetail } from "../types/common";
 import { Text } from "@/styles/Text";
+import { ChatRoomDetail } from "@/types/chat/common";
 
 const mockChatRoom: ChatRoomDetail = {
     id: 1,
