@@ -44,6 +44,10 @@ export default function HomePage() {
         checkApplicationStatus();
     }, []);
 
+    useEffect(() => {
+        if (!isEmploymentLoading && (!employmentData || employmentData.length === 0)) navigate("/404");
+    }, [isEmploymentLoading, employmentData]);
+
     return (
         <Wrapper.FlexBox direction="column" gap="32px">
             {isEmploymentLoading ? (

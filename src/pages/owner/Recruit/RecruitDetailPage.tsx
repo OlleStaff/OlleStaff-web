@@ -14,6 +14,7 @@ import ImageViewer from "@/components/ImageViewer";
 import MapComponent from "../components/Map";
 import ImageCarousel from "@/components/ImageCarousel";
 import { useGetEmploymentDetail } from "@/hooks/owner/employment";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function RecruitDetailPage() {
     const navigate = useNavigate();
@@ -27,8 +28,8 @@ export default function RecruitDetailPage() {
     const userType = useUserStore(state => state.type);
     const { employmentId } = useParams<{ employmentId: string }>();
     const { data: detail, isLoading, error } = useGetEmploymentDetail(Number(employmentId));
-    if (!detail?.data || isLoading) return <p>불러오는 중...</p>;
-    if (error) return <p>불러오기 실패</p>;
+    if (!detail?.data || isLoading) return <LoadingSpinner />;
+    if (error) navigate("/404");
     const {
         instarUrl,
         personNum,
