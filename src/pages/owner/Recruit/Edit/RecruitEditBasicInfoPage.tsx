@@ -1,4 +1,4 @@
-import { EmploymentPostProps, EmploymentPutProps } from "@/types/employment";
+import { EmploymentPutProps } from "@/types/employment";
 import { Button } from "@/components/Button";
 import DropdownButton from "@/components/DropdownButton";
 import Header from "@/components/Header";
@@ -8,31 +8,25 @@ import PageWrapper from "@/components/PageWrapper";
 import RadioButton from "@/components/RadioButton";
 import Textarea from "@/components/Textarea";
 import { Wrapper } from "@/styles/Wrapper";
-import HashTagEditor from "../components/HashTagEditor";
-import BenefitListEditor from "../components/BenefitListEditor";
-import LocationSelector from "../components/LocationSelector";
-import CategorySelector from "../components/CategorySelector";
 import { formatDateInput } from "@/utils/date";
 import { useParams } from "react-router-dom";
 import { useGetEmploymentDetail } from "@/hooks/owner/employment";
+import HashTagEditor from "../../components/HashTagEditor";
+import BenefitListEditor from "../../components/BenefitListEditor";
+import LocationSelector from "../../components/LocationSelector";
+import CategorySelector from "../../components/CategorySelector";
 
-type Mode = "create" | "edit";
-
-type FormDataType<T extends Mode> = T extends "create" ? EmploymentPostProps : EmploymentPutProps;
-
-interface RecruitBasicInfoPageProps<T extends Mode> {
-    mode: T;
-    formData: FormDataType<T>;
-    setFormData: React.Dispatch<React.SetStateAction<FormDataType<T>>>;
-    setImageFiles?: React.Dispatch<React.SetStateAction<File[]>>;
-    imageUrls?: T extends "edit" ? string[] : undefined;
-    setImageUrls?: React.Dispatch<React.SetStateAction<string[]>>;
-    setImageNames?: React.Dispatch<React.SetStateAction<string[]>>;
+interface Props {
+    formData: EmploymentPutProps;
+    setFormData: React.Dispatch<React.SetStateAction<EmploymentPutProps>>;
+    setImageFiles: React.Dispatch<React.SetStateAction<File[]>>;
+    imageUrls: string[];
+    setImageUrls: React.Dispatch<React.SetStateAction<string[]>>;
+    setImageNames: React.Dispatch<React.SetStateAction<string[]>>;
     onNext: () => void;
 }
 
-export default function RecruitBasicInfoPage<T extends Mode>({
-    mode,
+export default function RecruitEditBasicInfoPage({
     formData,
     setFormData,
     setImageFiles,
@@ -40,7 +34,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
     setImageUrls,
     setImageNames,
     onNext,
-}: RecruitBasicInfoPageProps<T>) {
+}: Props) {
     const isFormValid =
         formData.title.trim().length > 0 &&
         formData.instarUrl.trim().length > 0 &&
@@ -58,34 +52,30 @@ export default function RecruitBasicInfoPage<T extends Mode>({
         formData.precautions.length > 0;
 
     const { employmentId } = useParams<{ employmentId: string }>();
-    const { data: employment } = useGetEmploymentDetail(Number(employmentId)); // 추후 전역 상태관리 도입 !!!!!!!!
+    const { data: employment } = useGetEmploymentDetail(Number(employmentId));
 
-    const isModified =
-        mode === "edit"
-            ? employment?.data
-                ? formData.title.trim() !== employment?.data.title.trim() ||
-                  formData.instarUrl.trim() !== employment?.data.instarUrl.trim() ||
-                  formData.startedAt.trim() !== employment?.data.startedAt.trim() ||
-                  formData.endedAt.trim() !== employment?.data.endedAt.trim() ||
-                  formData.recruitmentEnd.trim() !== employment?.data.recruitmentEnd.trim() ||
-                  formData.content.trim() !== employment?.data.content.trim() ||
-                  formData.locationName.trim() !== employment?.data.locationName.trim() ||
-                  formData.category.trim() !== employment?.data.category.trim() ||
-                  formData.personNum !== employment?.data.personNum ||
-                  formData.sex !== employment?.data.sex ||
-                  formData.latitude !== employment?.data.latitude ||
-                  formData.longitude !== employment?.data.longitude ||
-                  JSON.stringify(formData.benefitsContent) !== JSON.stringify(employment?.data.benefitsContent) ||
-                  JSON.stringify(formData.hashtagName ?? []) !== JSON.stringify(employment?.data.hashtagName ?? []) ||
-                  JSON.stringify(employment.data.images) !==
-                      JSON.stringify((formData as EmploymentPutProps).imageUrls) ||
-                  (formData as EmploymentPutProps).newImages?.length !== 0
-                : false // 아직 employment?.data 없으면 그냥 변경사항 없는 것으로 간주
-            : true;
+    const isModified = employment?.data
+        ? formData.title.trim() !== employment.data.title.trim() ||
+          formData.instarUrl.trim() !== employment.data.instarUrl.trim() ||
+          formData.startedAt.trim() !== employment.data.startedAt.trim() ||
+          formData.endedAt.trim() !== employment.data.endedAt.trim() ||
+          formData.recruitmentEnd.trim() !== employment.data.recruitmentEnd.trim() ||
+          formData.content.trim() !== employment.data.content.trim() ||
+          formData.locationName.trim() !== employment.data.locationName.trim() ||
+          formData.category.trim() !== employment.data.category.trim() ||
+          formData.personNum !== employment.data.personNum ||
+          formData.sex !== employment.data.sex ||
+          formData.latitude !== employment.data.latitude ||
+          formData.longitude !== employment.data.longitude ||
+          JSON.stringify(formData.benefitsContent) !== JSON.stringify(employment.data.benefitsContent) ||
+          JSON.stringify(formData.hashtagName ?? []) !== JSON.stringify(employment.data.hashtagName ?? []) ||
+          JSON.stringify(employment.data.images) !== JSON.stringify(formData.imageUrls) ||
+          formData.newImages.length !== 0
+        : false;
 
     return (
         <>
-            <Header title={mode === "edit" ? "게시글 수정" : "게시글 작성"} showBackButton />
+            <Header title="게시글 수정" showBackButton />
             <PageWrapper hasHeader>
                 <Wrapper.FlexBox direction="column" padding="30px" gap="20px">
                     <ImageUploader
@@ -93,14 +83,10 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                         previewImageUrls={imageUrls}
                         onChange={({ urls, files, names }) => {
                             const uniqueNames = [...new Set(names)];
-                            setImageUrls?.(urls);
-                            setImageFiles?.(files);
-                            setImageNames?.(uniqueNames);
-                            setFormData(prev => ({
-                                ...prev,
-                                imageUrls: urls,
-                                newImages: files,
-                            }));
+                            setImageUrls(urls);
+                            setImageFiles(files);
+                            setImageNames(uniqueNames);
+                            setFormData(prev => ({ ...prev, imageUrls: urls, newImages: files }));
                         }}
                     />
 
@@ -161,10 +147,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                                 variant="default"
                                 value={formData.startedAt}
                                 onChange={e =>
-                                    setFormData(prev => ({
-                                        ...prev,
-                                        startedAt: formatDateInput(e.target.value),
-                                    }))
+                                    setFormData(prev => ({ ...prev, startedAt: formatDateInput(e.target.value) }))
                                 }
                                 required
                             />
@@ -176,10 +159,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                                 variant="default"
                                 value={formData.endedAt}
                                 onChange={e =>
-                                    setFormData(prev => ({
-                                        ...prev,
-                                        endedAt: formatDateInput(e.target.value),
-                                    }))
+                                    setFormData(prev => ({ ...prev, endedAt: formatDateInput(e.target.value) }))
                                 }
                                 required
                             />
@@ -192,10 +172,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                         variant="default"
                         value={formData.recruitmentEnd}
                         onChange={e =>
-                            setFormData(prev => ({
-                                ...prev,
-                                recruitmentEnd: formatDateInput(e.target.value),
-                            }))
+                            setFormData(prev => ({ ...prev, recruitmentEnd: formatDateInput(e.target.value) }))
                         }
                         required
                     />
@@ -221,12 +198,7 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                         latitude={formData.latitude}
                         longitude={formData.longitude}
                         onChange={(lat, lng, name) =>
-                            setFormData(prev => ({
-                                ...prev,
-                                latitude: lat,
-                                longitude: lng,
-                                locationName: name,
-                            }))
+                            setFormData(prev => ({ ...prev, latitude: lat, longitude: lng, locationName: name }))
                         }
                         required
                     />
@@ -237,27 +209,15 @@ export default function RecruitBasicInfoPage<T extends Mode>({
                         required
                     />
 
-                    {mode === "create" ? (
-                        <Button
-                            label="다음으로"
-                            width="large"
-                            onClick={onNext}
-                            disabled={!isFormValid}
-                            isActive={isFormValid}
-                        >
-                            다음으로
-                        </Button>
-                    ) : (
-                        <Button
-                            label="다음으로"
-                            width="large"
-                            onClick={onNext}
-                            disabled={!isFormValid || !isModified}
-                            isActive={isFormValid && isModified}
-                        >
-                            다음으로
-                        </Button>
-                    )}
+                    <Button
+                        label="다음으로"
+                        width="large"
+                        onClick={onNext}
+                        disabled={!isFormValid || !isModified}
+                        isActive={isFormValid && isModified}
+                    >
+                        다음으로
+                    </Button>
                 </Wrapper.FlexBox>
             </PageWrapper>
         </>

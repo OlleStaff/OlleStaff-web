@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import RecruitPrecautionPage from "./RecruitPrecautionPage";
-import RecruitBasicInfoPage from "./RecruitBasicInfoPage";
 import { EmploymentPostProps } from "@/types/employment";
 import { usePostEmployment } from "@/hooks/owner/employment/usePostEmployment";
+import RecruitCreateBasicInfoPage from "./RecruitCreateBasicInfoPage";
+import RecruitCreatePrecautionPage from "./RecruitCreatePrecautionPage";
 
 const initialFormData: EmploymentPostProps = {
     instarUrl: "",
@@ -53,8 +53,7 @@ export default function RecruitCreateContainer() {
             <Route
                 path="step1"
                 element={
-                    <RecruitBasicInfoPage
-                        mode="create"
+                    <RecruitCreateBasicInfoPage
                         formData={formData}
                         setFormData={setFormData}
                         setImageFiles={setImageFiles}
@@ -65,8 +64,7 @@ export default function RecruitCreateContainer() {
             <Route
                 path="step2"
                 element={
-                    <RecruitPrecautionPage
-                        mode="create"
+                    <RecruitCreatePrecautionPage
                         formData={formData}
                         setFormData={setFormData}
                         handleSubmit={handleSubmit}

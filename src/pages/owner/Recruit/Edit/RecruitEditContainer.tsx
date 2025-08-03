@@ -3,8 +3,8 @@ import { Routes, Route, useNavigate, useParams } from "react-router-dom";
 import { EmploymentPutProps } from "@/types/employment";
 import { usePutEmployment } from "@/hooks/owner/employment/usePutEmployment";
 import { useGetEmploymentDetail } from "@/hooks/owner/employment";
-import RecruitBasicInfoPage from "@/pages/owner/Recruit/RecruitBasicInfoPage";
-import RecruitPrecautionPage from "@/pages/owner/Recruit/RecruitPrecautionPage";
+import RecruitEditBasicInfoPage from "./RecruitEditBasicInfoPage";
+import RecruitEditPrecautionPage from "./RecruitEditPrecautionPage";
 
 export default function RecruitEditContainer() {
     const navigate = useNavigate();
@@ -117,8 +117,7 @@ export default function RecruitEditContainer() {
             <Route
                 path="step1"
                 element={
-                    <RecruitBasicInfoPage
-                        mode="edit"
+                    <RecruitEditBasicInfoPage
                         formData={formData}
                         setFormData={setFormData as React.Dispatch<React.SetStateAction<EmploymentPutProps>>}
                         setImageFiles={setImageFiles}
@@ -132,8 +131,7 @@ export default function RecruitEditContainer() {
             <Route
                 path="step2"
                 element={
-                    <RecruitPrecautionPage
-                        mode="edit"
+                    <RecruitEditPrecautionPage
                         formData={formData}
                         setFormData={setFormData as React.Dispatch<React.SetStateAction<EmploymentPutProps>>}
                         handleSubmit={handleEditEmployment}
