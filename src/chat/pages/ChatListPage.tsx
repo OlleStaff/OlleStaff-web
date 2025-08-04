@@ -7,7 +7,7 @@ import ChatListItem from "./components/ChatListItem";
 import { useNavigate } from "react-router-dom";
 import { Wrapper } from "@/styles/Wrapper";
 import { Text } from "@/styles/Text";
-import { ChatRoomPreview } from "@/types/chat/common";
+import { ChatRoomPreview } from "@/chat/types/common";
 
 const mockChatRooms: ChatRoomPreview[] = [
     {

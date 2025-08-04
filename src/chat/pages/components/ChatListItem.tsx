@@ -4,7 +4,7 @@ import { Wrapper } from "@/styles/Wrapper";
 import theme from "@/styles/theme";
 import { Style as RadioStyle } from "@/components/RadioButton";
 import { timeAgo } from "@/utils/date";
-import { ChatRoomPreview } from "@/types/chat/common";
+import { ChatRoomPreview } from "@/chat/types/common";
 
 interface ChatListItemProps {
     room: ChatRoomPreview;
