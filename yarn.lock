@@ -2483,6 +2483,11 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/merge-streams/-/merge-streams-2.3.0.tgz#719df7fb41766bc143369eaa0dd56d8dc87c9958"
   integrity sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==
 
+"@stomp/stompjs@^7.1.1":
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/@stomp/stompjs/-/stompjs-7.1.1.tgz#9a836da33bed5b76c72a8f17f0594de98120f6d6"
+  integrity sha512-chcDs6YkAnKp1FqzwhGvh3i7v0+/ytzqWdKYw6XzINEKAzke/iD00dNgFPWSZEqktHOK+C1gSzXhLkLbARIaZw==
+
 "@storybook/addon-actions@8.6.9":
   version "8.6.9"
   resolved "https://registry.yarnpkg.com/@storybook/addon-actions/-/addon-actions-8.6.9.tgz#4295352a4e461f205b3d7061e70f8520ce94c248"

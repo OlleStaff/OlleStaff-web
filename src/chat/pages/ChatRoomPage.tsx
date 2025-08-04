@@ -7,7 +7,7 @@ import theme from "@/styles/theme";
 import { Wrapper } from "@/styles/Wrapper";
 import PageWrapper from "@/components/PageWrapper";
 import { Text } from "@/styles/Text";
-import { ChatRoomDetail } from "@/chat/types/common";
+import { ChatRoomDetail } from "@/types/chat/common";
 
 const mockChatRoom: ChatRoomDetail = {
     id: 1,
