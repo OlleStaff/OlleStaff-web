@@ -10,15 +10,18 @@ import ExpandableText from "../ExpandableText";
 import { usePostReComment } from "@/hooks/owner/review/usePostReComment";
 import ImageViewer from "../ImageViewer";
 import OptionButton from "../OptionButton";
-import { useDeleteReview } from "@/hooks/owner/review";
+import { useDeleteReview, useDeleteReviewComment } from "@/hooks/owner/review";
 import Modal from "../Modal";
 
 type ModalType = "confirm" | "success" | null;
+type ModalPurpose = "deleteReview" | "deleteComment" | "postRecomment" | null;
+
 interface ReviewListItemProps {
     data: ReviewInfo;
     openedReviewId: number | null;
     setOpenedReviewId: (id: number | null) => void;
 }
+
 export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId }: ReviewListItemProps) {
     const {
         reviewId,
@@ -34,91 +37,125 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
         hostNickName,
     } = data;
 
-    const handleOpenComment = () => {
-        setOpenedReviewId(openedReviewId === reviewId ? null : reviewId);
-    };
-
     const [text, setText] = useState<string>("");
+    const [isViewerOpen, setViewerOpen] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [modalType, setModalType] = useState<ModalType>(null);
+    const [modalPurpose, setModalPurpose] = useState<ModalPurpose>(null);
 
     const { mutate: submitReComment } = usePostReComment();
+    const { mutate: deleteReview } = useDeleteReview();
+    const { mutate: deleteReviewComment } = useDeleteReviewComment();
+
+    const openModal = (type: ModalType, purpose: ModalPurpose) => {
+        setModalType(type);
+        setModalPurpose(purpose);
+    };
+
+    const closeModal = () => {
+        setModalType(null);
+        setModalPurpose(null);
+    };
 
     const handleReCommentSubmit = () => {
         if (!text.trim()) return alert("댓글을 입력해주세요!");
-        submitReComment({ reviewId, reviewComment: text });
-        setOpenedReviewId(null);
+        submitReComment(
+            { reviewId, reviewComment: text },
+            {
+                onSuccess: () => {
+                    setText("");
+                    setOpenedReviewId(null);
+                    setModalType("success");
+                    setModalPurpose("postRecomment");
+                },
+            }
+        );
+    };
+    const handleDeleteReview = () => {
+        deleteReview(reviewId, {
+            onSuccess: () => {
+                openModal("success", "deleteReview");
+            },
+            onError: error => {
+                console.error("후기 삭제 실패", error);
+                alert("후기 삭제 중 오류가 발생했습니다.");
+            },
+        });
     };
 
-    const [isViewerOpen, setViewerOpen] = useState(false);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const handleDeleteReviewComment = () => {
+        deleteReviewComment(reviewId, {
+            onSuccess: () => {
+                openModal("success", "deleteComment");
+            },
+            onError: error => {
+                console.error("후기 답 댓글 삭제 실패", error);
+                alert("후기 답 댓글 삭제 중 오류가 발생했습니다.");
+            },
+        });
+    };
+
     const handleImageClick = (idx: number) => {
         setCurrentImageIndex(idx);
         setViewerOpen(true);
     };
 
-    const { mutate: deleteReview } = useDeleteReview();
-    const handleDeleteReview = () => {
-        deleteReview(reviewId, {
-            onSuccess: () => {
-                openModal("success");
-            },
-            onError: error => {
-                console.error("삭제 실패", error);
-                alert("삭제 중 오류가 발생했습니다.");
-            },
-        });
+    const handleOpenComment = () => {
+        setOpenedReviewId(openedReviewId === reviewId ? null : reviewId);
     };
-
-    const [modalType, setModalType] = useState<ModalType>(null);
-
-    const openModal = (type: ModalType) => setModalType(type);
-    const closeModal = () => setModalType(null);
-
-    // const { mutate: deleteReviewComment } = useDeleteReviewComment();
-    // const handleDeleteReviewComment = () => {
-    //     deleteReviewComment(reviewId, {
-    //         onSuccess: () => {
-    //             openModal("success");
-    //             window.location.reload();
-    //         },
-    //         onError: error => {
-    //             console.error("삭제 실패", error);
-    //             alert("삭제 중 오류가 발생했습니다.");
-    //         },
-    //     });
-    // };
 
     return (
         <>
-            {modalType === "confirm" && (
+            {modalType === "confirm" && modalPurpose && (
                 <Modal
                     variant="confirm"
-                    title="등록된 후기를 삭제하시겠습니까?"
-                    message={`삭제 버튼 클릭 시 등록된 후기가 영구히 삭제됩니다.`}
+                    title={
+                        modalPurpose === "deleteReview" ? "등록된 후기를 삭제하시겠습니까?" : "답글을 삭제하시겠습니까?"
+                    }
+                    message={
+                        modalPurpose === "deleteReview"
+                            ? "삭제 버튼 클릭 시 등록된 후기가 영구히 삭제됩니다."
+                            : "삭제 버튼 클릭 시 답글이 영구히 삭제됩니다."
+                    }
                     cancelText="취소"
                     confirmText="삭제"
                     handleModalClose={closeModal}
                     onConfirm={() => {
-                        handleDeleteReview();
+                        if (modalPurpose === "deleteReview") handleDeleteReview();
+                        if (modalPurpose === "deleteComment") handleDeleteReviewComment();
                     }}
                 />
             )}
 
-            {modalType === "success" && (
+            {modalType === "success" && modalPurpose && (
                 <Modal
                     variant="default"
-                    title="후기 삭제 완료"
+                    title={
+                        modalPurpose === "deleteReview"
+                            ? "후기 삭제 완료"
+                            : modalPurpose === "deleteComment"
+                              ? "답글 삭제 완료"
+                              : "답글이 등록되었습니다!"
+                    }
                     confirmText="확인"
                     handleModalClose={closeModal}
                     onConfirm={() => {
-                        closeModal();
-                        window.location.reload();
+                        if (modalPurpose === "postRecomment") {
+                            closeModal();
+                        } else {
+                            closeModal();
+                            window.location.reload();
+                        }
                     }}
                 />
             )}
+
             <Card>
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                     <Text.Body1_1>{title}</Text.Body1_1>
-                    <OptionButton items={[{ label: "댓글 삭제", onClick: () => openModal("confirm") }]} />
+                    <OptionButton
+                        items={[{ label: "후기 삭제", onClick: () => openModal("confirm", "deleteReview") }]}
+                    />
                 </Wrapper.FlexBox>
 
                 <ContentWrapper>
@@ -129,15 +166,13 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                     </UserWrapper>
 
                     {images.length > 0 && (
-                        <>
-                            <ImageList>
-                                {images.map((imgUrl, idx) => (
-                                    <div key={idx} onClick={() => handleImageClick(idx)}>
-                                        <img src={imgUrl} alt={`리뷰이미지${idx + 1}`} />
-                                    </div>
-                                ))}
-                            </ImageList>
-                        </>
+                        <ImageList>
+                            {images.map((imgUrl, idx) => (
+                                <div key={idx} onClick={() => handleImageClick(idx)}>
+                                    <img src={imgUrl} alt={`리뷰이미지${idx + 1}`} />
+                                </div>
+                            ))}
+                        </ImageList>
                     )}
                     {isViewerOpen && (
                         <ImageViewer
@@ -146,6 +181,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                             onClose={() => setViewerOpen(false)}
                         />
                     )}
+
                     <Text.Body2_1>
                         <Wrapper.FlexBox
                             style={{
@@ -154,7 +190,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                                 wordBreak: "break-word",
                             }}
                         >
-                            <ExpandableText text={review} maxLength={100} />
+                            <ExpandableText text={review} maxWidth={500} />
                         </Wrapper.FlexBox>
                     </Text.Body2_1>
 
@@ -193,11 +229,12 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                     <CommentWrapper>
                         <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                             <Text.Body1_1>{hostNickName}</Text.Body1_1>
-
-                            <OptionButton items={[{ label: "댓글 삭제", onClick: () => openModal("confirm") }]} />
+                            <OptionButton
+                                items={[{ label: "답글 삭제", onClick: () => openModal("confirm", "deleteComment") }]}
+                            />
                         </Wrapper.FlexBox>
                         <Text.Body2_1>
-                            <ExpandableText text={reviewComment} maxLength={70} />
+                            <ExpandableText text={reviewComment} maxWidth={500} />
                         </Text.Body2_1>
                         <Wrapper.FlexBox justifyContent="flex-end">
                             <Text.Body3 color="Gray4">{timeAgo(reviewCommentDate)}</Text.Body3>

@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import PageWrapper from "@/components/PageWrapper";
 import ReviewList from "@/components/ReviewList";
 import { OwnerTabTypes } from "@/constants/tabs";
@@ -43,8 +44,11 @@ export default function ReviewManagePage() {
 
     const { data, isLoading, isError } = useGetAllReviewsForGuesthouse(filter);
 
-    if (isLoading) return <div>로딩 중...</div>;
-    if (isError || !data) return <div>리뷰를 불러오는 데 실패했습니다.</div>;
+    if (isLoading) return <LoadingSpinner />;
+    if (isError || !data) {
+        navigate("/404");
+        return null;
+    }
     return (
         <>
             <Header showBackButton title="후기 관리" />
@@ -56,7 +60,7 @@ export default function ReviewManagePage() {
                         <Wrapper.FlexBox gap="6px" alignItems="center">
                             <img src="/icons/fullStar.svg" alt="별" />
                             <Text.Title2_2>
-                                {data?.averageRating ?? 0} <Text.Title2_1>점</Text.Title2_1>
+                                {data?.averageRating ?? 0.0} <Text.Title2_1>점</Text.Title2_1>
                             </Text.Title2_2>
                         </Wrapper.FlexBox>
                     </Wrapper.FlexBox>

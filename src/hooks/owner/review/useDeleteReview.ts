@@ -7,10 +7,10 @@ export const useDeleteReview = () => {
     return useMutation({
         mutationFn: (reviewId: number) => ReviewApi.deleteReviewForGuesthouse(reviewId),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["guesthouseReview"] });
+            queryClient.invalidateQueries({ queryKey: ["guesthouseReviews"], exact: false });
         },
         onError: error => {
-            console.error("리뷰 삭제 실패", error);
+            console.error("후기 삭제 실패", error);
         },
     });
 };

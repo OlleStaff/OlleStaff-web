@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { ReactNode } from "react";
 import theme from "@/styles/theme";
 import { Text } from "@/styles/Text";
+import { Wrapper } from "@/styles/Wrapper";
 
 type InputVariant = "default" | "message" | "comment";
 
@@ -21,6 +22,8 @@ type InputProps = {
     messageColor?: keyof typeof theme.color;
     readOnly?: boolean;
     required?: boolean; // 필수값이면 별 달기
+    maxLength?: number;
+    minLength?: number;
 };
 
 export default function Input(props: InputProps) {
@@ -40,9 +43,16 @@ export default function Input(props: InputProps) {
         messageColor = "Red1",
         readOnly,
         required,
+        maxLength,
+        minLength,
     } = props;
 
     const hasBottomMessage = "bottomMessage" in props;
+
+    const showCombinedLengthMessage =
+        typeof minLength === "number" &&
+        typeof maxLength === "number" &&
+        ((value.length > 0 && value.length < minLength) || value.length >= maxLength);
 
     return (
         <InputContainer>
@@ -54,7 +64,7 @@ export default function Input(props: InputProps) {
             )}
 
             <section>
-                <Wrapper variant={variant}>
+                <InputWrapper variant={variant}>
                     {variant === "message" && leftIcon && (
                         <LeftIconArea onClick={onLeftIconClick}>{leftIcon}</LeftIconArea>
                     )}
@@ -65,14 +75,27 @@ export default function Input(props: InputProps) {
                         placeholder={placeholder}
                         disabled={disabled}
                         readOnly={readOnly}
+                        maxLength={maxLength}
                     />
                     {rightIcon && <RightIconArea onClick={onRightIconClick}>{rightIcon}</RightIconArea>}
-                </Wrapper>
-                {hasBottomMessage && (
-                    <BottomMessage visible={!!bottomMessage} color={messageColor}>
-                        {bottomMessage || "\u00A0"}
-                    </BottomMessage>
-                )}
+                </InputWrapper>
+
+                <Wrapper.FlexBox justifyContent="flex-end">
+                    {showCombinedLengthMessage ? (
+                        <BottomMessage visible={true} color={messageColor}>
+                            {minLength} ~ {maxLength}자 입력 가능합니다.
+                        </BottomMessage>
+                    ) : typeof maxLength === "number" && value.length >= maxLength && typeof minLength !== "number" ? (
+                        <BottomMessage visible={true} color={messageColor}>
+                            최대 {maxLength}자 입력 가능합니다.
+                        </BottomMessage>
+                    ) : null}
+                    {hasBottomMessage && (
+                        <BottomMessage visible={!!bottomMessage} color={messageColor}>
+                            {bottomMessage || "\u00A0"}
+                        </BottomMessage>
+                    )}
+                </Wrapper.FlexBox>
             </section>
         </InputContainer>
     );
@@ -86,7 +109,7 @@ const InputContainer = styled.div`
     /* max-width: 333px; */
 `;
 
-const Wrapper = styled.div<{ variant: InputVariant }>`
+const InputWrapper = styled.div<{ variant: InputVariant }>`
     display: flex;
     align-items: center;
     padding: 0 12px;
@@ -106,6 +129,7 @@ const StyledInput = styled.input`
     line-height: 20px;
     letter-spacing: 0.32px;
     color: ${theme.color.Black};
+    width: 100%;
 
     &::placeholder {
         color: ${theme.color.Gray4};

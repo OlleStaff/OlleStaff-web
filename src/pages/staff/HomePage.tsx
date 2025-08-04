@@ -98,7 +98,7 @@ export default function HomePage() {
 
                 {searchValue ? (
                     <Section>
-                        <SectionTitle title={`"${searchValue}" 검색 결과`} />
+                        <SectionTitle title={`"${searchValue}" 검색 결과`} link="" />
                         <TabSelector
                             labels={[...TAB_LABELS.STAFF.SEARCH]}
                             selected={sort}
@@ -127,7 +127,7 @@ export default function HomePage() {
                     <>
                         <CategoryList />
                         <Section>
-                            <SectionTitle title="취향저격 게스트하우스 🌴" />
+                            <SectionTitle title="취향저격 게스트하우스 🌴" link="" />
                             <CardCarousel />
                         </Section>
                         <Section>

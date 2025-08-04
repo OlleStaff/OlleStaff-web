@@ -26,8 +26,8 @@ export default function CategorySelector({ value, onChange, required }: Category
     return (
         <Wrapper.FlexBox direction="column">
             <Wrapper.FlexBox alignItems="flex-start" justifyContent="space-between">
-                <Text.Body1_1>게스트하우스 카테고리 {required && <RequiredStar>*</RequiredStar>}</Text.Body1_1>
-                <Text.Body3_1 color="Gray4">* 최대 1개만 선택할 수 있습니다.</Text.Body3_1>
+                <Text.Body1_1>게스트하우스 카테고리{required && <RequiredStar>*</RequiredStar>}</Text.Body1_1>
+                <Text.Body3_1 color="Gray4">최대 1개만 선택할 수 있습니다.</Text.Body3_1>
             </Wrapper.FlexBox>
 
             <RadioButton
