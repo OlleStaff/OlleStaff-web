@@ -7,33 +7,40 @@ import ChatListItem from "./components/ChatListItem";
 import { useNavigate } from "react-router-dom";
 import { Wrapper } from "@/styles/Wrapper";
 import { Text } from "@/styles/Text";
-import { ChatRoomPreview } from "@/chat/types/common";
+import { ChatRoomPreview } from "../types/chatRooms";
 
 const mockChatRooms: ChatRoomPreview[] = [
     {
-        id: 1,
-        title: "일등 게하",
-        image: "/icons/defaultUser.svg",
-        lastMessage:
-            "안녕하세요! 오늘 면접 바로 가능하세요?안녕하세요! 오늘 면접 바로 가능하세요?안녕하세요! 오늘 면접 바로 가능하세요?안녕하세요! 오늘 면접 바로 가능하세요?",
-        unreadCount: 6,
-        timestamp: Date.now() / 1000,
+        id: 123,
+        title: "후닝",
+        image: "https://olle-staff-image.s3.ap-northeast-2.amazonaws.com/images/4dbcfa1f-6bd6-4966-9659-8bb312d21314",
+        lastMessage: {
+            id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            chatRoomId: 123,
+            senderId: 128,
+            timestamp: 9007199254740991,
+            messageType: "TEXT",
+            content: {
+                text: "안녕",
+            },
+        },
+        unreadMessageCount: 3,
     },
     {
-        id: 2,
-        title: "제주 민박",
-        image: "/icons/defaultUser.svg",
-        lastMessage: "사진 잘 봤습니다. 편하신 시간 알려주세요.",
-        unreadCount: 1,
-        timestamp: Date.now() / 1000,
-    },
-    {
-        id: 3,
-        title: "결 게스트하우스",
-        image: "/icons/defaultUser.svg",
-        lastMessage: "정말 감사했어요 :)",
-        unreadCount: 0,
-        timestamp: Date.now() / 1000,
+        id: 124,
+        title: "훈",
+        image: "https://olle-staff-image.s3.ap-northeast-2.amazonaws.com/images/4dbcfa1f-6bd6-4966-9659-8bb312d21314",
+        lastMessage: {
+            id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            chatRoomId: 124,
+            senderId: 127,
+            timestamp: 7007199254740991,
+            messageType: "TEXT",
+            content: {
+                text: "안녕안녕",
+            },
+        },
+        unreadMessageCount: 0,
     },
 ];
 
@@ -97,9 +104,8 @@ export default function ChatPage() {
                                 id: room.id,
                                 title: room.title,
                                 image: room.image,
-                                unreadCount: room.unreadCount,
+                                unreadMessageCount: room.unreadMessageCount,
                                 lastMessage: room.lastMessage,
-                                timestamp: room.timestamp,
                             }}
                             onClick={() => navigate(`/chat/${room.id}`)}
                         />
