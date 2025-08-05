@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchMinimumUserInfo } from "../user/useFetchMinumumUserInfo";
 import { ReceiveMessagePayload } from "@/chat/types/websocket";
 import { connectStomp } from "@/chat/websocket/connectStomp";
+import { CapacitorCookies } from "@capacitor/core";
 
 type SocialLoginParams = {
     code?: string;
@@ -25,6 +26,20 @@ export const useSocialLogin = (provider: "kakao" | "naver" | "dev") => {
             const loginRes = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/login/${provider}`, payload, {
                 withCredentials: true,
             });
+
+            console.log("loginRes.data:", loginRes.data);
+            console.log("loginRes.headers:", loginRes.headers);
+
+            if ((window as any).Capacitor && loginRes.data.session) {
+                await CapacitorCookies.setCookie({
+                    url: import.meta.env.VITE_API_BASE_URL,
+                    key: "JSESSIONID",
+                    value: loginRes.data.session,
+                    path: "/",
+                });
+                const result = await CapacitorCookies.getCookies({ url: import.meta.env.VITE_API_BASE_URL });
+                console.log("저장된 쿠키:", result.cookies);
+            }
 
             if (loginRes.data.status === "USER_NEED_SIGNUP") {
                 return { status: "USER_NEED_SIGNUP" };
