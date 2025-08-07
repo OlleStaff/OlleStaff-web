@@ -3,6 +3,8 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { fetchMinimumUserInfo } from "../user/useFetchMinumumUserInfo";
+import { ReceiveMessagePayload } from "@/chat/types/websocket";
+import { connectStomp } from "@/chat/websocket/connectStomp";
 
 type SocialLoginParams = {
     code: string;
@@ -42,6 +44,10 @@ export const useSocialLogin = (provider: "kakao" | "naver" | "dev") => {
                     nickname: res.nickname,
                     type: res.userType,
                     profileImage: res.profileImage,
+                });
+
+                connectStomp((message: ReceiveMessagePayload) => {
+                    console.log("💬 새로운 메시지 수신", message);
                 });
                 if (res.userType === "UNDECIDED") {
                     navigate("/type-select");
