@@ -22,6 +22,8 @@ export default function TypeSelectPage() {
                 nickname: userInfo.nickname,
                 type: userInfo.userType,
                 profileImage: userInfo.profileImage,
+                gender: userInfo.gender,
+                birthDate: userInfo.birthDate,
             });
 
             if (userInfo.userType === "STAFF") {

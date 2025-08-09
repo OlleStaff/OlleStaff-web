@@ -18,7 +18,9 @@ export default function ApplicationWritePage() {
 
     const [profileImage, setProfileImage] = useState<File | null>(null);
     const [images, setImages] = useState<File[]>([]);
-    const nickname = useUserStore(state => state.nickname);
+    const nickname = useUserStore(s => s.nickname);
+    const gender = useUserStore(s => s.gender);
+    const birthDate = useUserStore(s => s.birthDate);
 
     const [formData, setFormData] = useState({
         mbti: "",
@@ -55,6 +57,8 @@ export default function ApplicationWritePage() {
         });
     };
 
+    console.log("성별, 생일", gender, birthDate);
+
     return (
         <>
             <Header showBackButton title="지원서 작성" rightText="건너뛰기" onRightClick={handleSkip} />
@@ -64,6 +68,8 @@ export default function ApplicationWritePage() {
                         <ProfileAdd onImageChange={setProfileImage} />
                         <Text.Title3_1>{nickname}</Text.Title3_1>
                     </ProfileSection>
+                    <Text.Body2>{gender}</Text.Body2>
+                    <Text.Body2>{birthDate}</Text.Body2>
 
                     <FieldGroup>
                         <Input

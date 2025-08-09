@@ -1,4 +1,4 @@
-export type Gender = "MALE" | "FEMALE";
+export type Gender = "남자" | "여자";
 
 export interface UserInfo {
     nickname: string;

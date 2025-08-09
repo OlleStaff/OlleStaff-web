@@ -41,12 +41,13 @@ export default function EditProfilePage() {
 
     useEffect(() => {
         if (user) {
-            setUserInfo({
+            setUserInfo(prev => ({
+                ...prev,
                 nickname: user.nickname,
                 birthDate: user.birthDate,
                 phone: user.phone,
                 verificationCode: "",
-            });
+            }));
             setPreviewImageUrl(user.profileImage || "/icons/defaultUser.svg");
         }
     }, [user]);

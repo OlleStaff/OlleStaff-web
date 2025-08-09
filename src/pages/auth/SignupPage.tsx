@@ -54,7 +54,7 @@ export default function SignupPage() {
             phone: userInfo.phone,
             phoneVerificationCode: userInfo.verificationCode,
             birthDate: parseInt(userInfo.birthDate),
-            gender: userInfo.gender as "MALE" | "FEMALE",
+            gender: userInfo.gender as "남자" | "여자",
             image: selectedImage,
             agreements: passedAgreements,
         });
@@ -102,8 +102,8 @@ export default function SignupPage() {
                             variant="radio"
                             value={userInfo.gender}
                             options={[
-                                { label: "남성", value: "MALE" },
-                                { label: "여성", value: "FEMALE" },
+                                { label: "남성", value: "남자" },
+                                { label: "여성", value: "여자" },
                             ]}
                             onSelect={v => setRadio("gender", v)}
                             bottomMessage={errors.gender}

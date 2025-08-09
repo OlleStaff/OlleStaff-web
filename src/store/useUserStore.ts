@@ -7,7 +7,9 @@ interface UserState {
     nickname: string;
     type: UserType;
     profileImage: string;
-    setUser: (payload: Partial<Pick<UserState, "nickname" | "type" | "profileImage">>) => void;
+    gender: string;
+    birthDate: string;
+    setUser: (payload: Partial<Pick<UserState, "nickname" | "type" | "profileImage" | "gender" | "birthDate">>) => void;
     resetUser: () => void;
 }
 
@@ -17,8 +19,10 @@ export const useUserStore = create<UserState>()(
             nickname: "",
             type: null,
             profileImage: "",
+            gender: "",
+            birthDate: "",
             setUser: payload => set(state => ({ ...state, ...payload })),
-            resetUser: () => set({ nickname: "", type: null, profileImage: "" }),
+            resetUser: () => set({ nickname: "", type: null, profileImage: "", gender: "", birthDate: "" }),
         }),
         {
             name: "user-store",

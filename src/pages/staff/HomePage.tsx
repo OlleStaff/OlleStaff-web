@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import PageWrapper from "@/components/PageWrapper";
 import SectionTitle from "@/components/SectionTitle";
 import styled from "@emotion/styled";
@@ -15,6 +15,8 @@ import { useDebounce } from "@/hooks/useDebounce";
 import TabSelector from "@/components/TabSelector";
 import { StaffTabTypes, TAB_LABELS } from "@/constants/tabs";
 import { SkeletonList } from "@/components/Skeleton/SkeletonList";
+import { useUserStore } from "@/store/useUserStore";
+import { useShallow } from "zustand/react/shallow";
 
 const mockAccompanyData = [
     {
@@ -60,11 +62,40 @@ export default function HomePage() {
         enabled: !!debouncedSearch,
     });
 
+    const setUser = useUserStore(s => s.setUser);
+    const current = useUserStore(
+        useShallow(s => ({
+            nickname: s.nickname,
+            profileImage: s.profileImage,
+            type: s.type,
+            gender: s.gender,
+            birthDate: s.birthDate,
+        }))
+    );
+    const bootRef = useRef(false);
+
     useEffect(() => {
         const checkApplicationStatus = async () => {
             try {
                 const skipped = sessionStorage.getItem("applicationSkipped");
                 const user = await fetchMinimumUserInfo();
+                const same =
+                    current.nickname === user.nickname &&
+                    current.profileImage === user.profileImage &&
+                    current.type === user.userType &&
+                    current.gender === (user.gender ?? "") &&
+                    current.birthDate === (user.birthDate ?? "");
+
+                if (!bootRef.current && !same) {
+                    setUser({
+                        nickname: user.nickname,
+                        profileImage: user.profileImage,
+                        type: user.userType,
+                        gender: user.gender ?? "",
+                        birthDate: user.birthDate ?? "",
+                    });
+                }
+                bootRef.current = true;
                 if (!user.onboarded && !skipped) {
                     navigate("/staff/application/write");
                 }
