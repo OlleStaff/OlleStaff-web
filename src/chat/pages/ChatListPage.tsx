@@ -7,42 +7,9 @@ import ChatListItem from "./components/ChatListItem";
 import { useNavigate } from "react-router-dom";
 import { Wrapper } from "@/styles/Wrapper";
 import { Text } from "@/styles/Text";
-import { ChatRoomPreview } from "../types/chatRooms";
-
-const mockChatRooms: ChatRoomPreview[] = [
-    {
-        id: 123,
-        title: "후닝",
-        image: "https://olle-staff-image.s3.ap-northeast-2.amazonaws.com/images/4dbcfa1f-6bd6-4966-9659-8bb312d21314",
-        lastMessage: {
-            id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            chatRoomId: 123,
-            senderId: 128,
-            timestamp: 9007199254740991,
-            messageType: "TEXT",
-            content: {
-                text: "안녕",
-            },
-        },
-        unreadMessageCount: 3,
-    },
-    {
-        id: 124,
-        title: "훈",
-        image: "https://olle-staff-image.s3.ap-northeast-2.amazonaws.com/images/4dbcfa1f-6bd6-4966-9659-8bb312d21314",
-        lastMessage: {
-            id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            chatRoomId: 124,
-            senderId: 127,
-            timestamp: 7007199254740991,
-            messageType: "TEXT",
-            content: {
-                text: "안녕안녕",
-            },
-        },
-        unreadMessageCount: 0,
-    },
-];
+import { useGetChatList } from "../hooks/useGetChatList";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import Oops from "@/components/Oops";
 
 export default function ChatPage() {
     const [filter, setFilter] = useState<StaffTabTypes["CHAT_LIST"]>("전체");
@@ -50,7 +17,12 @@ export default function ChatPage() {
     const navigate = useNavigate();
 
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
-    const allSelected = selectedIds.length === mockChatRooms.length;
+
+    const { data: chatList, isLoading } = useGetChatList();
+
+    if (isLoading) return <LoadingSpinner />;
+
+    const allSelected = selectedIds.length === chatList?.length;
 
     const toggleSelect = (id: number) => {
         setSelectedIds(prev => (prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]));
@@ -60,7 +32,7 @@ export default function ChatPage() {
         if (allSelected) {
             setSelectedIds([]);
         } else {
-            setSelectedIds(mockChatRooms.map(room => room.id));
+            setSelectedIds(chatList?.map(room => room.id) ?? []);
         }
     };
 
@@ -94,7 +66,7 @@ export default function ChatPage() {
                 )}
 
                 <div>
-                    {mockChatRooms.map(room => (
+                    {chatList?.map(room => (
                         <ChatListItem
                             key={room.id}
                             onEditMode={onEditMode}
@@ -110,6 +82,17 @@ export default function ChatPage() {
                             onClick={() => navigate(`/chat/${room.id}`)}
                         />
                     ))}
+
+                    {chatList?.length === 0 && (
+                        <>
+                            <div style={{ padding: "150px 0 0 0" }}>
+                                <Oops
+                                    message="진행 중인 채팅이 없어요."
+                                    description={`프로필을 눌러 채팅을 시작해 보세요!`}
+                                />
+                            </div>
+                        </>
+                    )}
                 </div>
             </PageWrapper>
         </>

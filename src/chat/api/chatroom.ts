@@ -4,10 +4,10 @@ export const ChatRoomApi = {
     // GET: 채팅방 목록 조회
     getChatRoomsALL: async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/chat-room/all`, {
+            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/chat-rooms/all`, {
                 withCredentials: true,
             });
-            return res.data;
+            return res.data?.data?.chatRoomPreviewDTOS ?? [];
         } catch (error) {
             console.error("채팅방 목록 조회 실패", error);
             throw error;
