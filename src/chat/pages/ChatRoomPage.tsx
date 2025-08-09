@@ -7,18 +7,16 @@ import theme from "@/styles/theme";
 import { Wrapper } from "@/styles/Wrapper";
 import PageWrapper from "@/components/PageWrapper";
 import { Text } from "@/styles/Text";
-import { ChatRoomDetail } from "@/types/chat/common";
 
-const mockChatRoom: ChatRoomDetail = {
-    id: 1,
-    title: "일등 게하",
-    detail: "🏠 결 게스트하우스",
-    image: "/icons/defaultUser.svg",
-};
+import { useGetChatRoomDetail } from "../hooks/useGetRoomDetail";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function ChatRoomPage() {
     const { chatRoomId } = useParams();
     const [message, setMessage] = useState("");
+
+    const { data: chat, isLoading } = useGetChatRoomDetail(Number(chatRoomId));
+    if (isLoading) return <LoadingSpinner />;
 
     return (
         <>
@@ -31,26 +29,28 @@ export default function ChatRoomPage() {
                 >
                     <ProfileSection>
                         <Wrapper.FlexBox gap="8px">
-                            <ProfileImage src={mockChatRoom.image} />
+                            <ProfileImage src={chat.image} />
                             <Wrapper.FlexBox direction="column" gap="4px">
-                                <Text.Body2_1>{mockChatRoom.title}</Text.Body2_1>
-                                <Text.Body2_1 color="Gray4">{mockChatRoom.detail}</Text.Body2_1>
+                                <Text.Body2_1>{chat.title}</Text.Body2_1>
+                                <Text.Body2_1 color="Gray4">{chat.detail}</Text.Body2_1>
                             </Wrapper.FlexBox>
                         </Wrapper.FlexBox>
                     </ProfileSection>
                     <ChatScrollArea>스크롤 되는 메시지영역 {chatRoomId}</ChatScrollArea>
-                    <InputWrapper>
-                        <Input
-                            value={message}
-                            onChange={e => setMessage(e.target.value)}
-                            placeholder="채팅을 입력하세요."
-                            variant="message"
-                            leftIcon={<PlusButton src="/icons/plusCircle.svg" />}
-                            rightIcon={<SendButton src="/icons/send.svg" />}
-                            onLeftIconClick={() => {}}
-                            onRightIconClick={() => {}}
-                        />
-                    </InputWrapper>
+                    <Wrapper.AbsoluteBox>
+                        <InputWrapper>
+                            <Input
+                                value={message}
+                                onChange={e => setMessage(e.target.value)}
+                                placeholder="채팅을 입력하세요."
+                                variant="message"
+                                leftIcon={<PlusButton src="/icons/plusCircle.svg" />}
+                                rightIcon={<SendButton src="/icons/send.svg" />}
+                                onLeftIconClick={() => {}}
+                                onRightIconClick={() => {}}
+                            />
+                        </InputWrapper>
+                    </Wrapper.AbsoluteBox>
                 </Wrapper.FlexBox>
             </PageWrapper>
         </>
@@ -59,8 +59,7 @@ export default function ChatRoomPage() {
 
 const ProfileSection = styled.div`
     border-bottom: 1px solid ${theme.color.Gray1};
-    padding: 16px 0;
-    margin-bottom: 10px;
+    padding: 0 0 12px 0;
 `;
 
 const ProfileImage = styled.img`
@@ -72,13 +71,16 @@ const ProfileImage = styled.img`
 
 const ChatScrollArea = styled.div`
     flex: 1;
+    margin: 10px 0 70px 0;
     overflow-y: auto;
 `;
 
 const InputWrapper = styled.div`
-    padding-bottom: 25px;
+    position: absolute;
+    bottom: 20px;
+    padding: 0 20px;
+    width: 100%;
     background-color: white;
-    border-top: 1px solid #eee;
 `;
 
 const PlusButton = styled.img`
