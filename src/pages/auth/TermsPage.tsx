@@ -55,7 +55,7 @@ export default function TermsPage() {
                 >
                     <div>
                         <Wrapper.FlexBox justifyContent="space-between">
-                            <Text.Title3_1>전체 동의 합니다.</Text.Title3_1>
+                            <Text.Title2_2>전체 동의 합니다.</Text.Title2_2>
                             <CheckImage
                                 src={`/icons/${allChecked ? "checked" : "unChecked"}.svg`}
                                 alt="전체 동의 체크박스"

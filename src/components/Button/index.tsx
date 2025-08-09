@@ -60,7 +60,7 @@ const Style = {
         color: ${({ $isActive }) => ($isActive ? theme.color.White : theme.color.Gray5)};
         opacity: ${({ $isActive }) => ($isActive ? 1 : 0.6)};
         width: ${({ width }) => (width === "small" ? "91px" : width === "medium" ? "50%" : "100%")};
-        height: ${({ height }) => (height === "small" ? "40px" : height === "medium" ? "44px" : "48px")};
+        height: ${({ height }) => (height === "small" ? "40px" : height === "medium" ? "52px" : "48px")};
         transition: background-color 0.3s ease;
         gap: 6px;
         margin-top: 2px; // 전화번호 인증 버튼을 위해 임시 조정하였으니 추후 변경 필요 시 참고해주세요
