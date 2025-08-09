@@ -23,7 +23,7 @@ export const Button = ({
     iconSrc,
     ...props
 }: ButtonProps) => {
-    const TextComponent = isActive ? Text.Body1_2 : Text.Body1_1;
+    const TextComponent = isActive ? Text.Title4 : Text.Body1_1;
     const textColor = isActive ? "White" : "Gray5";
 
     return (
@@ -64,6 +64,7 @@ const Style = {
         transition: background-color 0.3s ease;
         gap: 6px;
         margin-top: 2px; // 전화번호 인증 버튼을 위해 임시 조정하였으니 추후 변경 필요 시 참고해주세요
+        white-space: nowrap;
     `,
 
     Icon: styled.img`
