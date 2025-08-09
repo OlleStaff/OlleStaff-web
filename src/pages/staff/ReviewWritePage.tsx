@@ -27,7 +27,7 @@ export default function ReviewWritePage() {
     const [review, setReview] = useState<string>("");
     const [disclosure, setDisclosure] = useState<boolean>(false);
     const [images, setImages] = useState<File[]>([]);
-    const employmentId = 1; // 추후 useParams으로 대체 예정
+    const employmentId = 71; // 추후 useParams으로 대체 예정
 
     useEffect(() => {
         setDisclosure(selectedIndex === 1);
