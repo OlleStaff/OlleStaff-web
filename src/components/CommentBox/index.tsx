@@ -43,19 +43,17 @@ export const CommentBox = ({ accompanyId, commentCount }: { accompanyId: number;
 };
 
 const ScrollableArea = styled.div`
-    padding-bottom: 100px;
     overflow-y: auto;
+    padding-bottom: 100px;
 `;
 
 const FixedInputArea = styled.div`
-    position: fixed;
-    bottom: 0;
+    position: absolute;
     left: 0;
     right: 0;
-    z-index: 999;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    bottom: 0;
+    z-index: 3;
+    background: transparent;
 `;
 
 const InputWrapper = styled.div`
