@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import styled from "@emotion/styled";
 import Header from "@/components/Header";
 import Input from "@/components/Input";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import theme from "@/styles/theme";
 import { Wrapper } from "@/styles/Wrapper";
 import PageWrapper from "@/components/PageWrapper";
@@ -24,6 +24,7 @@ export default function ChatRoomPage() {
 
     const { data: chat, isLoading } = useGetChatRoomDetail(roomId);
     const { data: chatMessages } = useGetChatMessages(roomId);
+    const messages = useMemo(() => [...(chatMessages ?? [])].sort((a, b) => a.timestamp - b.timestamp), [chatMessages]);
 
     const myid = 10; // 임시
 
@@ -33,7 +34,8 @@ export default function ChatRoomPage() {
 
         const optimisticMessage = {
             id: uuidv4(),
-            roomId,
+            chatRoomId: roomId,
+            senderId: myid, // 임시
             messageType: "TEXT",
             content: { text },
             timestamp: Date.now(),
@@ -62,8 +64,20 @@ export default function ChatRoomPage() {
         e.preventDefault();
         handleSendMessage();
     };
+    const listRef = useRef<HTMLDivElement | null>(null);
+    const bottomRef = useRef<HTMLDivElement | null>(null);
 
-    console.log("??", chatMessages);
+    const scrollToBottom = () => {
+        if (listRef.current) {
+            listRef.current.scrollTo({
+                top: listRef.current.scrollHeight,
+            });
+        }
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages.length]);
 
     if (isLoading) return <LoadingSpinner />;
     return (
@@ -81,11 +95,12 @@ export default function ChatRoomPage() {
                         </Wrapper.FlexBox>
                     </ProfileSection>
 
-                    <ChatScrollArea>
-                        {chatMessages?.map(m => (
-                            <MessageItem key={uuidv4()} message={m} isMine={Number(m.senderId) === Number(myid)} />
+                    <ChatScrollArea ref={listRef}>
+                        {messages?.map(m => (
+                            <MessageItem key={m.id} message={m} isMine={Number(m.senderId) === Number(myid)} />
                         ))}
                     </ChatScrollArea>
+                    <div ref={bottomRef} />
 
                     <InputWrapper>
                         <form onSubmit={handleFormSubmit}>
@@ -125,11 +140,11 @@ const ChatScrollArea = styled.div`
     padding: 10px 0;
     overflow-y: auto;
     scrollbar-width: none;
+    scroll-behavior: smooth;
 `;
 
 const InputWrapper = styled.div`
     z-index: 1;
-    height: 100%;
     width: 100%;
     background-color: white;
 `;
