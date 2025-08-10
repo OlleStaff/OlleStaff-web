@@ -9,8 +9,8 @@ export const ChatApi = {
                 params: { chatRoomId },
             });
 
-            console.log(`채팅방(${chatRoomId}) 메시지 조회 성공`, res.data);
-            return res.data;
+            console.log(`채팅방(${chatRoomId}) 메시지 조회 성공`, res.data.data.messages);
+            return res.data.data.messages;
         } catch (error) {
             console.error(`채팅방(${chatRoomId}) 메시지 조회 실패`, error);
             throw error;

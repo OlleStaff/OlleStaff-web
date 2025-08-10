@@ -1,21 +1,11 @@
 import { BaseMessage, MessageType } from "./common";
 
-export interface MessageContent {
-    textContent?: { text: string };
-    imageContent?: { images: string[] };
-    fileContent?: { name: string; link: string };
-    applicantContent?: {
-        applicantId: number;
-        employmentId: number;
-        title: string;
-        detail: string;
-    };
-    acceptedContent?: {
-        employmentId: number;
-        title: string;
-        detail: string;
-    };
-}
+export type MessageContent =
+    | { text: string }
+    | { images: string[] }
+    | { name: string; link: string }
+    | { applicantId: number; employmentId: number; title: string; detail: string }
+    | { employmentId: number; title: string; detail: string };
 
 export interface SendMessagePayload {
     chatRoomId: number;
