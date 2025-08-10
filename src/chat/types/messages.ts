@@ -1,34 +1,19 @@
-import { BaseMessage } from "./common";
+export type MessageType = "TEXT" | "IMAGE" | "FILE" | "APPLICANT" | "ACCEPTED";
 
-export interface TextMessage extends BaseMessage<{ text: string }> {
-    messageType: "TEXT";
+export type MessageContentMap = {
+    TEXT: { text: string };
+    IMAGE: { images: string[] };
+    FILE: { name: string; link: string };
+    APPLICANT: { applicantId: number; employmentId: number; title: string; detail: string };
+    ACCEPTED: { employmentId: number; title: string; detail: string };
+};
+
+export interface BaseMessage<K extends MessageType, T> {
+    id: string;
+    chatRoomId: number;
+    senderId: number;
+    timestamp: number;
+    messageType: K;
+    content: T;
 }
-
-export interface PhotoMessage extends BaseMessage<{ images: string[] }> {
-    messageType: "PHOTO";
-}
-
-export interface FileMessage extends BaseMessage<{ name: string; link: string }> {
-    messageType: "FILE";
-}
-
-export interface ApplicantMessage
-    extends BaseMessage<{
-        applicantId: number;
-        employmentId: number;
-        title: string;
-        detail: string;
-    }> {
-    messageType: "APPLICANT";
-}
-
-export interface AcceptedMessage
-    extends BaseMessage<{
-        employmentId: number;
-        title: string;
-        detail: string;
-    }> {
-    messageType: "ACCEPTED";
-}
-
-export type ChatMessage = TextMessage | PhotoMessage | FileMessage | ApplicantMessage | AcceptedMessage;
+export type ChatMessage = { [K in MessageType]: BaseMessage<K, MessageContentMap[K]> }[MessageType];

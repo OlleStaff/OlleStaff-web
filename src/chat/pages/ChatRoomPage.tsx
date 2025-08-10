@@ -7,12 +7,14 @@ import theme from "@/styles/theme";
 import { Wrapper } from "@/styles/Wrapper";
 import PageWrapper from "@/components/PageWrapper";
 import { Text } from "@/styles/Text";
-import { useGetChatRoomDetail } from "../hooks/useGetRoomDetail";
+import { useGetChatRoomDetail } from "../hooks/useGetChatRoomDetail";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { sendChatMessage } from "../websocket/sendChatMessage";
 import { SendMessagePayload } from "../types/websocket";
 import { useGetChatMessages } from "../hooks/useGetChatMessages";
 import { useQueryClient } from "@tanstack/react-query";
+import MessageItem from "./components/MessageItem";
+import { v4 as uuidv4 } from "uuid";
 
 export default function ChatRoomPage() {
     const { chatRoomId } = useParams();
@@ -23,12 +25,14 @@ export default function ChatRoomPage() {
     const { data: chat, isLoading } = useGetChatRoomDetail(roomId);
     const { data: chatMessages } = useGetChatMessages(roomId);
 
+    const myid = 10; // 임시
+
     const handleSendMessage = async () => {
         const text = message.trim();
         if (!text) return;
 
         const optimisticMessage = {
-            id: `${Date.now()}`,
+            id: uuidv4(),
             roomId,
             messageType: "TEXT",
             content: { text },
@@ -58,8 +62,7 @@ export default function ChatRoomPage() {
         e.preventDefault();
         handleSendMessage();
     };
-    console.log(roomId);
-    console.log(chat);
+
     console.log("??", chatMessages);
 
     if (isLoading) return <LoadingSpinner />;
@@ -67,11 +70,7 @@ export default function ChatRoomPage() {
         <>
             <Header showBackButton title="채팅" />
             <PageWrapper hasHeader>
-                <Wrapper.FlexBox
-                    direction="column"
-                    justifyContent="space-between"
-                    height={`calc(100vh - ${theme.size.HeaderHeight})`}
-                >
+                <ChatLayout>
                     <ProfileSection>
                         <Wrapper.FlexBox gap="8px">
                             <ProfileImage src={chat.image} />
@@ -83,78 +82,56 @@ export default function ChatRoomPage() {
                     </ProfileSection>
 
                     <ChatScrollArea>
-                        {chatMessages?.map(item => {
-                            switch (item.messageType) {
-                                case "TEXT":
-                                    return <div key={item.id}>{item.content?.text ?? ""}</div>;
-
-                                case "PHOTO":
-                                    return (
-                                        <div key={item.id}>
-                                            {(item.content?.images ?? []).map((src: string, i: number) => (
-                                                <img
-                                                    key={i}
-                                                    src={src}
-                                                    alt={`img-${i}`}
-                                                    style={{ width: 120, height: 120, objectFit: "cover" }}
-                                                />
-                                            ))}
-                                        </div>
-                                    );
-
-                                case "FILE":
-                                    return (
-                                        <div key={item.id}>
-                                            <a href={item.content?.link} target="_blank" rel="noreferrer">
-                                                {item.content?.name ?? "파일"}
-                                            </a>
-                                        </div>
-                                    );
-
-                                case "APPLICANT":
-                                    return (
-                                        <div key={item.id}>
-                                            <b>{item.content?.title}</b>
-                                            <div>{item.content?.detail}</div>
-                                        </div>
-                                    );
-
-                                case "ACCEPTED":
-                                    return (
-                                        <div key={item.id}>
-                                            <b>{item.content?.title}</b>
-                                            <div>{item.content?.detail}</div>
-                                        </div>
-                                    );
-                            }
-                        })}
+                        {chatMessages?.map(m => (
+                            <MessageItem key={uuidv4()} message={m} isMine={Number(m.senderId) === Number(myid)} />
+                        ))}
                     </ChatScrollArea>
 
-                    <Wrapper.AbsoluteBox>
-                        <InputWrapper>
-                            <form onSubmit={handleFormSubmit}>
-                                <Input
-                                    value={message}
-                                    onChange={e => setMessage(e.target.value)}
-                                    placeholder="채팅을 입력하세요."
-                                    variant="message"
-                                    leftIcon={<PlusButton src="/icons/plusCircle.svg" />}
-                                    rightIcon={<SendButton src="/icons/send.svg" />}
-                                    onLeftIconClick={() => {}}
-                                    onRightIconClick={handleSendMessage}
-                                />
-                            </form>
-                        </InputWrapper>
-                    </Wrapper.AbsoluteBox>
-                </Wrapper.FlexBox>
+                    <InputWrapper>
+                        <form onSubmit={handleFormSubmit}>
+                            <Input
+                                value={message}
+                                onChange={e => setMessage(e.target.value)}
+                                placeholder="채팅을 입력하세요."
+                                variant="message"
+                                leftIcon={<PlusButton src="/icons/plusCircle.svg" />}
+                                rightIcon={<SendButton src="/icons/send.svg" />}
+                                onLeftIconClick={() => {}}
+                                onRightIconClick={handleSendMessage}
+                            />
+                        </form>
+                    </InputWrapper>
+                </ChatLayout>
             </PageWrapper>
         </>
     );
 }
 
+const ChatLayout = styled.div`
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: calc(100vh - ${theme.size.HeaderHeight} - 30px);
+    min-height: 0;
+    position: relative;
+`;
+
 const ProfileSection = styled.div`
     border-bottom: 1px solid ${theme.color.Gray1};
     padding: 0 0 12px 0;
+`;
+
+const ChatScrollArea = styled.div`
+    min-height: 0;
+    padding: 10px 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+`;
+
+const InputWrapper = styled.div`
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+    background-color: white;
 `;
 
 const ProfileImage = styled.img`
@@ -162,20 +139,6 @@ const ProfileImage = styled.img`
     height: 42px;
     border-radius: 6px;
     object-fit: cover;
-`;
-
-const ChatScrollArea = styled.div`
-    flex: 1;
-    margin: 10px 0 70px 0;
-    overflow-y: auto;
-`;
-
-const InputWrapper = styled.div`
-    position: absolute;
-    bottom: 20px;
-    padding: 0 20px;
-    width: 100%;
-    background-color: white;
 `;
 
 const PlusButton = styled.img`

@@ -1,17 +1,10 @@
-import { BaseMessage, MessageType } from "./common";
+import { ChatMessage, MessageContentMap, MessageType } from "./messages";
 
-export type MessageContent =
-    | { text: string }
-    | { images: string[] }
-    | { name: string; link: string }
-    | { applicantId: number; employmentId: number; title: string; detail: string }
-    | { employmentId: number; title: string; detail: string };
-
-export interface SendMessagePayload {
+export type SendMessagePayload<K extends MessageType = MessageType> = {
     chatRoomId: number;
-    messageType: MessageType;
-    content: MessageContent;
-}
+    messageType: K;
+    content: MessageContentMap[K];
+};
 
-export interface ReceiveMessagePayload extends BaseMessage<MessageContent> {}
-export interface ReadMessagePayload extends BaseMessage<MessageContent> {}
+export type ReceiveMessagePayload = ChatMessage;
+export type ReadMessagePayload = ChatMessage;
