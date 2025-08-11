@@ -53,10 +53,9 @@ export default function BusinessVerificationPage() {
             <Header showBackButton title="사업자 인증" />
             <PageWrapper hasHeader>
                 <Wrapper.FlexBox
-                    height={`calc(100% - ${theme.size.HeaderHeight})`}
+                    height={`calc(100vh - ${theme.size.HeaderHeight} - 30px)`}
                     direction="column"
                     justifyContent="space-between"
-                    padding="30px"
                 >
                     <Wrapper.FlexBox height="auto" direction="column" gap="20px">
                         <Input

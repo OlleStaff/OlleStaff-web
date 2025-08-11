@@ -77,7 +77,7 @@ export default function RecruitEditBasicInfoPage({
         <>
             <Header title="게시글 수정" showBackButton />
             <PageWrapper hasHeader>
-                <Wrapper.FlexBox direction="column" padding="30px" gap="20px">
+                <Wrapper.FlexBox direction="column" gap="20px">
                     <ImageUploader
                         maxImages={9}
                         previewImageUrls={imageUrls}

@@ -118,7 +118,7 @@ export default function EditProfilePage() {
                 <Wrapper.FlexBox
                     direction="column"
                     justifyContent="space-between"
-                    height={`calc(100vh - ${theme.size.HeaderHeight})`}
+                    height={`calc(100vh - ${theme.size.HeaderHeight} - 30px)`}
                 >
                     <div>
                         <Wrapper.FlexBox direction="column" alignItems="center" gap="12px">
@@ -201,7 +201,7 @@ export default function EditProfilePage() {
                     </div>
 
                     {isEditMode && (
-                        <Wrapper.FlexBox padding="0px 0px 40px 0px" justifyContent="center">
+                        <Wrapper.FlexBox justifyContent="center">
                             <Button
                                 label="수정 완료"
                                 width="large"

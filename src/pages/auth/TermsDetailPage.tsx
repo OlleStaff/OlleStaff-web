@@ -17,7 +17,7 @@ export default function TermsDetailPage() {
         <>
             <Header showBackButton title="이용 약관 동의" />
             <PageWrapper hasHeader>
-                <Wrapper.FlexBox padding="30px" direction="column" gap="12px">
+                <Wrapper.FlexBox direction="column" gap="12px">
                     <Text.Body1_1>{term.title}</Text.Body1_1>
                     <Wrapper.FlexBox margin="0 0 30px 0" direction="column">
                         <MarkdownWrapper>

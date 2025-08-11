@@ -19,7 +19,7 @@ import Modal from "@/components/Modal";
 import theme from "@/styles/theme";
 import axios from "axios";
 
-export default function ApplicationView() {
+export default function ApplicationViewPage() {
     const { state } = useLocation() as { state?: { fromRecruit?: boolean; employmentId?: string } };
     const fromRecruit = !!state?.fromRecruit;
     const employmentId = state?.employmentId;
