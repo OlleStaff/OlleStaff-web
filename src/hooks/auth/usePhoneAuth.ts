@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import axios from "axios";
+import api from "@/apis/axios";
 
 export const usePhoneAuth = (phone: string) => {
     const [timer, setTimer] = useState<number>(0);
@@ -19,13 +19,9 @@ export const usePhoneAuth = (phone: string) => {
         }
 
         try {
-            await axios.post(
-                `${import.meta.env.VITE_API_BASE_URL}/users/phone/verification-requests`,
-                {
-                    phone,
-                },
-                { withCredentials: true }
-            );
+            await api.post(`/users/phone/verification-requests`, {
+                phone,
+            });
 
             setMessage("인증번호를 발송했습니다. 인증란에 입력해 주세요.");
             setIsStarted(true);

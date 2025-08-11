@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import axios from "axios";
+import api from "@/apis/axios";
 import { GuesthouseListItemProps } from "@/types/guesthouse";
 import { isClosed } from "@/utils/date";
 
@@ -27,7 +27,7 @@ export const useEmploymentAll = ({
     return useInfiniteQuery<LastPage>({
         queryKey: ["employmentAll", type, search, pageSize, category],
         queryFn: async ({ pageParam = null }) => {
-            const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/employments/all`, {
+            const { data } = await api.get(`/employments/all`, {
                 params: {
                     cursorId: pageParam,
                     pageSize,
@@ -35,7 +35,6 @@ export const useEmploymentAll = ({
                     category,
                     search,
                 },
-                withCredentials: true,
             });
 
             const list = data.data.employmentPreviewDTOS;
