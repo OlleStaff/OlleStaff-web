@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import api from "@/apis/axios";
 
 export interface BusinessVerificationRequest {
     businessName: string;
@@ -15,7 +15,7 @@ export const useBusinessVerificationSubmit = () => {
             formData.append("businessRegistrationCertificate", data.businessRegistrationCertificate);
             formData.append("agreement", data.agreement);
 
-            const response = await axios.post(
+            const response = await api.post(
                 `${import.meta.env.VITE_API_BASE_URL}/users/guesthouse/business-registration`,
                 formData,
                 {

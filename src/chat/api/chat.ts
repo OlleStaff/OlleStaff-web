@@ -1,9 +1,9 @@
-import axios from "axios";
+import api from "@/apis/axios";
 
 export const ChatApi = {
     // GET: 채팅 메시지 조회
     getChatMessages: async (chatRoomId: number, cursor?: string, size = 20) => {
-        const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/chat/messages`, {
+        const { data } = await api.get(`${import.meta.env.VITE_API_BASE_URL}/chat/messages`, {
             withCredentials: true,
             params: { chatRoomId, cursor: cursor ?? undefined, size },
         });
@@ -13,7 +13,7 @@ export const ChatApi = {
     // POST: 채팅 내 이미지 업로드
     postChatImages: async (formData: FormData): Promise<string[]> => {
         try {
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/chat/images`, formData, {
+            const res = await api.post(`${import.meta.env.VITE_API_BASE_URL}/chat/images`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
                 withCredentials: true,
             });
@@ -29,7 +29,7 @@ export const ChatApi = {
     // POST: 채팅 내 파일 업로드
     postChatFiles: async (formData: FormData): Promise<{ name: string; link: string }> => {
         try {
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/chat/files`, formData, {
+            const res = await api.post(`${import.meta.env.VITE_API_BASE_URL}/chat/files`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
                 withCredentials: true,
             });

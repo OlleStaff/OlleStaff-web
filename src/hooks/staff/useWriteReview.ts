@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import api from "@/apis/axios";
 
 interface CreateReviewForm {
     rating: number;
@@ -21,7 +21,7 @@ export function useWriteReview() {
                 formData.append("images", file);
             });
 
-            const { data } = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/reviews`, formData, {
+            const { data } = await api.post(`${import.meta.env.VITE_API_BASE_URL}/reviews`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
                 withCredentials: true,
             });

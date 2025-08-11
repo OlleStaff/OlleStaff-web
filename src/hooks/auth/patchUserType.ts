@@ -1,10 +1,10 @@
-import axios from "axios";
+import api from "@/apis/axios";
 
 export const patchUserType = async (type: "STAFF" | "GUESTHOUSE") => {
     try {
         const formattedType = type;
 
-        const response = await axios.patch(
+        const response = await api.patch(
             `${import.meta.env.VITE_API_BASE_URL}/users/type`,
             { type: formattedType },
             { withCredentials: true }

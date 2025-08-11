@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import api from "@/apis/axios";
 
 interface CreateCommentParams {
     accompanyId: number;
@@ -28,7 +28,7 @@ export const useCreateComment = () => {
 
     return useMutation({
         mutationFn: async ({ accompanyId, content }: CreateCommentParams) => {
-            const res = await axios.post(
+            const res = await api.post(
                 `${import.meta.env.VITE_API_BASE_URL}/accompanies/${accompanyId}/comments`,
                 { content },
                 {
@@ -51,7 +51,7 @@ export const useDeleteComment = () => {
 
     return useMutation({
         mutationFn: async ({ accompanyId, commentId }: DeleteCommentParams) => {
-            const res = await axios.delete(
+            const res = await api.delete(
                 `${import.meta.env.VITE_API_BASE_URL}/accompanies/${accompanyId}/comments/${commentId}`,
                 { withCredentials: true }
             );
@@ -71,7 +71,7 @@ export const useCreateReply = () => {
 
     return useMutation({
         mutationFn: async ({ accompanyId, commentId, content }: CreateReplyParams) => {
-            const res = await axios.post(
+            const res = await api.post(
                 `${import.meta.env.VITE_API_BASE_URL}/accompanies/${accompanyId}/comments/${commentId}/replies`,
                 { content },
                 {
@@ -98,7 +98,7 @@ export const useDeleteReply = () => {
 
     return useMutation({
         mutationFn: async ({ accompanyId, commentId, replyId }: DeleteReplyParams) => {
-            const res = await axios.delete(
+            const res = await api.delete(
                 `${import.meta.env.VITE_API_BASE_URL}/accompanies/${accompanyId}/comments/${commentId}/replies/${replyId}`,
                 { withCredentials: true }
             );

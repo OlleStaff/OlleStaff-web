@@ -1,9 +1,9 @@
-import axios from "axios";
+import api from "@/apis/axios";
 
 export const ReviewApi = {
     // GET: 게스트하우스의 모든 리뷰 조회
     getAllReviewsForGuesthouse: async (reviewType: "ALL" | "COMMENTED") =>
-        await axios
+        await api
             .get(`${import.meta.env.VITE_API_BASE_URL}/reviews/host`, {
                 withCredentials: true,
                 params: {
@@ -15,7 +15,7 @@ export const ReviewApi = {
 
     // DELETE: 게스트하우스 리뷰 삭제
     deleteReviewForGuesthouse: async (reviewId: number) =>
-        await axios
+        await api
             .delete(`${import.meta.env.VITE_API_BASE_URL}/reviews/${reviewId}`, {
                 withCredentials: true,
             })
@@ -24,7 +24,7 @@ export const ReviewApi = {
     // POST: 게스트하우스 리뷰에 대한 답 댓글 달기
     postReCommentForGuesthouseReview: async (reviewId: number, reviewComment: string) => {
         try {
-            const res = await axios.post(
+            const res = await api.post(
                 `${import.meta.env.VITE_API_BASE_URL}/reviews/${reviewId}/comments`,
                 { reviewComment },
                 {
@@ -42,7 +42,7 @@ export const ReviewApi = {
 
     // DELETE: 게스트하우스 리뷰에 대한 답 댓글 삭제
     deleteReCommentForGuesthouseReview: async (reviewId: number) =>
-        await axios
+        await api
             .delete(`${import.meta.env.VITE_API_BASE_URL}/reviews/${reviewId}/comments`, {
                 withCredentials: true,
             })

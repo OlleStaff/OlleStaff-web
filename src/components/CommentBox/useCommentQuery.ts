@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import api from "@/apis/axios";
 import { CommentType, ReplyType } from "@/types/comment";
 
 const API = import.meta.env.VITE_API_BASE_URL;
@@ -14,7 +14,7 @@ export const useCommentList = (accompanyId: number) => {
     return useInfiniteQuery<LastPage>({
         queryKey: ["comments", accompanyId],
         queryFn: async ({ pageParam = null }) => {
-            const res = await axios.get(`${API}/accompanies/${accompanyId}/comments`, {
+            const res = await api.get(`${API}/accompanies/${accompanyId}/comments`, {
                 params: { cursor: pageParam, size: 5 },
                 withCredentials: true,
             });
@@ -39,7 +39,7 @@ export const useReplyList = (accompanyId: number, commentId: number, enabled: bo
     return useQuery<ReplyType[]>({
         queryKey: ["replies", accompanyId, commentId],
         queryFn: async () => {
-            const res = await axios.get(`${API}/accompanies/${accompanyId}/comments/${commentId}/replies`, {
+            const res = await api.get(`${API}/accompanies/${accompanyId}/comments/${commentId}/replies`, {
                 params: { cursor: null, size: 20 },
                 withCredentials: true,
             });

@@ -1,8 +1,8 @@
-import axios from "axios";
+import api from "@/apis/axios";
 
 export const useAccompanyLike = () => {
     const postAccompanyLike = async (accompanyId: number) => {
-        const res = await axios.post(
+        const res = await api.post(
             `${import.meta.env.VITE_API_BASE_URL}/accompanies/${accompanyId}/likes`,
             {},
             {
@@ -13,7 +13,7 @@ export const useAccompanyLike = () => {
     };
 
     const deleteAccompanyLike = async (accompanyId: number) => {
-        const res = await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/accompanies/${accompanyId}/likes`, {
+        const res = await api.delete(`${import.meta.env.VITE_API_BASE_URL}/accompanies/${accompanyId}/likes`, {
             withCredentials: true,
         });
         return res.data;

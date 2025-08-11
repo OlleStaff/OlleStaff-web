@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import api from "@/apis/axios";
 
 export interface MyApplicationResponse {
     userId: string;
@@ -16,7 +16,7 @@ export const useFetchMyApplication = () => {
     return useQuery<MyApplicationResponse>({
         queryKey: ["myApplication"],
         queryFn: async () => {
-            const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/applicants/my`, {
+            const { data } = await api.get(`${import.meta.env.VITE_API_BASE_URL}/applicants/my`, {
                 withCredentials: true,
             });
             return data.data;

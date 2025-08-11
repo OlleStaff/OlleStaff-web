@@ -1,10 +1,10 @@
-import axios from "axios";
+import api from "@/apis/axios";
 
 export const ChatRoomApi = {
     // GET: 채팅방 목록 조회
     getChatRoomsALL: async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/chat-rooms/all`, {
+            const res = await api.get(`${import.meta.env.VITE_API_BASE_URL}/chat-rooms/all`, {
                 withCredentials: true,
             });
             return res.data?.data?.chatRoomPreviewDTOS ?? [];
@@ -17,7 +17,7 @@ export const ChatRoomApi = {
     // GET: 특정 채팅방 세부 정보 조회
     getChatRoomDetail: async (chatRoomId: number) => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/chat-rooms/${chatRoomId}`, {
+            const res = await api.get(`${import.meta.env.VITE_API_BASE_URL}/chat-rooms/${chatRoomId}`, {
                 withCredentials: true,
             });
             return res.data.data;
@@ -30,7 +30,7 @@ export const ChatRoomApi = {
     // GET: 특정 유저와의 채팅방 조회
     getChatRoomByTargetUser: async (targetUserId: number) => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/chat-rooms`, {
+            const res = await api.get(`${import.meta.env.VITE_API_BASE_URL}/chat-rooms`, {
                 withCredentials: true,
                 params: { target: targetUserId },
             });
@@ -46,7 +46,7 @@ export const ChatRoomApi = {
     // POST: target user와의 채팅방 생성
     postCreateChatRoom: async (targetUserId: number) => {
         try {
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/chat-rooms`, null, {
+            const res = await api.post(`${import.meta.env.VITE_API_BASE_URL}/chat-rooms`, null, {
                 withCredentials: true,
                 params: { target: targetUserId },
             });

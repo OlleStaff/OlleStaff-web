@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import axios from "axios";
+import api from "@/apis/axios";
 
 export const usePhoneAuth = (phone: string) => {
     const [timer, setTimer] = useState<number>(0);
@@ -19,7 +19,7 @@ export const usePhoneAuth = (phone: string) => {
         }
 
         try {
-            await axios.post(
+            await api.post(
                 `${import.meta.env.VITE_API_BASE_URL}/users/phone/verification-requests`,
                 {
                     phone,

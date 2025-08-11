@@ -1,10 +1,10 @@
 import { EmploymentPostProps } from "@/types/employment";
-import axios from "axios";
+import api from "@/apis/axios";
 
 export const EmploymentApi = {
     // GET: 공고 상세 조회
     getEmploymentDetail: async (employmentId: number) =>
-        await axios
+        await api
             .get(`${import.meta.env.VITE_API_BASE_URL}/employments/${employmentId}`, {
                 withCredentials: true,
             })
@@ -33,7 +33,7 @@ export const EmploymentApi = {
                 console.log(pair[0], pair[1]);
             }
 
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/employments`, formData, {
+            const res = await api.post(`${import.meta.env.VITE_API_BASE_URL}/employments`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -49,7 +49,7 @@ export const EmploymentApi = {
     },
     // PUT: 나의 공고 수정
     putEmployment: async (formData: FormData) =>
-        await axios.put(`${import.meta.env.VITE_API_BASE_URL}/employments`, formData, {
+        await api.put(`${import.meta.env.VITE_API_BASE_URL}/employments`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
@@ -57,7 +57,7 @@ export const EmploymentApi = {
         }),
 
     deleteEmployment: async (employmentIds: number[]) =>
-        await axios
+        await api
             .delete(`${import.meta.env.VITE_API_BASE_URL}/employments`, {
                 withCredentials: true,
                 data: employmentIds,
