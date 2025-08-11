@@ -21,9 +21,8 @@ export function useWriteReview() {
                 formData.append("images", file);
             });
 
-            const { data } = await api.post(`${import.meta.env.VITE_API_BASE_URL}/reviews`, formData, {
+            const { data } = await api.post(`/reviews`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
-                withCredentials: true,
             });
             return data;
         },

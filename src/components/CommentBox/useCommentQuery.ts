@@ -2,8 +2,6 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import api from "@/apis/axios";
 import { CommentType, ReplyType } from "@/types/comment";
 
-const API = import.meta.env.VITE_API_BASE_URL;
-
 interface LastPage {
     items: CommentType[];
     nextCursor: number | null;
@@ -14,9 +12,8 @@ export const useCommentList = (accompanyId: number) => {
     return useInfiniteQuery<LastPage>({
         queryKey: ["comments", accompanyId],
         queryFn: async ({ pageParam = null }) => {
-            const res = await api.get(`${API}/accompanies/${accompanyId}/comments`, {
+            const res = await api.get(`/accompanies/${accompanyId}/comments`, {
                 params: { cursor: pageParam, size: 5 },
-                withCredentials: true,
             });
 
             const list = res.data.data.comments;
@@ -39,9 +36,8 @@ export const useReplyList = (accompanyId: number, commentId: number, enabled: bo
     return useQuery<ReplyType[]>({
         queryKey: ["replies", accompanyId, commentId],
         queryFn: async () => {
-            const res = await api.get(`${API}/accompanies/${accompanyId}/comments/${commentId}/replies`, {
+            const res = await api.get(`/accompanies/${accompanyId}/comments/${commentId}/replies`, {
                 params: { cursor: null, size: 20 },
-                withCredentials: true,
             });
             return res.data.data.replies;
         },

@@ -22,7 +22,6 @@ api.interceptors.request.use(async config => {
             (config.headers as any)["X-Platform"] = "Mobile";
         }
     }
-    console.log("[req]", config.method, config.url, JSON.stringify(config.headers));
 
     return config;
 });

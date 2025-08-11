@@ -33,11 +33,10 @@ export const useSignup = () => {
                 formData.append("agreements", agreement);
             });
 
-            const res = await api.post(`${import.meta.env.VITE_API_BASE_URL}/users`, formData, {
+            const res = await api.post(`/users`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
-                withCredentials: true,
             });
 
             return res.data;

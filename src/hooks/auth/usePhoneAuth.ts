@@ -19,13 +19,9 @@ export const usePhoneAuth = (phone: string) => {
         }
 
         try {
-            await api.post(
-                `${import.meta.env.VITE_API_BASE_URL}/users/phone/verification-requests`,
-                {
-                    phone,
-                },
-                { withCredentials: true }
-            );
+            await api.post(`/users/phone/verification-requests`, {
+                phone,
+            });
 
             setMessage("인증번호를 발송했습니다. 인증란에 입력해 주세요.");
             setIsStarted(true);

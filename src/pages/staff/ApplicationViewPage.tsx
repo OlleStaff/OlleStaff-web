@@ -42,11 +42,10 @@ export default function ApplicationView() {
         setIsApplying(true);
         try {
             await api.post(
-                `${import.meta.env.VITE_API_BASE_URL}/apply`,
+                `/apply`,
                 {},
                 {
                     params: { employmentId },
-                    withCredentials: true,
                 }
             );
             setIsCompleteOpen(true);

@@ -5,12 +5,11 @@ export const useMyReviewList = (reviewType: string) => {
     return useQuery({
         queryKey: ["myReviewList", reviewType],
         queryFn: async () => {
-            const res = await api.get(`${import.meta.env.VITE_API_BASE_URL}/reviews/staff`, {
+            const res = await api.get(`/reviews/staff`, {
                 params: {
                     pageSize: 20,
                     reviewType: reviewType,
                 },
-                withCredentials: true,
             });
             return res.data.data;
         },

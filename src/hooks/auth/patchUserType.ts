@@ -5,9 +5,8 @@ export const patchUserType = async (type: "STAFF" | "GUESTHOUSE") => {
         const formattedType = type;
 
         const response = await api.patch(
-            `${import.meta.env.VITE_API_BASE_URL}/users/type`,
+            `/users/type`,
             { type: formattedType },
-            { withCredentials: true }
         );
 
         if (response.data.status !== "SUCCESS") {

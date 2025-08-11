@@ -8,14 +8,10 @@ export default function GoogleRedirectPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        api.post(
-            `${import.meta.env.VITE_API_BASE_URL}/login/dev`,
-            {
-                pid: "hoon123",
-                authority: "NEED_SIGNUP",
-            },
-            { withCredentials: true }
-        )
+        api.post(`/login/dev`, {
+            pid: "hoon123",
+            authority: "NEED_SIGNUP",
+        })
             .then(async res => {
                 const { status } = res.data;
                 if (status === "USER_NEED_SIGNUP") {

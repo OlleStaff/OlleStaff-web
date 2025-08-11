@@ -8,13 +8,12 @@ export const useGetMyEmploymentList = () => {
     return useQuery<GuesthouseListItemProps[]>({
         queryKey: ["employmentList"],
         queryFn: async () => {
-            const { data } = await api.get(`${import.meta.env.VITE_API_BASE_URL}/employments`, {
+            const { data } = await api.get(`/employments`, {
                 params: {
                     cursor: null,
                     pageSize: 20,
                     type: "ALL",
                 },
-                withCredentials: true,
             });
 
             const list = data.data.employmentPreviewDTOS;

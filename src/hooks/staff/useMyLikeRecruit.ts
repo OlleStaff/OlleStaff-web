@@ -6,13 +6,12 @@ export const useMyLikeRecruitOpen = () => {
     return useQuery({
         queryKey: ["myLikeRecruit", "open"],
         queryFn: async () => {
-            const { data } = await api.get(`${import.meta.env.VITE_API_BASE_URL}/recruits/like`, {
+            const { data } = await api.get(`/recruits/like`, {
                 params: {
                     type: "IN_PROGRESS",
                     cursor: null,
                     size: 20,
                 },
-                withCredentials: true,
             });
             return data.data.recruits;
         },
@@ -26,13 +25,12 @@ export const useMyLikeRecruitClosed = () => {
     return useQuery({
         queryKey: ["myLikeRecruit", "closed"],
         queryFn: async () => {
-            const { data } = await api.get(`${import.meta.env.VITE_API_BASE_URL}/recruits/like`, {
+            const { data } = await api.get(`/recruits/like`, {
                 params: {
                     type: "END",
                     cursor: null,
                     size: 20,
                 },
-                withCredentials: true,
             });
             return data.data.recruits;
         },

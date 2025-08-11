@@ -29,13 +29,12 @@ export const useCreateComment = () => {
     return useMutation({
         mutationFn: async ({ accompanyId, content }: CreateCommentParams) => {
             const res = await api.post(
-                `${import.meta.env.VITE_API_BASE_URL}/accompanies/${accompanyId}/comments`,
+                `/accompanies/${accompanyId}/comments`,
                 { content },
                 {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    withCredentials: true,
                 }
             );
             return res.data;
@@ -52,8 +51,7 @@ export const useDeleteComment = () => {
     return useMutation({
         mutationFn: async ({ accompanyId, commentId }: DeleteCommentParams) => {
             const res = await api.delete(
-                `${import.meta.env.VITE_API_BASE_URL}/accompanies/${accompanyId}/comments/${commentId}`,
-                { withCredentials: true }
+                `/accompanies/${accompanyId}/comments/${commentId}`,
             );
             return res.data;
         },
@@ -72,13 +70,12 @@ export const useCreateReply = () => {
     return useMutation({
         mutationFn: async ({ accompanyId, commentId, content }: CreateReplyParams) => {
             const res = await api.post(
-                `${import.meta.env.VITE_API_BASE_URL}/accompanies/${accompanyId}/comments/${commentId}/replies`,
+                `/accompanies/${accompanyId}/comments/${commentId}/replies`,
                 { content },
                 {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    withCredentials: true,
                 }
             );
             return res.data;
@@ -99,8 +96,7 @@ export const useDeleteReply = () => {
     return useMutation({
         mutationFn: async ({ accompanyId, commentId, replyId }: DeleteReplyParams) => {
             const res = await api.delete(
-                `${import.meta.env.VITE_API_BASE_URL}/accompanies/${accompanyId}/comments/${commentId}/replies/${replyId}`,
-                { withCredentials: true }
+                `/accompanies/${accompanyId}/comments/${commentId}/replies/${replyId}`,
             );
             return res.data;
         },

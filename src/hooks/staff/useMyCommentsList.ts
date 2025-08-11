@@ -5,9 +5,8 @@ export const useMyCommentsList = () => {
     return useInfiniteQuery({
         queryKey: ["myCommentsList"],
         queryFn: async ({ pageParam = null }) => {
-            const { data } = await api.get(`${import.meta.env.VITE_API_BASE_URL}/accompanies/comment-reply`, {
+            const { data } = await api.get(`/accompanies/comment-reply`, {
                 params: { cursor: pageParam, size: 6 },
-                withCredentials: true,
             });
             return data.data;
         },
