@@ -17,6 +17,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/Button";
 import Modal from "@/components/Modal";
 import theme from "@/styles/theme";
+import axios from "axios";
 
 export default function ApplicationView() {
     const { state } = useLocation() as { state?: { fromRecruit?: boolean; employmentId?: string } };
@@ -30,23 +31,32 @@ export default function ApplicationView() {
     const { data: profile, isLoading: isProfileLoading } = useFetchUserProfile();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isViewerOpen, setViewerOpen] = useState(false);
-    // ✅ 모달 상태
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [isCompleteOpen, setIsCompleteOpen] = useState(false);
+    const [isApplying, setIsApplying] = useState(false);
 
-    // ✅ 지원 완료 버튼 클릭 → 확인 모달 오픈
     const onClickApply = () => setIsConfirmOpen(true);
 
-    // ✅ 확인 모달에서 "확인" 클릭
     const handleConfirmApply = async () => {
-        setIsConfirmOpen(false);
-
-        // 여기에 실제 지원 API 호출을 넣으면 됩니다.
-        // await applyEmployment({ employmentId: Number(employmentId) });
-
-        setIsCompleteOpen(true);
+        if (!employmentId || isApplying) return;
+        setIsApplying(true);
+        try {
+            await axios.post(
+                `${import.meta.env.VITE_API_BASE_URL}/apply`,
+                {},
+                {
+                    params: { employmentId },
+                    withCredentials: true,
+                }
+            );
+            setIsCompleteOpen(true);
+        } catch (err) {
+            console.error("지원 실패", err);
+            alert("지원에 실패했습니다. 잠시 후 다시 시도해주세요.");
+        } finally {
+            setIsApplying(false);
+        }
     };
-
     const handleImageClick = (idx: number) => {
         setCurrentImageIndex(idx);
         setViewerOpen(true);

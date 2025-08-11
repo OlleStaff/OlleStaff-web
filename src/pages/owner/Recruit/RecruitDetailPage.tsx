@@ -261,6 +261,7 @@ const ActionButton = styled.button<{ variant?: "call" | "apply" }>`
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    margin-bottom: 16px;
 `;
 
 const ContentWrapper = styled.div`
