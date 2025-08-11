@@ -93,7 +93,7 @@ export default function RecruitDetailPage() {
                 onRightClick={userType === "GUESTHOUSE" ? handleEditClick : undefined}
             />
 
-            <Wrapper.FlexBox direction="column" gap="20px">
+            <Wrapper.FlexBox direction="column" margin="43px 0 0 0" gap="20px">
                 {Array.isArray(images) && images.length > 0 && (
                     <ImageCarousel images={images} onImageClick={handleImageClick} />
                 )}

@@ -103,64 +103,63 @@ export default function RecruitListPage() {
                     )
                 }
             />
-            <PageWrapper hasHeader>
-                <Wrapper.FlexBox>
-                    <TabSelector
-                        labels={[...TAB_LABELS.OWNER.MY_RECRUIT]}
-                        selected={sort}
-                        onChange={value => setSort(value as OwnerTabTypes["MY_RECRUIT"])}
-                        variant="bold"
-                    />
-                </Wrapper.FlexBox>
 
-                {isEditTextClicked && filteredRecruits.length > 0 && (
-                    <>
-                        <Wrapper.FlexBox justifyContent="space-between">
-                            <SelectAllWrapper
-                                onClick={() => {
-                                    const allIds = filteredRecruits.map(item => item.employmentId);
-                                    const isAllSelected = allIds.every(id => checkedIds.includes(id));
-                                    setCheckedIds(isAllSelected ? [] : allIds);
-                                }}
-                            >
-                                <Text.Body1 color={checkedIds.length === filteredRecruits.length ? "Black" : "Gray2"}>
-                                    전체 선택
-                                </Text.Body1>
-                            </SelectAllWrapper>
-                            <Text.Body1
-                                color={isDeletable ? "Main" : "Gray2"}
-                                onClick={isDeletable ? () => openModal("confirm") : undefined}
-                                style={{ cursor: "pointer" }}
-                            >
-                                삭제
+            <Wrapper.FlexBox margin="43px 0 0 0">
+                <TabSelector
+                    labels={[...TAB_LABELS.OWNER.MY_RECRUIT]}
+                    selected={sort}
+                    onChange={value => setSort(value as OwnerTabTypes["MY_RECRUIT"])}
+                    variant="bold"
+                />
+            </Wrapper.FlexBox>
+
+            {isEditTextClicked && filteredRecruits.length > 0 && (
+                <>
+                    <Wrapper.FlexBox justifyContent="space-between">
+                        <SelectAllWrapper
+                            onClick={() => {
+                                const allIds = filteredRecruits.map(item => item.employmentId);
+                                const isAllSelected = allIds.every(id => checkedIds.includes(id));
+                                setCheckedIds(isAllSelected ? [] : allIds);
+                            }}
+                        >
+                            <Text.Body1 color={checkedIds.length === filteredRecruits.length ? "Black" : "Gray2"}>
+                                전체 선택
                             </Text.Body1>
-                        </Wrapper.FlexBox>
-                    </>
-                )}
+                        </SelectAllWrapper>
+                        <Text.Body1
+                            color={isDeletable ? "Main" : "Gray2"}
+                            onClick={isDeletable ? () => openModal("confirm") : undefined}
+                            style={{ cursor: "pointer" }}
+                        >
+                            삭제
+                        </Text.Body1>
+                    </Wrapper.FlexBox>
+                </>
+            )}
 
-                <Wrapper.FlexBox direction="column" gap="20px">
-                    {isLoading ? (
-                        <SkeletonList variant="guesthouse" count={12} />
-                    ) : filteredRecruits.length > 0 ? (
-                        filteredRecruits.map(item => (
-                            <GuesthouseListItem
-                                key={item.employmentId}
-                                {...item}
-                                isEditActive={isEditTextClicked}
-                                isChecked={checkedIds.includes(item.employmentId)}
-                                onCheckToggle={handleToggleCheck}
-                            />
-                        ))
-                    ) : (
-                        <Wrapper.FlexBox gap="12px" alignItems="center" direction="column" padding="50% 0">
-                            <Oops
-                                message="작성된 나의 공고가 없어요."
-                                description={`홈 > 게시글 작성하기로\n새로운 공고를 등록해 보세요!`}
-                            />
-                        </Wrapper.FlexBox>
-                    )}
-                </Wrapper.FlexBox>
-            </PageWrapper>
+            <Wrapper.FlexBox direction="column" gap="20px">
+                {isLoading ? (
+                    <SkeletonList variant="guesthouse" count={12} />
+                ) : filteredRecruits.length > 0 ? (
+                    filteredRecruits.map(item => (
+                        <GuesthouseListItem
+                            key={item.employmentId}
+                            {...item}
+                            isEditActive={isEditTextClicked}
+                            isChecked={checkedIds.includes(item.employmentId)}
+                            onCheckToggle={handleToggleCheck}
+                        />
+                    ))
+                ) : (
+                    <Wrapper.FlexBox gap="12px" alignItems="center" direction="column" padding="50% 0">
+                        <Oops
+                            message="작성된 나의 공고가 없어요."
+                            description={`홈 > 게시글 작성하기로\n새로운 공고를 등록해 보세요!`}
+                        />
+                    </Wrapper.FlexBox>
+                )}
+            </Wrapper.FlexBox>
         </>
     );
 }
