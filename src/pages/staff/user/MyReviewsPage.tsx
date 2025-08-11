@@ -32,16 +32,16 @@ export default function MyReviewsPage() {
                     bgColor="white"
                     margin="0px 0px 16px 0px"
                 >
-                    <Wrapper.FlexBox direction="column">
+                    <Wrapper.FlexBox direction="column" gap="4px">
                         <Text.Body2_1 color="Gray4">2025.01.28 -2025.02.26</Text.Body2_1>
-                        <Text.Title2_1>
+                        <Text.Title2_2>
                             결 게스트하우스의
                             <br />
                             스탭 일은 어떠셨나요?
-                        </Text.Title2_1>
+                        </Text.Title2_2>
                     </Wrapper.FlexBox>
                     <Button label="작성 버튼" isActive width="large" onClick={() => {}}>
-                        글 등록하기
+                        리뷰 작성하기
                     </Button>
                 </Wrapper.FlexBox>
                 <TabSelector
@@ -51,7 +51,7 @@ export default function MyReviewsPage() {
                     variant="bold"
                 />
 
-                <Wrapper.FlexBox margin="20px 0" direction="column" gap="20px">
+                <Wrapper.FlexBox margin="5px 0" direction="column" gap="20px">
                     {isLoading ? (
                         <SkeletonList variant="review" count={3} />
                     ) : reviews.length > 0 ? (

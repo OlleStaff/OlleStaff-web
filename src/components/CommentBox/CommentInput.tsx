@@ -57,7 +57,7 @@ export default function CommentInput({
             value={text}
             onChange={e => setText(e.target.value)}
             placeholder={placeholder}
-            rightIcon={<SendImage src="/icons/send.svg" />}
+            rightIcon={<SendImage src="/icons/arrow_top.svg" />}
             onRightIconClick={handleSubmit}
             disabled={disabled}
         />

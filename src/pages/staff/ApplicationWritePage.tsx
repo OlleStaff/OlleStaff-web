@@ -11,6 +11,8 @@ import { useUserStore } from "@/store/useUserStore";
 import ImageUploader from "@/components/ImageUploader";
 import { useNavigate } from "react-router-dom";
 import { usePostApplication } from "@/hooks/applicant/usePostApplication";
+import { Wrapper } from "@/styles/Wrapper";
+import { formatProfileMeta } from "@/utils/formatProfileMeta";
 
 export default function ApplicationWritePage() {
     const navigate = useNavigate();
@@ -18,7 +20,9 @@ export default function ApplicationWritePage() {
 
     const [profileImage, setProfileImage] = useState<File | null>(null);
     const [images, setImages] = useState<File[]>([]);
-    const nickname = useUserStore(state => state.nickname);
+    const nickname = useUserStore(s => s.nickname);
+    const gender = useUserStore(s => s.gender);
+    const birthDate = useUserStore(s => s.birthDate);
 
     const [formData, setFormData] = useState({
         mbti: "",
@@ -55,6 +59,8 @@ export default function ApplicationWritePage() {
         });
     };
 
+    console.log("성별, 생일", gender, birthDate);
+
     return (
         <>
             <Header showBackButton title="지원서 작성" rightText="건너뛰기" onRightClick={handleSkip} />
@@ -62,7 +68,10 @@ export default function ApplicationWritePage() {
                 <FormWrapper>
                     <ProfileSection>
                         <ProfileAdd onImageChange={setProfileImage} />
-                        <Text.Title3_1>{nickname}</Text.Title3_1>
+                        <Wrapper.FlexBox direction="column" alignItems="center" gap="4px">
+                            <Text.Title3_1>{nickname}</Text.Title3_1>
+                            <Text.Body2_1 color="Gray3">{formatProfileMeta(birthDate, gender)}</Text.Body2_1>
+                        </Wrapper.FlexBox>
                     </ProfileSection>
 
                     <FieldGroup>

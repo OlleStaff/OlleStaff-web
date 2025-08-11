@@ -175,6 +175,30 @@ export default function RecruitDetailPage() {
                     </Wrapper.FlexBox>
                     <MapComponent latitude={latitude} longitude={longitude} />
                 </Wrapper.FlexBox>
+                {userType === "STAFF" && (
+                    <Wrapper.FlexBox gap="8px" padding="0 30px">
+                        <ActionButton onClick={() => console.log("TODO: 전화번호 연결")} variant="call">
+                            <ContentWrapper>
+                                <Icon src="/icons/call.svg" alt="" aria-hidden />
+                                <Label $variant="call">전화문의</Label>
+                            </ContentWrapper>
+                        </ActionButton>
+
+                        <ActionButton
+                            onClick={() =>
+                                navigate("/staff/user/application", {
+                                    state: { fromRecruit: true, employmentId },
+                                })
+                            }
+                            variant="apply"
+                        >
+                            <ContentWrapper>
+                                <Icon src="/icons/envelope.svg" alt="" aria-hidden />
+                                <Label $variant="apply">지원하기</Label>
+                            </ContentWrapper>
+                        </ActionButton>
+                    </Wrapper.FlexBox>
+                )}
             </PageWrapper>
         </>
     );
@@ -225,4 +249,35 @@ const BenefitListWrapper = styled.ul`
     display: flex;
     flex-direction: column;
     gap: 8px;
+`;
+
+const ActionButton = styled.button<{ variant?: "call" | "apply" }>`
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 8px;
+    background: ${({ variant, theme }) => (variant === "call" ? theme.color.Gray1 : theme.color.Main)};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 16px;
+`;
+
+const ContentWrapper = styled.div`
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+`;
+
+const Icon = styled.img`
+    width: 28px;
+    height: 28px;
+    padding: 5px;
+    object-fit: contain;
+`;
+
+const Label = styled(Text.Body1_1)<{ $variant: "call" | "apply" }>`
+    color: ${({ $variant, theme }) => ($variant === "call" ? theme.color.Black : theme.color.White)};
+    line-height: 20px;
 `;
