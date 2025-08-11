@@ -1,4 +1,4 @@
-import api from "@/apis/axios"; 
+import api from "@/apis/axios";
 
 export const fetchMinimumUserInfo = async () => {
     const res = await api.get("/users/me/minimum");

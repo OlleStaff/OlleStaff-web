@@ -50,9 +50,7 @@ export const useDeleteComment = () => {
 
     return useMutation({
         mutationFn: async ({ accompanyId, commentId }: DeleteCommentParams) => {
-            const res = await api.delete(
-                `/accompanies/${accompanyId}/comments/${commentId}`,
-            );
+            const res = await api.delete(`/accompanies/${accompanyId}/comments/${commentId}`);
             return res.data;
         },
         onSuccess: (_, { accompanyId }) => {
@@ -95,9 +93,7 @@ export const useDeleteReply = () => {
 
     return useMutation({
         mutationFn: async ({ accompanyId, commentId, replyId }: DeleteReplyParams) => {
-            const res = await api.delete(
-                `/accompanies/${accompanyId}/comments/${commentId}/replies/${replyId}`,
-            );
+            const res = await api.delete(`/accompanies/${accompanyId}/comments/${commentId}/replies/${replyId}`);
             return res.data;
         },
         onSuccess: (_, { accompanyId, commentId }) => {
