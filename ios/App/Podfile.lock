@@ -3,6 +3,8 @@ PODS:
   - Capacitor (7.4.1):
     - CapacitorCordova
   - CapacitorCordova (7.4.1)
+  - CapacitorPreferences (7.0.2):
+    - Capacitor
   - KakaoSDKAuth (2.22.7):
     - KakaoSDKCommon (= 2.22.7)
   - KakaoSDKCommon (2.22.7):
@@ -23,6 +25,7 @@ PODS:
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
   - "TeamLepisodeCapacitorKakaoLogin (from `../../node_modules/@team-lepisode/capacitor-kakao-login`)"
 
 SPEC REPOS:
@@ -37,6 +40,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
+  CapacitorPreferences:
+    :path: "../../node_modules/@capacitor/preferences"
   TeamLepisodeCapacitorKakaoLogin:
     :path: "../../node_modules/@team-lepisode/capacitor-kakao-login"
 
@@ -44,11 +49,12 @@ SPEC CHECKSUMS:
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
   Capacitor: 4738747ece274c45e4d9bec9ae394a6269169e64
   CapacitorCordova: 34618fa1b14b6b091fd60a7658f7654044ae8d8a
+  CapacitorPreferences: b583b5deb74e564c35968189d25d32c0fd41200d
   KakaoSDKAuth: 45204252ff7c379c0f86c5573f97ec36885afca0
   KakaoSDKCommon: 132164a6bac8bcd3a4346d3bf777f34f8f39fdca
   KakaoSDKUser: 4c9cf1da78710d19d0b2c2dd32d1a44c544cdfa4
   TeamLepisodeCapacitorKakaoLogin: 856eecb3be3dc322941c1a6e98efbb9c09e8fc8c
 
-PODFILE CHECKSUM: 026885aeed2b2d168b8fb518a1ab4ff5f5c10a12
+PODFILE CHECKSUM: 087e37fbbbd8021ab60a74af88dc845d584e9f5b
 
 COCOAPODS: 1.14.3
