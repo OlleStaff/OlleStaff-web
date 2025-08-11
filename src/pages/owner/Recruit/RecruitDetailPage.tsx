@@ -3,7 +3,6 @@ import { Text } from "@/styles/Text";
 import Header from "@/components/Header";
 import { useUserStore } from "@/store/useUserStore";
 import { Wrapper } from "@/styles/Wrapper";
-import PageWrapper from "@/components/PageWrapper";
 import styled from "@emotion/styled";
 import theme from "@/styles/theme";
 import { calculateDDay, formatDateToMonthDay } from "@/utils/date";
