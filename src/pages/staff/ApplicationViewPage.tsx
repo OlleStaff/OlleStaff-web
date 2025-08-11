@@ -13,10 +13,12 @@ import UniformImageGrid from "@/components/UniformImageGrid";
 import SectionTitle from "@/components/SectionTitle";
 import Textarea from "@/components/Textarea";
 import { useClipboard } from "@/hooks/useClipboard";
+import { useNavigate } from "react-router-dom";
 
 export default function ApplicationView() {
     const [tab, setTab] = useState<StaffTabTypes["MY_APPLICATION"]>("자기소개");
     const { copy } = useClipboard();
+    const navigate = useNavigate();
 
     const { data: application, isLoading: isAppLoading } = useFetchMyApplication();
     const { data: profile, isLoading: isProfileLoading } = useFetchUserProfile();
@@ -28,11 +30,15 @@ export default function ApplicationView() {
         setViewerOpen(true);
     };
 
+    const onEditClick = () => {
+        navigate("/staff/user/edit-application");
+    };
+
     if (isAppLoading || isProfileLoading || !application || !profile) return null;
 
     return (
         <>
-            <Header showBackButton title="나의 지원서" />
+            <Header showBackButton title="나의 지원서" rightIconSrc="/icons/pencil.svg" onRightClick={onEditClick} />
             <PageWrapper hasHeader>
                 <Wrapper.FlexBox direction="column" alignItems="center" margin="0px 0px 24px 0px">
                     <ProfileImage src={application.profileImage} alt="프로필 이미지" />
