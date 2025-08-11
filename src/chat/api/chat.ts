@@ -2,19 +2,12 @@ import axios from "axios";
 
 export const ChatApi = {
     // GET: 채팅 메시지 조회
-    getChatMessages: async (chatRoomId: number) => {
-        try {
-            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/chat/messages`, {
-                withCredentials: true,
-                params: { chatRoomId },
-            });
-
-            console.log(`채팅방(${chatRoomId}) 메시지 조회 성공`, res.data.data.messages);
-            return res.data.data.messages;
-        } catch (error) {
-            console.error(`채팅방(${chatRoomId}) 메시지 조회 실패`, error);
-            throw error;
-        }
+    getChatMessages: async (chatRoomId: number, cursor?: string, size = 20) => {
+        const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/chat/messages`, {
+            withCredentials: true,
+            params: { chatRoomId, cursor: cursor ?? undefined, size },
+        });
+        return data?.data ?? { messages: [], cursor: null, hasNext: false };
     },
 
     // POST: 채팅 내 이미지 업로드

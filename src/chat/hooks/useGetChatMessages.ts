@@ -1,11 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { ChatApi } from "../api/chat";
-import { ChatMessage } from "../types/messages";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
-export const useGetChatMessages = (chatRoomId: number) => {
-    return useQuery<ChatMessage[]>({
+import { ChatApi } from "../api/chat";
+
+export function useGetChatMessages(chatRoomId: number, size = 20) {
+    return useInfiniteQuery({
         queryKey: ["chatMessages", chatRoomId],
-        queryFn: () => ChatApi.getChatMessages(chatRoomId),
-        enabled: typeof chatRoomId === "number", // id 없거나 0이면 호출 막기
+        queryFn: ({ pageParam }) => ChatApi.getChatMessages(chatRoomId, pageParam, size),
+        initialPageParam: undefined,
+        getNextPageParam: lastPage => (lastPage.hasNext ? (lastPage.cursor ?? undefined) : undefined),
     });
-};
+}
