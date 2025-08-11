@@ -12,6 +12,7 @@ import ImageViewer from "../ImageViewer";
 import OptionButton from "../OptionButton";
 import { useDeleteReview, useDeleteReviewComment } from "@/hooks/owner/review";
 import Modal from "../Modal";
+import ClickableNickname from "../ClickableNickname";
 
 type ModalType = "confirm" | "success" | null;
 type ModalPurpose = "deleteReview" | "deleteComment" | "postRecomment" | null;
@@ -160,7 +161,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
 
                 <ContentWrapper>
                     <UserWrapper>
-                        <Text.Body2_1>{nickName}님</Text.Body2_1>
+                        <ClickableNickname userId={3} nickname={nickName} />
                         <img src="/icons/fullStar.svg" alt="별" style={{ width: "15px" }} />
                         <Text.Body2_1>{rating}</Text.Body2_1>
                     </UserWrapper>

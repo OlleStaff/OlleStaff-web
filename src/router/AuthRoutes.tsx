@@ -17,8 +17,8 @@ import FullscreenLayout from "@/layout/FullScreenLayout";
 import RecruitEditContainer from "@/pages/owner/Recruit/Edit/RecruitEditContainer";
 import TermsDetailPage from "@/pages/auth/TermsDetailPage";
 import ChatLayout from "@/layout/ChatLayout";
-import ChatPage from "@/pages/chat/ChatListPage";
-import ChatRoomPage from "@/pages/chat/ChatRoomPage";
+import ChatPage from "@/chat/pages/ChatListPage";
+import ChatRoomPage from "@/chat/pages/ChatRoomPage";
 
 const AuthRoutes: RouteObject[] = [
     {
