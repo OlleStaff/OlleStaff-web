@@ -3,29 +3,23 @@ import Header from "@/components/Header";
 import PageWrapper from "@/components/PageWrapper";
 import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
-import PrecautionListItem from "../components/PrecautionListItem";
-import { EmploymentPostProps, EmploymentPutProps } from "@/types/employment";
+import PrecautionListItem from "../../components/PrecautionListItem";
+import { EmploymentPostProps } from "@/types/employment";
 import { useState } from "react";
 import Modal from "@/components/Modal";
 import { useNavigate } from "react-router-dom";
 
-export type Mode = "create" | "edit";
-
-export type FormDataType<T extends Mode> = T extends "create" ? EmploymentPostProps : EmploymentPutProps;
-
-export interface RecruitPrecautionPageProps<T extends Mode> {
-    mode: T;
-    formData: FormDataType<T>;
-    setFormData: React.Dispatch<React.SetStateAction<FormDataType<T>>>;
+interface RecruitCreatePrecautionPageProps {
+    formData: EmploymentPostProps;
+    setFormData: React.Dispatch<React.SetStateAction<EmploymentPostProps>>;
     handleSubmit: () => void;
 }
 
-export default function RecruitPrecautionPage<T extends Mode>({
-    mode,
+export default function RecruitCreatePrecautionPage({
     formData,
     setFormData,
     handleSubmit,
-}: RecruitPrecautionPageProps<T>) {
+}: RecruitCreatePrecautionPageProps) {
     const isFormValid =
         formData.precautions.length >= 2 &&
         formData.precautions.every(
@@ -61,13 +55,13 @@ export default function RecruitPrecautionPage<T extends Mode>({
                     />
 
                     <Button
-                        label={mode === "edit" ? "수정 완료" : "작성 완료"}
+                        label="작성 완료"
                         width="large"
                         onClick={handleOpenModal}
                         disabled={!isFormValid}
                         isActive={isFormValid}
                     >
-                        {mode === "edit" ? "수정 완료" : "작성 완료"}
+                        작성 완료
                     </Button>
                 </Wrapper.FlexBox>
             </PageWrapper>
@@ -75,12 +69,10 @@ export default function RecruitPrecautionPage<T extends Mode>({
             {isModalOpen && (
                 <Modal
                     variant="confirm"
-                    title={mode === "edit" ? "게시글 수정을 완료하시겠습니까?" : "게시글 등록을 완료하시겠습니까?"}
-                    message={`${
-                        mode === "edit" ? "수정" : "등록"
-                    } 버튼을 누를 시 게시글이 업로드 됩니다.\n업로드 게시글 수정은 나의 공고 > 더보기`}
+                    title="게시글 등록을 완료하시겠습니까?"
+                    message={`등록 버튼을 누를 시 게시글이 업로드 됩니다.\n업로드 게시글 수정은 나의 공고 > 더보기`}
                     cancelText="취소"
-                    confirmText={mode === "edit" ? "수정" : "등록"}
+                    confirmText="등록"
                     handleModalClose={() => setIsModalOpen(false)}
                     onConfirm={handleConfirm}
                 />

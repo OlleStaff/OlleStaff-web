@@ -37,7 +37,7 @@ export default function Header({
                         </BackButton>
                     )}
                 </Side>
-                <Text.Title3_2>{title}</Text.Title3_2>
+                <Text.Title3_1>{title}</Text.Title3_1>
                 <Side>
                     {rightIconSrc ? (
                         <IconButton onClick={onRightClick}>

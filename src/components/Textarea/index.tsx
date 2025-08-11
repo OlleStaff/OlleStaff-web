@@ -12,6 +12,7 @@ type TextareaProps = {
     disabled?: boolean;
     variant?: TextareaVariant;
     minLength?: number;
+    maxLength?: number;
     textareaTitle?: string;
     required?: boolean;
 };
@@ -23,6 +24,7 @@ export default function Textarea({
     disabled,
     variant = "flat",
     minLength,
+    maxLength,
     textareaTitle,
     required,
 }: TextareaProps) {
@@ -35,8 +37,13 @@ export default function Textarea({
         }
     }, [value, variant]);
 
-    const showCount = minLength !== undefined;
+    const showCount = minLength !== undefined || maxLength !== undefined;
     const isEmpty = value.trim().length === 0;
+
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        if (maxLength !== undefined && e.target.value.length > maxLength) return;
+        onChange(e);
+    };
 
     return (
         <TextareaContainer>
@@ -51,12 +58,20 @@ export default function Textarea({
                 <StyledTextarea
                     ref={textareaRef}
                     value={value}
-                    onChange={onChange}
+                    onChange={handleChange}
                     placeholder={placeholder}
                     disabled={disabled}
                     variant={variant}
                 />
-                {showCount && <CharCount>{isEmpty ? `최소 ${minLength}자` : `${value.length}자`}</CharCount>}
+                {showCount && (
+                    <CharCount>
+                        {isEmpty
+                            ? minLength !== undefined
+                                ? `최소 ${minLength}자`
+                                : ""
+                            : `${value.length}${maxLength ? `/${maxLength}` : "자"}`}
+                    </CharCount>
+                )}
             </Wrapper>
         </TextareaContainer>
     );

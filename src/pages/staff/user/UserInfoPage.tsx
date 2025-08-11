@@ -12,7 +12,7 @@ const MenuList = [
         title: "내 정보 관리",
         content: [
             { title: "개인정보 보기", link: "/staff/user/edit-profile" },
-            { title: "지원서 보기", link: "/staff/user/edit-application" },
+            { title: "지원서 보기", link: "/staff/user/application" },
         ],
     },
     {

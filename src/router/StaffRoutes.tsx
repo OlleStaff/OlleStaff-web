@@ -87,7 +87,7 @@ const StaffRoutes: RouteObject[] = [
                 element: <MyLikesPage />,
             },
             {
-                path: "application",
+                path: "user/application",
                 element: <ApplicationViewPage />,
             },
             {

@@ -123,6 +123,7 @@ export const GlobalStyle = () => css`
         width: 393px;
         min-width: 375px;
         height: 100vh;
+        min-height: 100dvh; // 폰으로 볼 때 아래 잘림 해결 시도
         background-color: white;
         position: relative;
     }

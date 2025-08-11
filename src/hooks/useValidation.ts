@@ -7,6 +7,7 @@ export default function useValidation() {
         phone: "",
         verificationCode: "",
         birthDate: "",
+        gender: "",
     });
 
     const [errors, setErrors] = useState<ErrorState>({});

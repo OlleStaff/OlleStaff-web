@@ -1,4 +1,4 @@
-import { EmploymentPostProps, EmploymentPutProps } from "@/types/employment";
+import { EmploymentPostProps } from "@/types/employment";
 import axios from "axios";
 
 export const EmploymentApi = {
@@ -48,28 +48,13 @@ export const EmploymentApi = {
         }
     },
     // PUT: 나의 공고 수정
-    putEmployment: async (formData: EmploymentPutProps, imageFiles: File[]) => {
-        const payload = new FormData();
-
-        const employmentPayload = {
-            ...formData,
-            employmentId: formData.employmentId,
-        };
-        payload.append("employment", new Blob([JSON.stringify(employmentPayload)], { type: "application/json" }));
-
-        imageFiles.forEach(file => {
-            payload.append("images", file);
-        });
-
-        const res = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/employments`, payload, {
+    putEmployment: async (formData: FormData) =>
+        await axios.put(`${import.meta.env.VITE_API_BASE_URL}/employments`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
             withCredentials: true,
-        });
-
-        return res.data;
-    },
+        }),
 
     deleteEmployment: async (employmentIds: number[]) =>
         await axios

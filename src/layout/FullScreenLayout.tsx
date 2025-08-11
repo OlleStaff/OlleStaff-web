@@ -1,11 +1,15 @@
 import { Outlet } from "react-router-dom";
 import styled from "@emotion/styled";
 import PageWrapper from "@/components/PageWrapper";
+import { useRef } from "react";
+import { useScrollToTopOnPathChange } from "@/hooks/useScrollToTopOnPathChange";
 
 export default function FullscreenLayout() {
+    const contentRef = useRef<HTMLDivElement>(null);
+    useScrollToTopOnPathChange(contentRef);
     return (
         <PageWrapper isRoot>
-            <FullHeightContent>
+            <FullHeightContent ref={contentRef}>
                 <Outlet />
             </FullHeightContent>
         </PageWrapper>

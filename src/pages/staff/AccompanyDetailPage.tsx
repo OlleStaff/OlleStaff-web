@@ -33,9 +33,11 @@ export default function AccompanyDetailPage() {
                     <ProfileImage src={userImage || "/icons/defaultUser.svg"} alt="프로필 이미지" />
                     <MetaInfoText>
                         <Text.Body1_1>{userNickname}</Text.Body1_1>
-                        <Text.Body2_1 color="Gray4">{timeAgo(createdAt)} 작성</Text.Body2_1>
+                        <Text.Body2_1 color="Gray4">{timeAgo(createdAt)}</Text.Body2_1>
                     </MetaInfoText>
                 </MetaInfo>
+                <MetaDivider />
+
                 <Wrapper.FlexBox direction="column">
                     <Title>{title}</Title>
                     <Content style={{ whiteSpace: "pre-wrap" }}>{content}</Content>
@@ -74,8 +76,7 @@ const MetaInfo = styled.div`
     gap: 8px;
     align-items: center;
     padding-bottom: 10px;
-    margin-bottom: 16px;
-    border-bottom: 1px solid ${({ theme }) => theme.color.Gray1};
+    margin-left: 10px;
 `;
 
 const MetaInfoText = styled.div`
@@ -84,6 +85,11 @@ const MetaInfoText = styled.div`
     flex-direction: column;
     justify-content: center;
     row-gap: 2px;
+`;
+
+const MetaDivider = styled.div`
+    border-bottom: 1px solid ${({ theme }) => theme.color.Gray1};
+    margin-bottom: 10px;
 `;
 
 const Title = styled(Text.Title3_2)`
@@ -105,11 +111,12 @@ const IconWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 32px;
 `;
 
 const Icon = styled.img`
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     object-fit: contain;
 `;
 

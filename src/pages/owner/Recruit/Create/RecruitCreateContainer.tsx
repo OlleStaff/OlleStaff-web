@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import RecruitPrecautionPage from "./RecruitPrecautionPage";
-import RecruitBasicInfoPage from "./RecruitBasicInfoPage";
 import { EmploymentPostProps } from "@/types/employment";
 import { usePostEmployment } from "@/hooks/owner/employment/usePostEmployment";
+import RecruitCreateBasicInfoPage from "./RecruitCreateBasicInfoPage";
+import RecruitCreatePrecautionPage from "./RecruitCreatePrecautionPage";
 
 const initialFormData: EmploymentPostProps = {
     instarUrl: "",
@@ -29,6 +29,9 @@ export default function RecruitCreateContainer() {
 
     const navigate = useNavigate();
     const createMutation = usePostEmployment();
+    const handleNextStep = () => {
+        navigate("/owner/recruit/write/step2");
+    };
 
     const handleSubmit = async () => {
         createMutation.mutate(
@@ -50,21 +53,18 @@ export default function RecruitCreateContainer() {
             <Route
                 path="step1"
                 element={
-                    <RecruitBasicInfoPage
-                        mode="create"
+                    <RecruitCreateBasicInfoPage
                         formData={formData}
                         setFormData={setFormData}
                         setImageFiles={setImageFiles}
-                        imageFiles={imageFiles}
-                        onNext={() => navigate("/owner/recruit/write/step2")}
+                        onNext={handleNextStep}
                     />
                 }
             />
             <Route
                 path="step2"
                 element={
-                    <RecruitPrecautionPage
-                        mode="create"
+                    <RecruitCreatePrecautionPage
                         formData={formData}
                         setFormData={setFormData}
                         handleSubmit={handleSubmit}

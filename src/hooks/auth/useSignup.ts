@@ -1,3 +1,4 @@
+import { Gender } from "@/types/user";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +8,7 @@ export interface SignupRequest {
     phone: string;
     phoneVerificationCode: string;
     birthDate: number;
+    gender: Gender;
     image?: File | null;
     agreements: string[];
 }
@@ -21,6 +23,7 @@ export const useSignup = () => {
             formData.append("phone", data.phone);
             formData.append("phoneVerificationCode", data.phoneVerificationCode);
             formData.append("birthDate", data.birthDate.toString());
+            formData.append("gender", data.gender);
 
             if (data.image) {
                 formData.append("image", data.image);

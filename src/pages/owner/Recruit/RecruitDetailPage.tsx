@@ -14,6 +14,7 @@ import ImageViewer from "@/components/ImageViewer";
 import MapComponent from "../components/Map";
 import ImageCarousel from "@/components/ImageCarousel";
 import { useGetEmploymentDetail } from "@/hooks/owner/employment";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function RecruitDetailPage() {
     const navigate = useNavigate();
@@ -27,8 +28,8 @@ export default function RecruitDetailPage() {
     const userType = useUserStore(state => state.type);
     const { employmentId } = useParams<{ employmentId: string }>();
     const { data: detail, isLoading, error } = useGetEmploymentDetail(Number(employmentId));
-    if (!detail?.data || isLoading) return <p>불러오는 중...</p>;
-    if (error) return <p>불러오기 실패</p>;
+    if (!detail?.data || isLoading) return <LoadingSpinner />;
+    if (error) navigate("/404");
     const {
         instarUrl,
         personNum,
@@ -47,7 +48,9 @@ export default function RecruitDetailPage() {
     } = detail.data;
 
     const handleEditClick = () => {
-        navigate(`/owner/recruit/edit/${employmentId}/step1`);
+        navigate(`/owner/recruit/edit/${employmentId}/step1`, {
+            state: detail.data,
+        });
     };
 
     const metaItems = [
@@ -104,14 +107,15 @@ export default function RecruitDetailPage() {
                         />
                     )}
 
-                    <Wrapper.FlexBox gap="6px" style={{ flexWrap: "wrap" }}>
-                        {Array.isArray(hashtagName) &&
-                            hashtagName.map((tag, idx) => (
+                    {Array.isArray(hashtagName) && hashtagName.length > 0 && (
+                        <Wrapper.FlexBox gap="6px" style={{ flexWrap: "wrap" }}>
+                            {hashtagName.map((tag, idx) => (
                                 <HashTag key={idx}>
                                     <Text.Body2 color="Main"># {tag}</Text.Body2>
                                 </HashTag>
                             ))}
-                    </Wrapper.FlexBox>
+                        </Wrapper.FlexBox>
+                    )}
 
                     <Text.Title1_1>{title}</Text.Title1_1>
 
@@ -140,7 +144,7 @@ export default function RecruitDetailPage() {
 
                     <Wrapper.FlexBox bgColor="#F8F8F8" borderRadius="4px" padding="14px 19px">
                         <Text.Body1>
-                            <ExpandableText text={content} maxLength={135} />
+                            <ExpandableText text={content} maxWidth={1200} />
                         </Text.Body1>
                     </Wrapper.FlexBox>
 
@@ -158,7 +162,9 @@ export default function RecruitDetailPage() {
                     <BenefitListWrapper>
                         {(showAllBenefits ? benefitsContent : benefitsContent.slice(0, 3)).map(
                             (benefit: string, idx: number) => (
-                                <BenefitItemBox key={idx}>{benefit}</BenefitItemBox>
+                                <BenefitItemBox key={idx}>
+                                    <ExpandableText text={benefit} maxWidth={140} />
+                                </BenefitItemBox>
                             )
                         )}
                     </BenefitListWrapper>
@@ -169,6 +175,30 @@ export default function RecruitDetailPage() {
                     </Wrapper.FlexBox>
                     <MapComponent latitude={latitude} longitude={longitude} />
                 </Wrapper.FlexBox>
+                {userType === "STAFF" && (
+                    <Wrapper.FlexBox gap="8px" padding="0 30px">
+                        <ActionButton onClick={() => console.log("TODO: 전화번호 연결")} variant="call">
+                            <ContentWrapper>
+                                <Icon src="/icons/call.svg" alt="" aria-hidden />
+                                <Label $variant="call">전화문의</Label>
+                            </ContentWrapper>
+                        </ActionButton>
+
+                        <ActionButton
+                            onClick={() =>
+                                navigate("/staff/user/application", {
+                                    state: { fromRecruit: true, employmentId },
+                                })
+                            }
+                            variant="apply"
+                        >
+                            <ContentWrapper>
+                                <Icon src="/icons/envelope.svg" alt="" aria-hidden />
+                                <Label $variant="apply">지원하기</Label>
+                            </ContentWrapper>
+                        </ActionButton>
+                    </Wrapper.FlexBox>
+                )}
             </PageWrapper>
         </>
     );
@@ -203,7 +233,9 @@ const DDayWrapper = styled.div`
 const BenefitItemBox = styled.div`
     display: flex;
     align-items: center;
-    height: 40px;
+    flex-wrap: wrap;
+    word-break: break-word;
+    white-space: normal;
     padding: 10px 20px;
     background-color: ${theme.color.Gray0};
     border-radius: 8px;
@@ -217,4 +249,35 @@ const BenefitListWrapper = styled.ul`
     display: flex;
     flex-direction: column;
     gap: 8px;
+`;
+
+const ActionButton = styled.button<{ variant?: "call" | "apply" }>`
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 8px;
+    background: ${({ variant, theme }) => (variant === "call" ? theme.color.Gray1 : theme.color.Main)};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 16px;
+`;
+
+const ContentWrapper = styled.div`
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+`;
+
+const Icon = styled.img`
+    width: 28px;
+    height: 28px;
+    padding: 5px;
+    object-fit: contain;
+`;
+
+const Label = styled(Text.Body1_1)<{ $variant: "call" | "apply" }>`
+    color: ${({ $variant, theme }) => ($variant === "call" ? theme.color.Black : theme.color.White)};
+    line-height: 20px;
 `;

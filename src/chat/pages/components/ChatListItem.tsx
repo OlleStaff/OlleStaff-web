@@ -3,8 +3,8 @@ import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
 import theme from "@/styles/theme";
 import { Style as RadioStyle } from "@/components/RadioButton";
-import { ChatRoomPreview } from "../types/common";
 import { timeAgo } from "@/utils/date";
+import { ChatRoomPreview } from "@/chat/types/chatRooms";
 
 interface ChatListItemProps {
     room: ChatRoomPreview;
@@ -27,11 +27,13 @@ export default function ChatListItem({ room, onEditMode, onClick, isSelected, on
             <Wrapper.FlexBox direction="column" gap="8px" style={{ minWidth: 0 }}>
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                     <Text.Title4>{room.title}</Text.Title4>
-                    <Text.Body3_1 color="Gray4">{timeAgo(room.timestamp)}</Text.Body3_1>
+                    <Text.Body3_1 color="Gray4">{timeAgo(room.lastMessage.timestamp)}</Text.Body3_1>
                 </Wrapper.FlexBox>
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
-                    <LastMessage>{room.lastMessage}</LastMessage>
-                    {room.unreadCount > 0 && <Unread>{room.unreadCount}</Unread>}
+                    <LastMessage>
+                        {room.lastMessage.messageType === "TEXT" && <>{room.lastMessage.content.text}</>}
+                    </LastMessage>
+                    {room.unreadMessageCount > 0 && <Unread>{room.unreadMessageCount}</Unread>}
                 </Wrapper.FlexBox>
             </Wrapper.FlexBox>
         </ItemContainer>

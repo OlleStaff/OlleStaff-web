@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import PageWrapper from "@/components/PageWrapper";
 import SectionTitle from "@/components/SectionTitle";
 import styled from "@emotion/styled";
@@ -15,6 +15,10 @@ import { useDebounce } from "@/hooks/useDebounce";
 import TabSelector from "@/components/TabSelector";
 import { StaffTabTypes, TAB_LABELS } from "@/constants/tabs";
 import { SkeletonList } from "@/components/Skeleton/SkeletonList";
+import { useUserStore } from "@/store/useUserStore";
+import { useShallow } from "zustand/react/shallow";
+import { Wrapper } from "@/styles/Wrapper";
+import { Text } from "@/styles/Text";
 
 const mockAccompanyData = [
     {
@@ -60,11 +64,40 @@ export default function HomePage() {
         enabled: !!debouncedSearch,
     });
 
+    const setUser = useUserStore(s => s.setUser);
+    const current = useUserStore(
+        useShallow(s => ({
+            nickname: s.nickname,
+            profileImage: s.profileImage,
+            type: s.type,
+            gender: s.gender,
+            birthDate: s.birthDate,
+        }))
+    );
+    const bootRef = useRef(false);
+
     useEffect(() => {
         const checkApplicationStatus = async () => {
             try {
                 const skipped = sessionStorage.getItem("applicationSkipped");
                 const user = await fetchMinimumUserInfo();
+                const same =
+                    current.nickname === user.nickname &&
+                    current.profileImage === user.profileImage &&
+                    current.type === user.userType &&
+                    current.gender === (user.gender ?? "") &&
+                    current.birthDate === (user.birthDate ?? "");
+
+                if (!bootRef.current && !same) {
+                    setUser({
+                        nickname: user.nickname,
+                        profileImage: user.profileImage,
+                        type: user.userType,
+                        gender: user.gender ?? "",
+                        birthDate: user.birthDate ?? "",
+                    });
+                }
+                bootRef.current = true;
                 if (!user.onboarded && !skipped) {
                     navigate("/staff/application/write");
                 }
@@ -98,36 +131,60 @@ export default function HomePage() {
 
                 {searchValue ? (
                     <Section>
-                        <SectionTitle title={`"${searchValue}" 검색 결과`} />
-                        <TabSelector
-                            labels={[...TAB_LABELS.STAFF.SEARCH]}
-                            selected={sort}
-                            onChange={value => setSort(value as SearchTab)}
-                            variant="bold"
-                        ></TabSelector>
                         {isDebouncing || isLoading ? (
                             <SkeletonList variant="guesthouse" count={5} />
                         ) : isError ? (
                             <Oops message="에러가 발생했어요" description="다시 시도해주세요" />
                         ) : searchResults.length === 0 ? (
-                            <Oops
-                                message={`"${searchValue}"에 대한 검색 결과가 없습니다.`}
-                                description="새로운 검색어로 다시 시도해보세요."
-                            />
+                            <>
+                                <Wrapper.FlexBox
+                                    direction="column"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    gap="12px"
+                                    margin="20px 0"
+                                    style={{ flex: 1 }}
+                                >
+                                    <img
+                                        src="/icons/searchIcon.svg"
+                                        alt="oops"
+                                        style={{ width: "55px", padding: "10px" }}
+                                    />
+                                    <Wrapper.FlexBox gap="8px" direction="column" alignItems="center">
+                                        <Text.Body1_1 color="Gray3">
+                                            '{searchValue}'에 대한 검색 결과가 없어요.
+                                        </Text.Body1_1>
+                                        <Text.Body2_1
+                                            color="Gray3"
+                                            style={{ whiteSpace: "pre-line", textAlign: "center" }}
+                                        >
+                                            새로운 검색어로 다시 시도해보세요.
+                                        </Text.Body2_1>
+                                    </Wrapper.FlexBox>
+                                </Wrapper.FlexBox>
+                            </>
                         ) : (
-                            <GuesthouseList
-                                data={searchResults}
-                                fetchNextPage={fetchNextPage}
-                                hasNextPage={hasNextPage}
-                                isFetchingNextPage={isFetchingNextPage}
-                            />
+                            <>
+                                <TabSelector
+                                    labels={[...TAB_LABELS.STAFF.SEARCH]}
+                                    selected={sort}
+                                    onChange={value => setSort(value as SearchTab)}
+                                    variant="bold"
+                                ></TabSelector>
+                                <GuesthouseList
+                                    data={searchResults}
+                                    fetchNextPage={fetchNextPage}
+                                    hasNextPage={hasNextPage}
+                                    isFetchingNextPage={isFetchingNextPage}
+                                />
+                            </>
                         )}
                     </Section>
                 ) : (
                     <>
                         <CategoryList />
                         <Section>
-                            <SectionTitle title="취향저격 게스트하우스 🌴" />
+                            <SectionTitle title="취향저격 게스트하우스 🌴" link="" />
                             <CardCarousel />
                         </Section>
                         <Section>
@@ -146,4 +203,5 @@ const Section = styled.section`
     display: flex;
     flex-direction: column;
     gap: 16px;
+    height: 100%;
 `;

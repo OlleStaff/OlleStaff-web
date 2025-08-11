@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import PageWrapper from "@/components/PageWrapper";
 import styled from "@emotion/styled";
+import { UserInfo } from "@/types/user";
 
 export default function SignupPage() {
     const { userInfo, errors, handleInputChange, validate } = useValidation();
@@ -29,6 +30,7 @@ export default function SignupPage() {
         !!userInfo.birthDate.trim() &&
         !!userInfo.phone.trim() &&
         !!userInfo.verificationCode.trim() &&
+        !!userInfo.gender &&
         isRequested &&
         !isExpired;
 
@@ -36,6 +38,11 @@ export default function SignupPage() {
     const location = useLocation();
     const passedAgreements: string[] = location.state?.agreements ?? [];
     const navigate = useNavigate();
+
+    const setRadio = (field: keyof UserInfo, value: string) =>
+        handleInputChange(field)({
+            target: { value },
+        } as React.ChangeEvent<HTMLInputElement>);
 
     const signupMutation = useSignup();
 
@@ -47,6 +54,7 @@ export default function SignupPage() {
             phone: userInfo.phone,
             phoneVerificationCode: userInfo.verificationCode,
             birthDate: parseInt(userInfo.birthDate),
+            gender: userInfo.gender as "남자" | "여자",
             image: selectedImage,
             agreements: passedAgreements,
         });
@@ -86,6 +94,19 @@ export default function SignupPage() {
                             onChange={handleInputChange("birthDate")}
                             placeholder="YYYYMMDD를 입력하세요."
                             bottomMessage={errors.birthDate}
+                            required
+                        />
+
+                        <Input
+                            inputTitle="성별"
+                            variant="radio"
+                            value={userInfo.gender}
+                            options={[
+                                { label: "남성", value: "남자" },
+                                { label: "여성", value: "여자" },
+                            ]}
+                            onSelect={v => setRadio("gender", v)}
+                            bottomMessage={errors.gender}
                             required
                         />
 
