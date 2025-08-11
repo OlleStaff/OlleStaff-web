@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import Oops from "@/components/Oops";
-import PageWrapper from "@/components/PageWrapper";
 import TabSelector from "@/components/TabSelector";
 import { OwnerTabTypes, TAB_LABELS } from "@/constants/tabs";
 import { Wrapper } from "@/styles/Wrapper";

@@ -4,7 +4,6 @@ import DropdownButton from "@/components/DropdownButton";
 import Header from "@/components/Header";
 import ImageUploader from "@/components/ImageUploader";
 import Input from "@/components/Input";
-import PageWrapper from "@/components/PageWrapper";
 import RadioButton from "@/components/RadioButton";
 import Textarea from "@/components/Textarea";
 import { Wrapper } from "@/styles/Wrapper";
