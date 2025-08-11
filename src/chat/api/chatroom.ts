@@ -7,7 +7,7 @@ export const ChatRoomApi = {
             const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/chat-rooms/all`, {
                 withCredentials: true,
             });
-            return res.data?.data?.chatRoomPreviewDTOS ?? [];
+            return res.data.data.chatRooms ?? [];
         } catch (error) {
             console.error("채팅방 목록 조회 실패", error);
             throw error;
