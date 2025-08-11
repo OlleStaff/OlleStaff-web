@@ -13,9 +13,15 @@ import UniformImageGrid from "@/components/UniformImageGrid";
 import SectionTitle from "@/components/SectionTitle";
 import Textarea from "@/components/Textarea";
 import { useClipboard } from "@/hooks/useClipboard";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Button } from "@/components/Button";
+import Modal from "@/components/Modal";
+import theme from "@/styles/theme";
 
 export default function ApplicationView() {
+    const { state } = useLocation() as { state?: { fromRecruit?: boolean; employmentId?: string } };
+    const fromRecruit = !!state?.fromRecruit;
+    const employmentId = state?.employmentId;
     const [tab, setTab] = useState<StaffTabTypes["MY_APPLICATION"]>("자기소개");
     const { copy } = useClipboard();
     const navigate = useNavigate();
@@ -24,6 +30,22 @@ export default function ApplicationView() {
     const { data: profile, isLoading: isProfileLoading } = useFetchUserProfile();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isViewerOpen, setViewerOpen] = useState(false);
+    // ✅ 모달 상태
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [isCompleteOpen, setIsCompleteOpen] = useState(false);
+
+    // ✅ 지원 완료 버튼 클릭 → 확인 모달 오픈
+    const onClickApply = () => setIsConfirmOpen(true);
+
+    // ✅ 확인 모달에서 "확인" 클릭
+    const handleConfirmApply = async () => {
+        setIsConfirmOpen(false);
+
+        // 여기에 실제 지원 API 호출을 넣으면 됩니다.
+        // await applyEmployment({ employmentId: Number(employmentId) });
+
+        setIsCompleteOpen(true);
+    };
 
     const handleImageClick = (idx: number) => {
         setCurrentImageIndex(idx);
@@ -38,65 +60,130 @@ export default function ApplicationView() {
 
     return (
         <>
-            <Header showBackButton title="나의 지원서" rightIconSrc="/icons/pencil.svg" onRightClick={onEditClick} />
+            <Header
+                showBackButton
+                title="나의 지원서"
+                rightIconSrc={fromRecruit ? undefined : "/icons/pencil.svg"}
+                onRightClick={fromRecruit ? undefined : onEditClick}
+            />
             <PageWrapper hasHeader>
-                <Wrapper.FlexBox direction="column" alignItems="center" margin="0px 0px 24px 0px">
-                    <ProfileImage src={application.profileImage} alt="프로필 이미지" />
-                    <Text.Title3_1 style={{ marginTop: "12px" }}>{application.nickname}</Text.Title3_1>
-                    <Text.Body3_1 color="Gray3">
-                        {profile.birthDate} <Text.Body3_1 color="Main"> ({application.mbti})</Text.Body3_1>
-                    </Text.Body3_1>
-                    <Wrapper.FlexBox direction="column" justifyContent="center" gap="12px" margin="24px 0px 0px 0px">
-                        <Text.Body2_1 color="Gray5">
-                            <Icon src="/icons/call.svg" />
-                            {profile.phone}
-                        </Text.Body2_1>
-                        <Text.Body2_1 color="Gray5">
-                            <Icon src="/icons/insta.svg" />
-                            {application.link}
-                        </Text.Body2_1>
-                    </Wrapper.FlexBox>
-                </Wrapper.FlexBox>
-
-                <TabSelector
-                    labels={[...TAB_LABELS.STAFF.MY_APPLICATION]}
-                    selected={tab}
-                    onChange={label => setTab(label as StaffTabTypes["MY_APPLICATION"])}
-                    variant="underline"
-                />
-
-                {tab === "자기소개" ? (
-                    <Wrapper.FlexBox direction="column" margin="24px 0px" gap="12px">
-                        <SectionTitle
-                            title="자기소개 및 지원동기"
-                            link=""
-                            type="copy"
-                            onCopyClick={() => copy(application.introduction)}
-                        />
-                        <Textarea value={application.introduction} onChange={() => {}} disabled variant="flat" />
-                    </Wrapper.FlexBox>
-                ) : (
-                    <>
-                        <Wrapper.FlexBox direction="column" margin="24px 0px" gap="12px">
-                            <SectionTitle
-                                title="어필사항 및 경력사항"
-                                link=""
-                                type="copy"
-                                onCopyClick={() => copy(application.appeal)}
-                            />
-                            <Textarea value={application.appeal} onChange={() => {}} disabled variant="flat" />
+                <Wrapper.FlexBox
+                    direction="column"
+                    justifyContent="space-between"
+                    height={`calc(100vh - ${theme.size.HeaderHeight})`}
+                >
+                    <div>
+                        <Wrapper.FlexBox direction="column" alignItems="center" margin="0px 0px 24px 0px">
+                            <ProfileImage src={application.profileImage} alt="프로필 이미지" />
+                            <Text.Title3_1 style={{ marginTop: "12px" }}>{application.nickname}</Text.Title3_1>
+                            <Text.Body3_1 color="Gray3">
+                                {profile.birthDate} <Text.Body3_1 color="Main"> ({application.mbti})</Text.Body3_1>
+                            </Text.Body3_1>
+                            <Wrapper.FlexBox
+                                direction="column"
+                                justifyContent="center"
+                                gap="12px"
+                                margin="24px 0px 0px 0px"
+                            >
+                                <Text.Body2_1 color="Gray5">
+                                    <Icon src="/icons/call.svg" />
+                                    {profile.phone}
+                                </Text.Body2_1>
+                                <Text.Body2_1 color="Gray5">
+                                    <Icon src="/icons/insta.svg" />
+                                    {application.link}
+                                </Text.Body2_1>
+                            </Wrapper.FlexBox>
                         </Wrapper.FlexBox>
-                        <UniformImageGrid images={application.images} onImageClick={handleImageClick} />
-                        {isViewerOpen && (
-                            <ImageViewer
-                                images={application.images}
-                                startIndex={currentImageIndex}
-                                onClose={() => setViewerOpen(false)}
-                            />
+
+                        <TabSelector
+                            labels={[...TAB_LABELS.STAFF.MY_APPLICATION]}
+                            selected={tab}
+                            onChange={label => setTab(label as StaffTabTypes["MY_APPLICATION"])}
+                            variant="underline"
+                        />
+
+                        {tab === "자기소개" ? (
+                            <Wrapper.FlexBox direction="column" margin="24px 0px" gap="12px">
+                                <SectionTitle
+                                    title="자기소개 및 지원동기"
+                                    link=""
+                                    type="copy"
+                                    onCopyClick={() => copy(application.introduction)}
+                                />
+                                <Textarea
+                                    value={application.introduction}
+                                    onChange={() => {}}
+                                    disabled
+                                    variant="flat"
+                                />
+                            </Wrapper.FlexBox>
+                        ) : (
+                            <>
+                                <Wrapper.FlexBox direction="column" margin="24px 0px" gap="12px">
+                                    <SectionTitle
+                                        title="어필사항 및 경력사항"
+                                        link=""
+                                        type="copy"
+                                        onCopyClick={() => copy(application.appeal)}
+                                    />
+                                    <Textarea value={application.appeal} onChange={() => {}} disabled variant="flat" />
+                                </Wrapper.FlexBox>
+                                <UniformImageGrid images={application.images} onImageClick={handleImageClick} />
+                                {isViewerOpen && (
+                                    <ImageViewer
+                                        images={application.images}
+                                        startIndex={currentImageIndex}
+                                        onClose={() => setViewerOpen(false)}
+                                    />
+                                )}
+                            </>
                         )}
-                    </>
-                )}
+                    </div>
+
+                    {fromRecruit && (
+                        <Wrapper.FlexBox padding="10px 0px 40px 0px" justifyContent="center">
+                            <Button label="지원 완료 버튼" width="large" isActive onClick={onClickApply}>
+                                지원 완료
+                            </Button>
+                        </Wrapper.FlexBox>
+                    )}
+                </Wrapper.FlexBox>
             </PageWrapper>
+
+            {isConfirmOpen && (
+                <Modal
+                    variant="confirm"
+                    title="지원서를 전송하시겠습니까?"
+                    message={
+                        <>
+                            확인 버튼 클릭 시 지원서가 전송되어
+                            <br />
+                            게스트하우스 스텝 지원이 완료가 됩니다.
+                        </>
+                    }
+                    cancelText="취소"
+                    confirmText="확인"
+                    handleModalClose={() => setIsConfirmOpen(false)}
+                    onConfirm={handleConfirmApply}
+                />
+            )}
+
+            {isCompleteOpen && (
+                <Modal
+                    variant="default"
+                    title="스텝 지원 완료!"
+                    confirmText="확인"
+                    handleModalClose={() => {
+                        setIsCompleteOpen(false);
+                        navigate(-1);
+                    }}
+                    onConfirm={() => {
+                        setIsCompleteOpen(false);
+                        navigate(-1);
+                    }}
+                />
+            )}
         </>
     );
 }

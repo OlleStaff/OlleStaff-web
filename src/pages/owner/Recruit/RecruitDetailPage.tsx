@@ -177,11 +177,7 @@ export default function RecruitDetailPage() {
                 </Wrapper.FlexBox>
                 {userType === "STAFF" && (
                     <Wrapper.FlexBox gap="8px" padding="0 30px">
-                        <ActionButton
-                            onClick={() => console.log("TODO: 전화번호 연결")}
-                            variant="call"
-                            aria-label="전화문의"
-                        >
+                        <ActionButton onClick={() => console.log("TODO: 전화번호 연결")} variant="call">
                             <ContentWrapper>
                                 <Icon src="/icons/call.svg" alt="" aria-hidden />
                                 <Label $variant="call">전화문의</Label>
@@ -189,9 +185,12 @@ export default function RecruitDetailPage() {
                         </ActionButton>
 
                         <ActionButton
-                            onClick={() => console.log("지원하기 클릭")}
+                            onClick={() =>
+                                navigate("/staff/user/application", {
+                                    state: { fromRecruit: true, employmentId },
+                                })
+                            }
                             variant="apply"
-                            aria-label="지원하기"
                         >
                             <ContentWrapper>
                                 <Icon src="/icons/envelope.svg" alt="" aria-hidden />
