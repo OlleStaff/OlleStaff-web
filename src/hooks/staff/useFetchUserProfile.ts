@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import api from "@/apis/axios";
 
 export interface UserProfileResponse {
     nickname: string;
@@ -12,9 +12,7 @@ export const useFetchUserProfile = () => {
     return useQuery<UserProfileResponse>({
         queryKey: ["userProfile"],
         queryFn: async () => {
-            const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/me`, {
-                withCredentials: true,
-            });
+            const { data } = await api.get(`/users/me`);
             return data.data;
         },
     });

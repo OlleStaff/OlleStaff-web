@@ -1,14 +1,10 @@
-import axios from "axios";
+import api from "@/apis/axios";
 
 export const patchUserType = async (type: "STAFF" | "GUESTHOUSE") => {
     try {
         const formattedType = type;
 
-        const response = await axios.patch(
-            `${import.meta.env.VITE_API_BASE_URL}/users/type`,
-            { type: formattedType },
-            { withCredentials: true }
-        );
+        const response = await api.patch(`/users/type`, { type: formattedType });
 
         if (response.data.status !== "SUCCESS") {
             throw new Error("타입 업데이트 실패");

@@ -17,7 +17,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/Button";
 import Modal from "@/components/Modal";
 import theme from "@/styles/theme";
-import axios from "axios";
+import api from "@/apis/axios";
 
 export default function ApplicationView() {
     const { state } = useLocation() as { state?: { fromRecruit?: boolean; employmentId?: string } };
@@ -41,12 +41,11 @@ export default function ApplicationView() {
         if (!employmentId || isApplying) return;
         setIsApplying(true);
         try {
-            await axios.post(
-                `${import.meta.env.VITE_API_BASE_URL}/apply`,
+            await api.post(
+                `/apply`,
                 {},
                 {
                     params: { employmentId },
-                    withCredentials: true,
                 }
             );
             setIsCompleteOpen(true);

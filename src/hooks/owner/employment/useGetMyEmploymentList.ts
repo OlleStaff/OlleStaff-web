@@ -1,20 +1,19 @@
 import { GuesthouseListItemProps } from "@/types/guesthouse";
 import { isClosed } from "@/utils/date";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import api from "@/apis/axios";
 
 // owner 관점에서 사용하는 내 공고 조회 (전체 | 진행중 | 마감)
 export const useGetMyEmploymentList = () => {
     return useQuery<GuesthouseListItemProps[]>({
         queryKey: ["employmentList"],
         queryFn: async () => {
-            const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/employments`, {
+            const { data } = await api.get(`/employments`, {
                 params: {
                     cursor: null,
                     pageSize: 20,
                     type: "ALL",
                 },
-                withCredentials: true,
             });
 
             const list = data.data.employmentPreviewDTOS;
