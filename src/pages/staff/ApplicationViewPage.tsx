@@ -16,9 +16,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/Button";
 import Modal from "@/components/Modal";
 import api from "@/apis/axios";
+import { useGetOtherUserApplication } from "@/chat/hooks/useGetUserApplication";
 
 export default function ApplicationViewPage() {
-    const { state } = useLocation() as { state?: { fromRecruit?: boolean; employmentId?: string } };
+    const { state } = useLocation() as {
+        state?: { fromRecruit?: boolean; employmentId?: string; targetUserId?: number; fromChat?: boolean };
+    };
     const fromRecruit = !!state?.fromRecruit;
     const employmentId = state?.employmentId;
     const [tab, setTab] = useState<StaffTabTypes["MY_APPLICATION"]>("자기소개");
@@ -62,6 +65,12 @@ export default function ApplicationViewPage() {
     const onEditClick = () => {
         navigate("/staff/user/edit-application");
     };
+
+    //
+    const targetUserId = state?.targetUserId;
+    const { data: otherUserApplication } = useGetOtherUserApplication(targetUserId ?? 0);
+    console.log(otherUserApplication);
+    //
 
     if (isAppLoading || isProfileLoading || !application || !profile) return null;
 
