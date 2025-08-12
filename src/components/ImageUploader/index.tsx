@@ -107,7 +107,7 @@ export default function ImageUploader({ maxImages = 6, previewImageUrls = [], on
 const Description = styled.div`
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 `;
 
 const Grid = styled.div<{ maxCount: number }>`

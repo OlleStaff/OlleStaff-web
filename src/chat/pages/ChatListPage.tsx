@@ -87,8 +87,8 @@ export default function ChatPage() {
                         <>
                             <div style={{ padding: "150px 0 0 0" }}>
                                 <Oops
-                                    message="진행 중인 채팅이 없어요."
-                                    description={`프로필을 눌러 채팅을 시작해 보세요!`}
+                                    message="아직 진행 중인 채팅이 없어요."
+                                    description={`지원자가 생기면 채팅이 시작돼요!`}
                                 />
                             </div>
                         </>

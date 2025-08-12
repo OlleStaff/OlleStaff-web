@@ -32,7 +32,9 @@ export default function ApplicationWritePage() {
         appeal: "",
     });
 
-    const isAllFilled = Object.values(formData).every(value => value.trim() !== "");
+    const REQUIRED_FIELDS = ["mbti", "introduction", "motivation", "appeal"];
+
+    const isAllFilled = REQUIRED_FIELDS.every(key => formData[key as keyof typeof formData].trim() !== "");
 
     const handleSkip = () => {
         sessionStorage.setItem("applicationSkipped", "true");
@@ -58,8 +60,6 @@ export default function ApplicationWritePage() {
             },
         });
     };
-
-    console.log("성별, 생일", gender, birthDate);
 
     return (
         <>

@@ -18,7 +18,7 @@ export default function PartnerRecruitmentCard({ data }: Props) {
         <>
             <Wrapper.FlexBox
                 direction="column"
-                padding="16px 20px"
+                padding="16px 20px 12px 20px "
                 border="1px solid #02CCDA"
                 borderRadius="12px"
                 gap="10px"

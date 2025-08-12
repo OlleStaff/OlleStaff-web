@@ -1,16 +1,15 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import axios from "axios";
+import api from "@/apis/axios";
 
 export const useAccompanyList = () => {
     return useInfiniteQuery({
         queryKey: ["accompanyList"],
         queryFn: async ({ pageParam = null }) => {
-            const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/accompanies`, {
+            const { data } = await api.get(`/accompanies`, {
                 params: {
                     cursor: pageParam,
                     size: 6,
                 },
-                withCredentials: true,
             });
             return data.data;
         },

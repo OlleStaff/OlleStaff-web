@@ -9,7 +9,7 @@ const mapUserType = (type: "STAFF" | "GUESTHOUSE" | null): "staff" | "owner" => 
     return "staff";
 };
 
-export default function ChatLayout() {
+export default function CommonLayout() {
     const type = useUserStore(state => state.type);
     const version = mapUserType(type);
 

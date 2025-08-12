@@ -62,16 +62,20 @@ const Frame = styled.div`
     left: 0;
     width: 116px;
     height: 116px;
-    border-radius: 12px;
+    border-radius: 10px;
     border: 1px solid ${theme.color.Gray2};
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 `;
 
 const ProfileImage = styled.img`
     width: 100%;
     height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
 `;
 
 const DefaultIcon = styled.img`

@@ -13,11 +13,17 @@
         "format": "prettier --write ."
     },
     "dependencies": {
+        "@capacitor/cli": "^7.4.1",
+        "@capacitor/core": "^7.4.1",
+        "@capacitor/ios": "^7.4.1",
+        "@capacitor/preferences": "^7.0.2",
+        "@capacitor/status-bar": "^7.0.2",
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
         "@stomp/stompjs": "^7.1.1",
         "@storybook/react": "^8.6.9",
         "@tanstack/react-query": "^5.72.2",
+        "@team-lepisode/capacitor-kakao-login": "^7.0.0",
         "axios": "^1.8.4",
         "keen-slider": "^6.8.6",
         "react": "^19.0.0",

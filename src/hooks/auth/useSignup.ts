@@ -1,6 +1,6 @@
 import { Gender } from "@/types/user";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import api from "@/apis/axios";
 import { useNavigate } from "react-router-dom";
 
 export interface SignupRequest {
@@ -33,11 +33,10 @@ export const useSignup = () => {
                 formData.append("agreements", agreement);
             });
 
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users`, formData, {
+            const res = await api.post(`/users`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
-                withCredentials: true,
             });
 
             return res.data;

@@ -53,7 +53,7 @@ export default function ReviewManagePage() {
         <>
             <Header showBackButton title="후기 관리" />
             <PageWrapper hasHeader>
-                <Wrapper.FlexBox direction="column" gap="20px" padding="30px">
+                <Wrapper.FlexBox direction="column" gap="20px">
                     <Wrapper.FlexBox direction="column" gap="8px">
                         <Text.Body2_1>총 {data?.countReview ?? 0}개의 후기</Text.Body2_1>
                         <Text.Body1_1>{nickname}님의 평균 평점</Text.Body1_1>

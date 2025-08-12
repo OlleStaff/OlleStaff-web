@@ -1,11 +1,10 @@
-import axios from "axios";
+import api from "@/apis/axios";
 
 export const fetchMinimumUserInfo = async () => {
-    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/me/minimum`, {
-        withCredentials: true,
-    });
+    const res = await api.get("/users/me/minimum");
 
     return {
+        id: res.data.data.id,
         nickname: res.data.data.nickname,
         profileImage: res.data.data.profileImage,
         userType: res.data.data.type,

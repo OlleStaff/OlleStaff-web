@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import api from "@/apis/axios";
 
 interface UpdateProfileForm {
     nickname: string;
@@ -26,9 +26,8 @@ export function useUpdateUserProfile() {
 
             formData.append("deleteImage", String(form.deleteImage));
 
-            const { data } = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/users`, formData, {
+            const { data } = await api.put(`/users`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
-                withCredentials: true,
             });
 
             return data;

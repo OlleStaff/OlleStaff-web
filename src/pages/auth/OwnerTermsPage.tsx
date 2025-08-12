@@ -13,7 +13,7 @@ export default function OwnerTermsPage() {
         <>
             <Header showBackButton title="이용 약관 동의" />
             <PageWrapper hasHeader>
-                <Wrapper.FlexBox padding="30px" direction="column">
+                <Wrapper.FlexBox direction="column">
                     <Text.Body1_1>개인정보 수집 및 이용 동의</Text.Body1_1>
                     <Text.Body2_1 color="Gray4">
                         <Wrapper.FlexBox margin="0 0 30px 0" direction="column">

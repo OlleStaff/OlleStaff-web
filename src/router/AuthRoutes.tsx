@@ -16,9 +16,8 @@ import RecruitDetailPage from "@/pages/owner/Recruit/RecruitDetailPage";
 import FullscreenLayout from "@/layout/FullScreenLayout";
 import RecruitEditContainer from "@/pages/owner/Recruit/Edit/RecruitEditContainer";
 import TermsDetailPage from "@/pages/auth/TermsDetailPage";
-import ChatLayout from "@/layout/ChatLayout";
-import ChatPage from "@/chat/pages/ChatListPage";
-import ChatRoomPage from "@/chat/pages/ChatRoomPage";
+import EditProfilePage from "@/pages/staff/user/EditProfilePage";
+import ApplicationViewPage from "@/pages/staff/ApplicationViewPage";
 
 const AuthRoutes: RouteObject[] = [
     {
@@ -48,18 +47,40 @@ const AuthRoutes: RouteObject[] = [
                 element: <TypeSelectPage />,
             },
             {
-                path: "/chat/:chatRoomId",
-                element: <ChatRoomPage />,
+                path: "business-verification",
+                element: <BusinessVerificationPage />,
             },
-        ],
-    },
-    {
-        path: "/chat",
-        element: <ChatLayout />,
-        children: [
             {
-                index: true,
-                element: <ChatPage />,
+                path: "business-verification/term",
+                element: <OwnerTermsPage />,
+            },
+            {
+                path: "/terms/:termId",
+                element: <TermsDetailPage />, // ❤️ 확인
+            },
+            {
+                path: "owner/recruit/write/*",
+                element: <RecruitWriteContainer />,
+            },
+            {
+                path: "owner/recruit/edit/:employmentId/*",
+                element: <RecruitEditContainer />,
+            },
+            {
+                path: "owner/userinfo/reviews",
+                element: <ReviewManagePage />,
+            },
+            {
+                path: "guesthouse/:employmentId",
+                element: <RecruitDetailPage />,
+            },
+            {
+                path: "user/edit-profile",
+                element: <EditProfilePage />,
+            },
+            {
+                path: "user/application",
+                element: <ApplicationViewPage />,
             },
         ],
     },
@@ -77,36 +98,8 @@ const AuthRoutes: RouteObject[] = [
         element: <GoogleRedirectPage />,
     },
     {
-        path: "business-verification",
-        element: <BusinessVerificationPage />,
-    },
-    {
-        path: "business-verification/term",
-        element: <OwnerTermsPage />,
-    },
-    {
-        path: "/terms/:termId",
-        element: <TermsDetailPage />,
-    },
-    {
-        path: "owner/recruit/write/*",
-        element: <RecruitWriteContainer />,
-    },
-    {
-        path: "owner/recruit/edit/:employmentId/*",
-        element: <RecruitEditContainer />,
-    },
-    {
-        path: "owner/userinfo/reviews",
-        element: <ReviewManagePage />,
-    },
-    {
         path: "*",
         element: <NotFoundPage />,
-    },
-    {
-        path: "guesthouse/:employmentId",
-        element: <RecruitDetailPage />,
     },
 ];
 

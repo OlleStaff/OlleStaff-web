@@ -79,18 +79,20 @@ export default function ReviewWritePage() {
                             <Star onChange={setRating} />
                         </Wrapper.FlexBox>
                         <ImageUploader maxImages={3} onChange={({ files }) => setImages(files)} />
-                        <Textarea
-                            value={review}
-                            placeholder="게스트 하우스의 솔직후기를 남겨주세요!"
-                            onChange={e => setReview(e.target.value)}
-                            minLength={10}
-                        />
-                        <RadioButton
-                            labelList={labelList}
-                            selectedIndex={selectedIndex}
-                            onSelect={index => setSelectedIndex(index)}
-                            grayText
-                        />
+                        <Wrapper.FlexBox direction="column" gap="12px">
+                            <Textarea
+                                value={review}
+                                placeholder="게스트 하우스의 솔직후기를 남겨주세요!"
+                                onChange={e => setReview(e.target.value)}
+                                minLength={10}
+                            />
+                            <RadioButton
+                                labelList={labelList}
+                                selectedIndex={selectedIndex}
+                                onSelect={index => setSelectedIndex(index)}
+                                grayText
+                            />
+                        </Wrapper.FlexBox>
                     </Wrapper.FlexBox>
                     <Wrapper.FlexBox padding="0px 0px 40px 0px" justifyContent="center">
                         <Button

@@ -1,33 +1,49 @@
 import styled from "@emotion/styled";
 import { Text } from "@/styles/Text";
 import theme from "@/styles/theme";
+import { useSocialLogin } from "@/hooks/auth/useSocialLogin";
 
 export default function LoginPage() {
     const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
     const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
     const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
     const NAVER_REDIRECT_URI = import.meta.env.VITE_NAVER_REDIRECT_URI;
+    const { mutate: kakaoLogin } = useSocialLogin("kakao");
+
+    const isNativeApp = !!(window as any).Capacitor && !!(window as any).Capacitor.Plugins?.CapacitorKakaoLogin;
 
     const handleKakaoLogin = async () => {
-        if ("Notification" in window && Notification.permission === "default") {
+        if (isNativeApp) {
+            // 앱 환경
             try {
-                const result = await Notification.requestPermission();
-                console.log("알림 권한 결과:", result);
-
-                if (result === "granted") {
-                    new Notification("올래스텝", {
-                        body: "알림 권한이 성공적으로 설정되었습니다!",
-                    });
+                const kakaoPlugin = (window as any).Capacitor.Plugins.CapacitorKakaoLogin;
+                const result = await kakaoPlugin.login();
+                const { accessToken } = result;
+                if (accessToken) {
+                    kakaoLogin({ accessToken });
+                } else {
+                    alert("카카오 accessToken이 없습니다.");
                 }
             } catch (e) {
-                console.warn("알림 권한 요청 실패:", e);
+                alert("카카오 로그인 에러: " + JSON.stringify(e));
             }
-        }
-
-        setTimeout(() => {
+        } else {
+            // 웹
+            if ("Notification" in window && Notification.permission === "default") {
+                try {
+                    const result = await Notification.requestPermission();
+                    if (result === "granted") {
+                        new Notification("올래스텝", {
+                            body: "알림 권한이 성공적으로 설정되었습니다!",
+                        });
+                    }
+                } catch (e) {
+                    console.warn("알림 권한 요청 실패:", e);
+                }
+            }
             const url = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
             window.location.href = url;
-        }, 500);
+        }
     };
 
     const handleNaverLogin = () => {

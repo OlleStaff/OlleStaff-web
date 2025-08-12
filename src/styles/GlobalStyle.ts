@@ -115,6 +115,8 @@ export const GlobalStyle = () => css`
         scroll-behavior: smooth;
         background-color: #efefef;
         height: 100vh;
+        padding-top: env(safe-area-inset-top); // 상태바/노치 대응
+        padding-bottom: env(safe-area-inset-bottom); // 하단 제스처 영역 대응
     }
     #root {
         /* display: flex; */

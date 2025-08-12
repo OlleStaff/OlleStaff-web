@@ -45,7 +45,7 @@ const CardContainer = styled.div<{ isMine: boolean }>`
     background: #fff;
     border: 1px solid #e6e9ee;
     border-radius: 16px;
-    padding: 12px;
+    padding: 14px 16px;
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
     max-width: 86%;
 `;
