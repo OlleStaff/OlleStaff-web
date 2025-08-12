@@ -67,6 +67,7 @@ export default function HomePage() {
     const setUser = useUserStore(s => s.setUser);
     const current = useUserStore(
         useShallow(s => ({
+            id: s.id,
             nickname: s.nickname,
             profileImage: s.profileImage,
             type: s.type,
@@ -82,6 +83,7 @@ export default function HomePage() {
                 const skipped = sessionStorage.getItem("applicationSkipped");
                 const user = await fetchMinimumUserInfo();
                 const same =
+                    current.id === user.id &&
                     current.nickname === user.nickname &&
                     current.profileImage === user.profileImage &&
                     current.type === user.userType &&
@@ -90,6 +92,7 @@ export default function HomePage() {
 
                 if (!bootRef.current && !same) {
                     setUser({
+                        id: user.id,
                         nickname: user.nickname,
                         profileImage: user.profileImage,
                         type: user.userType,

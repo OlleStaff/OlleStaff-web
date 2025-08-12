@@ -5,7 +5,7 @@ import { Button } from "@/components/Button";
 import { Text } from "@/styles/Text";
 import styled from "@emotion/styled";
 import ProfileAdd from "@/components/ProfileAdd";
-import Input from "@/components/Input";
+import Input, { RequiredStar } from "@/components/Input";
 import Textarea from "@/components/Textarea";
 import ImageUploader from "@/components/ImageUploader";
 import { useNavigate } from "react-router-dom";
@@ -115,7 +115,9 @@ export default function EditApplicationPage() {
                     </ProfileSection>
 
                     <FieldGroup>
-                        <Text.Body1_1>MBTI</Text.Body1_1>
+                        <Text.Body1_1>
+                            MBTI<RequiredStar>*</RequiredStar>
+                        </Text.Body1_1>
                         <Input
                             value={formData.mbti}
                             onChange={e => setFormData(prev => ({ ...prev, mbti: e.target.value }))}
@@ -128,12 +130,14 @@ export default function EditApplicationPage() {
                         value={formData.introduction}
                         onChange={e => setFormData(prev => ({ ...prev, introduction: e.target.value }))}
                         disabled={!isEditMode}
+                        required
                     />
                     <Textarea
                         textareaTitle="어필사항 및 경력사항"
                         value={formData.appeal}
                         onChange={e => setFormData(prev => ({ ...prev, appeal: e.target.value }))}
                         disabled={!isEditMode}
+                        required
                     />
 
                     <FieldGroup>
@@ -146,7 +150,9 @@ export default function EditApplicationPage() {
                     </FieldGroup>
 
                     <FieldGroup>
-                        <Text.Body1_1>사진 첨부</Text.Body1_1>
+                        <Text.Body1_1>
+                            사진 첨부<RequiredStar>*</RequiredStar>
+                        </Text.Body1_1>
                         <ImageUploader
                             previewImageUrls={imageUrls}
                             onChange={({ urls, files, names }) => {

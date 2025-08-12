@@ -77,7 +77,7 @@ export default function UserInfoPage() {
 const Avatar = styled.img`
     width: 94px;
     height: 94px;
-    border-radius: 50%;
+    border-radius: 10px;
     object-fit: cover;
     margin-top: ${theme.size.HeaderHeight};
 `;

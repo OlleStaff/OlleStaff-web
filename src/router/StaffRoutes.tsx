@@ -28,7 +28,6 @@ const StaffRoutes: RouteObject[] = [
                 path: "accompany",
                 element: <AccompanyPage />,
             },
-
             {
                 path: "guesthouse/category",
                 element: <CategoryPage />,

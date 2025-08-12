@@ -4,6 +4,7 @@ export const fetchMinimumUserInfo = async () => {
     const res = await api.get("/users/me/minimum");
 
     return {
+        id: res.data.data.id,
         nickname: res.data.data.nickname,
         profileImage: res.data.data.profileImage,
         userType: res.data.data.type,
