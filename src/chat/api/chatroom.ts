@@ -5,7 +5,7 @@ export const ChatRoomApi = {
     getChatRoomsALL: async () => {
         try {
             const res = await api.get(`/chat-rooms/all`);
-            return res.data?.data?.chatRoomPreviewDTOS ?? [];
+            return res.data.data.chatRooms ?? [];
         } catch (error) {
             console.error("채팅방 목록 조회 실패", error);
             throw error;

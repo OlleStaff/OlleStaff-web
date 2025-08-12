@@ -48,7 +48,7 @@ export default function RecruitCreateBasicInfoPage({
         <>
             <Header title="게시글 작성" showBackButton />
             <PageWrapper hasHeader>
-                <Wrapper.FlexBox direction="column" padding="30px" gap="20px">
+                <Wrapper.FlexBox direction="column" gap="20px">
                     <ImageUploader
                         maxImages={9}
                         onChange={({ files }) => {
@@ -90,7 +90,7 @@ export default function RecruitCreateBasicInfoPage({
                         </Wrapper.FlexBox>
                         <RadioButton
                             radioTitle="성별"
-                            labelList={["전체", "남자", "여자"]}
+                            labelList={["모두", "남자", "여자"]}
                             selectedIndex={formData.sex === "all" ? 0 : formData.sex === "male" ? 1 : 2}
                             onSelect={index => {
                                 const value = index === 0 ? "all" : index === 1 ? "male" : "female";
