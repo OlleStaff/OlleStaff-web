@@ -14,12 +14,14 @@ import MapComponent from "../components/Map";
 import ImageCarousel from "@/components/ImageCarousel";
 import { useGetEmploymentDetail } from "@/hooks/owner/employment";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import Modal from "@/components/Modal";
 
 export default function RecruitDetailPage() {
     const navigate = useNavigate();
     const [showAllBenefits, setShowAllBenefits] = useState(false);
     const [isViewerOpen, setViewerOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [isPhoneModalOpen, setPhoneModalOpen] = useState(false);
     const handleImageClick = (idx: number) => {
         setCurrentImageIndex(idx);
         setViewerOpen(true);
@@ -44,6 +46,7 @@ export default function RecruitDetailPage() {
         benefitsContent,
         latitude,
         longitude,
+        phoneNum,
     } = detail.data;
 
     const handleEditClick = () => {
@@ -171,10 +174,10 @@ export default function RecruitDetailPage() {
                 <MapComponent latitude={latitude} longitude={longitude} />
             </Wrapper.FlexBox>
             {userType === "STAFF" && (
-                <Wrapper.FlexBox gap="8px" padding="0 30px">
-                    <ActionButton onClick={() => console.log("TODO: 전화번호 연결")} variant="call">
+                <Wrapper.FlexBox gap="8px" padding="24px 0px 0px 0px">
+                    <ActionButton onClick={() => setPhoneModalOpen(true)} variant="call">
                         <ContentWrapper>
-                            <Icon src="/icons/call.svg" alt="" aria-hidden />
+                            <Icon src="/icons/call.svg" aria-hidden />
                             <Label $variant="call">전화문의</Label>
                         </ContentWrapper>
                     </ActionButton>
@@ -188,11 +191,28 @@ export default function RecruitDetailPage() {
                         variant="apply"
                     >
                         <ContentWrapper>
-                            <Icon src="/icons/envelope.svg" alt="" aria-hidden />
+                            <Icon src="/icons/envelope.svg" aria-hidden />
                             <Label $variant="apply">지원하기</Label>
                         </ContentWrapper>
                     </ActionButton>
                 </Wrapper.FlexBox>
+            )}
+
+            {isPhoneModalOpen && (
+                <Modal
+                    variant="confirm"
+                    title="연락처"
+                    message={phoneNum ? phoneNum : "등록된 연락처가 없습니다."}
+                    cancelText="닫기"
+                    confirmText={phoneNum ? "전화 걸기" : "확인"}
+                    handleModalClose={() => setPhoneModalOpen(false)}
+                    onConfirm={() => {
+                        if (phoneNum) {
+                            window.location.href = `tel:${phoneNum}`;
+                        }
+                        setPhoneModalOpen(false);
+                    }}
+                />
             )}
         </>
     );
