@@ -52,7 +52,7 @@ export default function ChatPage() {
                     selected={filter}
                     onChange={label => setFilter(label as StaffTabTypes["CHAT_LIST"])}
                     variant="underline"
-                ></TabSelector>
+                />
 
                 {onEditMode && (
                     <Wrapper.FlexBox justifyContent="space-between" padding="18px 0px 6px 0px" pointer>
