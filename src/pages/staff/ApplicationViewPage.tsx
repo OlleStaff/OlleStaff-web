@@ -1,6 +1,5 @@
 import { useState } from "react";
 import styled from "@emotion/styled";
-import PageWrapper from "@/components/PageWrapper";
 import Header from "@/components/Header";
 import TabSelector from "@/components/TabSelector";
 import { Text } from "@/styles/Text";
@@ -75,90 +74,86 @@ export default function ApplicationViewPage() {
                 rightIconSrc={fromRecruit ? undefined : "/icons/pencil.svg"}
                 onRightClick={fromRecruit ? undefined : onEditClick}
             />
-            <PageWrapper hasHeader>
-                <Wrapper.FlexBox
-                    direction="column"
-                    justifyContent="space-between"
-                    height={`calc(100vh - ${theme.size.HeaderHeight})`}
-                >
-                    <div>
-                        <Wrapper.FlexBox direction="column" alignItems="center" margin="0px 0px 24px 0px">
-                            <ProfileImage src={application.profileImage} alt="프로필 이미지" />
-                            <Text.Title3_1 style={{ marginTop: "12px" }}>{application.nickname}</Text.Title3_1>
-                            <Text.Body3_1 color="Gray3">
-                                {profile.birthDate} <Text.Body3_1 color="Main"> ({application.mbti})</Text.Body3_1>
-                            </Text.Body3_1>
-                            <Wrapper.FlexBox
-                                direction="column"
-                                justifyContent="center"
-                                gap="12px"
-                                margin="24px 0px 0px 0px"
-                            >
-                                <Text.Body2_1 color="Gray5">
-                                    <Icon src="/icons/call.svg" />
-                                    {profile.phone}
-                                </Text.Body2_1>
-                                <Text.Body2_1 color="Gray5">
-                                    <Icon src="/icons/insta.svg" />
-                                    {application.link}
-                                </Text.Body2_1>
-                            </Wrapper.FlexBox>
+
+            <Wrapper.FlexBox
+                direction="column"
+                justifyContent="space-between"
+                height={`calc(100vh - ${theme.size.HeaderHeight})`}
+                margin="42px 0 0 0"
+                border="1px solid red"
+            >
+                <div>
+                    <Wrapper.FlexBox direction="column" alignItems="center" margin="0px 0px 24px 0px">
+                        <ProfileImage src={application.profileImage} alt="프로필 이미지" />
+                        <Text.Title3_1 style={{ marginTop: "12px" }}>{application.nickname}</Text.Title3_1>
+                        <Text.Body3_1 color="Gray3">
+                            {profile.birthDate} <Text.Body3_1 color="Main"> ({application.mbti})</Text.Body3_1>
+                        </Text.Body3_1>
+                        <Wrapper.FlexBox
+                            direction="column"
+                            justifyContent="center"
+                            gap="12px"
+                            margin="24px 0px 0px 0px"
+                        >
+                            <Text.Body2_1 color="Gray5">
+                                <Icon src="/icons/call.svg" />
+                                {profile.phone}
+                            </Text.Body2_1>
+                            <Text.Body2_1 color="Gray5">
+                                <Icon src="/icons/insta.svg" />
+                                {application.link}
+                            </Text.Body2_1>
                         </Wrapper.FlexBox>
+                    </Wrapper.FlexBox>
 
-                        <TabSelector
-                            labels={[...TAB_LABELS.STAFF.MY_APPLICATION]}
-                            selected={tab}
-                            onChange={label => setTab(label as StaffTabTypes["MY_APPLICATION"])}
-                            variant="underline"
-                        />
+                    <TabSelector
+                        labels={[...TAB_LABELS.STAFF.MY_APPLICATION]}
+                        selected={tab}
+                        onChange={label => setTab(label as StaffTabTypes["MY_APPLICATION"])}
+                        variant="underline"
+                    />
 
-                        {tab === "자기소개" ? (
+                    {tab === "자기소개" ? (
+                        <Wrapper.FlexBox direction="column" margin="24px 0px" gap="12px">
+                            <SectionTitle
+                                title="자기소개 및 지원동기"
+                                link=""
+                                type="copy"
+                                onCopyClick={() => copy(application.introduction)}
+                            />
+                            <Textarea value={application.introduction} onChange={() => {}} disabled variant="flat" />
+                        </Wrapper.FlexBox>
+                    ) : (
+                        <>
                             <Wrapper.FlexBox direction="column" margin="24px 0px" gap="12px">
                                 <SectionTitle
-                                    title="자기소개 및 지원동기"
+                                    title="어필사항 및 경력사항"
                                     link=""
                                     type="copy"
-                                    onCopyClick={() => copy(application.introduction)}
+                                    onCopyClick={() => copy(application.appeal)}
                                 />
-                                <Textarea
-                                    value={application.introduction}
-                                    onChange={() => {}}
-                                    disabled
-                                    variant="flat"
-                                />
+                                <Textarea value={application.appeal} onChange={() => {}} disabled variant="flat" />
                             </Wrapper.FlexBox>
-                        ) : (
-                            <>
-                                <Wrapper.FlexBox direction="column" margin="24px 0px" gap="12px">
-                                    <SectionTitle
-                                        title="어필사항 및 경력사항"
-                                        link=""
-                                        type="copy"
-                                        onCopyClick={() => copy(application.appeal)}
-                                    />
-                                    <Textarea value={application.appeal} onChange={() => {}} disabled variant="flat" />
-                                </Wrapper.FlexBox>
-                                <UniformImageGrid images={application.images} onImageClick={handleImageClick} />
-                                {isViewerOpen && (
-                                    <ImageViewer
-                                        images={application.images}
-                                        startIndex={currentImageIndex}
-                                        onClose={() => setViewerOpen(false)}
-                                    />
-                                )}
-                            </>
-                        )}
-                    </div>
-
-                    {fromRecruit && (
-                        <Wrapper.FlexBox padding="10px 0px 40px 0px" justifyContent="center">
-                            <Button label="지원 완료 버튼" width="large" isActive onClick={onClickApply}>
-                                지원 완료
-                            </Button>
-                        </Wrapper.FlexBox>
+                            <UniformImageGrid images={application.images} onImageClick={handleImageClick} />
+                            {isViewerOpen && (
+                                <ImageViewer
+                                    images={application.images}
+                                    startIndex={currentImageIndex}
+                                    onClose={() => setViewerOpen(false)}
+                                />
+                            )}
+                        </>
                     )}
-                </Wrapper.FlexBox>
-            </PageWrapper>
+                </div>
+
+                {fromRecruit && (
+                    <Wrapper.FlexBox padding="10px 0px 40px 0px" justifyContent="center">
+                        <Button label="지원 완료 버튼" width="large" isActive onClick={onClickApply}>
+                            지원 완료
+                        </Button>
+                    </Wrapper.FlexBox>
+                )}
+            </Wrapper.FlexBox>
 
             {isConfirmOpen && (
                 <Modal
