@@ -14,7 +14,7 @@ export default function SettingListItem({ title, link }: Props) {
     return (
         <>
             <Style.Wrapper onClick={() => navigate(link)}>
-                <Text.Body2_1 color="Gray4">{title}</Text.Body2_1>
+                <Text.Body1_1 color="Gray4">{title}</Text.Body1_1>
                 <img src="/icons/arrow.svg" alt="이동 아이콘" />
             </Style.Wrapper>
         </>
@@ -27,6 +27,6 @@ const Style = {
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid ${theme.color.LightGray};
-        padding: 8px 0;
+        padding: 10px 0;
     `,
 };

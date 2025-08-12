@@ -36,7 +36,7 @@ export default function UserModeSwitcher() {
     };
 
     return (
-        <Wrapper.FlexBox direction="column" gap="12px">
+        <Wrapper.FlexBox direction="column" gap="16px">
             <Style.ModeChangeButton onClick={handleToggleMode}>
                 <Text.Body1_1 color="Main">{modeLabel} 모드로 전환</Text.Body1_1>
             </Style.ModeChangeButton>

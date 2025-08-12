@@ -43,7 +43,8 @@ export const GuesthouseListItem = ({
     const hasHashtag = safeHashtagName.length > 0;
     const visibleHashtagCount = hasImage ? 2 : 3;
     const hiddenHashtagCount = safeHashtagName.length - visibleHashtagCount;
-
+    const sexIconSrc =
+        sex === "female" ? "/icons/onlyWoman.svg" : sex === "male" ? "/icons/onlyMan.svg" : "/icons/manAndWoman.svg";
     return (
         <Wrapper.FlexBox alignItems="center" gap="10px">
             {isEditActive && (
@@ -99,8 +100,8 @@ export const GuesthouseListItem = ({
                     <Footer hasImage={hasImage}>
                         {closed ? (
                             <IconText>
-                                <img src="/icons/unChecked.svg" alt="마감됨" width={12} height={12} />
-                                <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
+                                <img src="/icons/finished.svg" alt="마감됨" width={12} height={12} />
+                                <Text.Body3 color="Gray4" style={{ margin: "1px 0 0 3px" }}>
                                     마감됨
                                 </Text.Body3>
                             </IconText>
@@ -116,9 +117,9 @@ export const GuesthouseListItem = ({
                                     </Text.Body3>
                                 </IconText>
                                 <IconText>
-                                    <Icon src="/icons/groupIcon.svg" />
+                                    <Icon src={sexIconSrc} alt="모집 성별 아이콘" />
                                     <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
-                                        {sex === "female" ? "여자" : sex === "male" ? "남자" : "전체"} {personNum}명
+                                        {sex === "female" ? "여자" : sex === "male" ? "남자" : "남녀"} {personNum}명
                                         모집
                                     </Text.Body3>
                                 </IconText>

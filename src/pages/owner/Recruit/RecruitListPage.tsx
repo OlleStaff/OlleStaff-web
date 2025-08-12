@@ -122,12 +122,12 @@ export default function RecruitListPage() {
                                 setCheckedIds(isAllSelected ? [] : allIds);
                             }}
                         >
-                            <Text.Body1 color={checkedIds.length === filteredRecruits.length ? "Black" : "Gray2"}>
+                            <Text.Body1 color={checkedIds.length === filteredRecruits.length ? "Main" : "Gray2"}>
                                 전체 선택
                             </Text.Body1>
                         </SelectAllWrapper>
                         <Text.Body1
-                            color={isDeletable ? "Main" : "Gray2"}
+                            color="Gray2"
                             onClick={isDeletable ? () => openModal("confirm") : undefined}
                             style={{ cursor: "pointer" }}
                         >

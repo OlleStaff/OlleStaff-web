@@ -24,7 +24,7 @@ export default function ChatListItem({ room, onEditMode, onClick, isSelected, on
                 </CheckboxWrapper>
             )}
             <ProfileImg src={room.image} alt="프로필" />
-            <Wrapper.FlexBox direction="column" gap="8px" style={{ minWidth: 0 }}>
+            <Wrapper.FlexBox direction="column" gap="6px" style={{ minWidth: 0 }}>
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                     <Text.Title4>{room.title}</Text.Title4>
                     <Text.Body3_1 color="Gray4">{timeAgo(room.lastMessage.timestamp)}</Text.Body3_1>

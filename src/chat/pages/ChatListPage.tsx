@@ -40,9 +40,7 @@ export default function ChatPage() {
         <>
             <Header
                 title="채팅 리스트"
-                rightText={
-                    <Text.Body1 color={onEditMode ? "Black" : "Gray3"}>{onEditMode ? "완료" : "편집"}</Text.Body1>
-                }
+                rightText={<Text.Body1 color={onEditMode ? "Black" : "Gray3"}>편집</Text.Body1>}
                 onRightClick={() => {
                     setOnEditMode(prev => !prev);
                     setSelectedIds([]);
@@ -57,7 +55,7 @@ export default function ChatPage() {
                 ></TabSelector>
 
                 {onEditMode && (
-                    <Wrapper.FlexBox justifyContent="space-between" padding="18px 0px 6px 0px">
+                    <Wrapper.FlexBox justifyContent="space-between" padding="18px 0px 6px 0px" pointer>
                         <Text.Body1_1 color={allSelected ? "Main" : "Gray4"} onClick={handleToggleAll}>
                             전체선택
                         </Text.Body1_1>
