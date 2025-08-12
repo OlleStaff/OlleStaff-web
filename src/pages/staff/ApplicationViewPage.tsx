@@ -80,7 +80,6 @@ export default function ApplicationViewPage() {
                 justifyContent="space-between"
                 height={`calc(100vh - ${theme.size.HeaderHeight})`}
                 margin="42px 0 0 0"
-                border="1px solid red"
             >
                 <div>
                     <Wrapper.FlexBox direction="column" alignItems="center" margin="0px 0px 24px 0px">
