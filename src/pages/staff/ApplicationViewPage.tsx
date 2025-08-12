@@ -15,7 +15,6 @@ import { useClipboard } from "@/hooks/useClipboard";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/Button";
 import Modal from "@/components/Modal";
-import theme from "@/styles/theme";
 import api from "@/apis/axios";
 
 export default function ApplicationViewPage() {
@@ -75,12 +74,7 @@ export default function ApplicationViewPage() {
                 onRightClick={fromRecruit ? undefined : onEditClick}
             />
 
-            <Wrapper.FlexBox
-                direction="column"
-                justifyContent="space-between"
-                height={`calc(100vh - ${theme.size.HeaderHeight})`}
-                margin="42px 0 0 0"
-            >
+            <Wrapper.FlexBox direction="column" margin="42px 0 0 0">
                 <div>
                     <Wrapper.FlexBox direction="column" alignItems="center" margin="0px 0px 24px 0px">
                         <ProfileImage src={application.profileImage} alt="프로필 이미지" />
@@ -146,7 +140,7 @@ export default function ApplicationViewPage() {
                 </div>
 
                 {fromRecruit && (
-                    <Wrapper.FlexBox padding="10px 0px 40px 0px" justifyContent="center">
+                    <Wrapper.FlexBox padding="10px 0px 0px 0px" justifyContent="center">
                         <Button label="지원 완료 버튼" width="large" isActive onClick={onClickApply}>
                             지원 완료
                         </Button>

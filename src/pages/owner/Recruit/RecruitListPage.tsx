@@ -4,7 +4,6 @@ import TabSelector from "@/components/TabSelector";
 import { OwnerTabTypes, TAB_LABELS } from "@/constants/tabs";
 import { Wrapper } from "@/styles/Wrapper";
 import { useEffect, useMemo, useState } from "react";
-
 import styled from "@emotion/styled";
 import { Text } from "@/styles/Text";
 import { GuesthouseListItem } from "@/components/GuesthouseList/GuesthouseListItem";
@@ -73,7 +72,13 @@ export default function RecruitListPage() {
                 <Modal
                     variant="confirm"
                     title="등록된 게시글을 삭제하시겠습니까?"
-                    message={`삭제 버튼 클릭 시 등록된 게시글이 \n영구히 삭제됩니다.`}
+                    message={
+                        <>
+                            삭제 버튼 클릭 시 등록된 게시글이
+                            <br />
+                            영구히 삭제됩니다.
+                        </>
+                    }
                     cancelText="취소"
                     confirmText="삭제"
                     handleModalClose={closeModal}

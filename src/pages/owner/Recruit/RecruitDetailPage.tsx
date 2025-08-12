@@ -93,7 +93,7 @@ export default function RecruitDetailPage() {
                 onRightClick={userType === "GUESTHOUSE" ? handleEditClick : undefined}
             />
 
-            <Wrapper.FlexBox direction="column" margin="43px 0 0 0" gap="20px">
+            <Wrapper.FlexBox direction="column" margin="43px 0 20px 0" gap="20px">
                 {Array.isArray(images) && images.length > 0 && (
                     <ImageCarousel images={images} onImageClick={handleImageClick} />
                 )}
@@ -171,7 +171,7 @@ export default function RecruitDetailPage() {
                 <MapComponent latitude={latitude} longitude={longitude} />
             </Wrapper.FlexBox>
             {userType === "STAFF" && (
-                <Wrapper.FlexBox gap="8px" padding="0 30px">
+                <Wrapper.FlexBox gap="8px">
                     <ActionButton onClick={() => console.log("TODO: 전화번호 연결")} variant="call">
                         <ContentWrapper>
                             <Icon src="/icons/call.svg" alt="" aria-hidden />
