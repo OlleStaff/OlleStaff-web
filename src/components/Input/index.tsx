@@ -173,7 +173,7 @@ const LeftIconArea = styled.div`
     align-items: center;
 `;
 
-const RequiredStar = styled.span`
+export const RequiredStar = styled.span`
     margin-left: 4px;
     color: ${theme.color.Main};
 `;
