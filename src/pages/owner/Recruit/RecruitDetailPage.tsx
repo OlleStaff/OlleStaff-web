@@ -181,7 +181,7 @@ export default function RecruitDetailPage() {
 
                     <ActionButton
                         onClick={() =>
-                            navigate("/staff/user/application", {
+                            navigate("/user/application", {
                                 state: { fromRecruit: true, employmentId },
                             })
                         }

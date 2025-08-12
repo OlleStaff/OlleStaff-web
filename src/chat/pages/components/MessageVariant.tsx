@@ -51,7 +51,7 @@ export function ApplicantCard({
                 <Text.Title4>{title} </Text.Title4>
                 <Text.Body2_1 color="Gray4">{detail}</Text.Body2_1>
 
-                <Style.ViewApplicationWrapper onClick={() => navigate("user/application")}>
+                <Style.ViewApplicationWrapper onClick={() => navigate("/user/application")}>
                     <img src="/icons/letter.svg" alt="지원서" />
                     <Text.Body2_1 color="White"> 지원서 보기</Text.Body2_1>
                 </Style.ViewApplicationWrapper>
