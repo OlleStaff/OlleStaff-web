@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import PageWrapper from "@/components/PageWrapper";
 import TabSelector from "@/components/TabSelector";
-import { StaffTabTypes, TAB_LABELS } from "@/constants/tabs";
+import { TAB_LABELS } from "@/constants/tabs";
 import { useState } from "react";
 import ChatListItem from "./components/ChatListItem";
 import { useNavigate } from "react-router-dom";
@@ -10,9 +10,24 @@ import { Text } from "@/styles/Text";
 import { useGetChatList } from "../hooks/useGetChatList";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Oops from "@/components/Oops";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function ChatPage() {
-    const [filter, setFilter] = useState<StaffTabTypes["CHAT_LIST"]>("전체");
+    const userType = useUserStore(s => s.type);
+    const labels = userType === "STAFF" ? TAB_LABELS.STAFF.CHAT_LIST : TAB_LABELS.OWNER.CHAT_LIST;
+
+    type ChatListTab = (typeof TAB_LABELS.STAFF.CHAT_LIST)[number] | (typeof TAB_LABELS.OWNER.CHAT_LIST)[number];
+
+    const [filter, setFilter] = useState<ChatListTab>(labels[0] as ChatListTab);
+
+    // const convertTabToFilter = () => {
+    //     if (userType === "STAFF") {
+    //         // tab ==="스탭" ?  ( ) : ()
+    //     } else {
+    //         // tab ==="게스트하우스" ?  () : ()
+    //     }
+    // };
+
     const [onEditMode, setOnEditMode] = useState(false);
     const navigate = useNavigate();
 
@@ -48,9 +63,9 @@ export default function ChatPage() {
             />
             <PageWrapper hasHeader hasNav>
                 <TabSelector
-                    labels={[...TAB_LABELS.STAFF.CHAT_LIST]}
+                    labels={[...labels]}
                     selected={filter}
-                    onChange={label => setFilter(label as StaffTabTypes["CHAT_LIST"])}
+                    onChange={label => setFilter(label as ChatListTab)}
                     variant="underline"
                 />
 
