@@ -16,7 +16,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/Button";
 import Modal from "@/components/Modal";
 import api from "@/apis/axios";
-import { formatPhoneNumberKR } from "@/utils/formatPhoneKr";
+import { formatPhoneNumberKR } from "@/utils/formatPhoneNumberKR";
 import { truncateText } from "@/utils/truncateText";
 
 export default function StaffApplicationViewPage() {

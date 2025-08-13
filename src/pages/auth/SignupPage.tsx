@@ -12,7 +12,7 @@ import Header from "@/components/Header";
 import PageWrapper from "@/components/PageWrapper";
 import styled from "@emotion/styled";
 import { UserInfo } from "@/types/user";
-import { formatPhoneNumberKR } from "@/utils/formatPhoneKr";
+import { formatPhoneNumberKR } from "@/utils/formatPhoneNumberKR";
 
 export default function SignupPage() {
     const { userInfo, errors, handleInputChange, validate } = useValidation();

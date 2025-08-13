@@ -14,7 +14,7 @@ import { useLocation, useParams } from "react-router-dom";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useGetOtherUserApplication } from "@/chat/hooks/useGetUserApplication";
 import { formatProfileMeta } from "@/utils/formatProfileMeta";
-import { formatPhoneNumberKR } from "@/utils/formatPhoneKr";
+import { formatPhoneNumberKR } from "@/utils/formatPhoneNumberKR";
 import { truncateText } from "@/utils/truncateText";
 
 export default function OwnerApplicationViewPage() {
