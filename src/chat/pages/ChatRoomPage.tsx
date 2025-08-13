@@ -138,7 +138,10 @@ export default function ChatRoomPage() {
                 <ChatLayout>
                     <ProfileSection>
                         <Wrapper.FlexBox gap="8px">
-                            <ProfileImage src={chat.image} />
+                            <ProfileImage
+                                src={chat.image?.trim() ? chat.image : "/icons/defaultUser.svg"}
+                                alt="프로필"
+                            />
                             <Wrapper.FlexBox direction="column" gap="4px">
                                 <Text.Body2_1>{chat.title}</Text.Body2_1>
                                 <Text.Body2_1 color="Gray4">{chat.detail}</Text.Body2_1>

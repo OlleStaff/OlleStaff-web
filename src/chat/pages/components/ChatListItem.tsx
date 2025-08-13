@@ -35,7 +35,7 @@ export default function ChatListItem({ room, onEditMode, onClick, isSelected, on
                     <RadioStyle.RadioCircle>{isSelected && <RadioStyle.RadioInnerCircle />}</RadioStyle.RadioCircle>
                 </CheckboxWrapper>
             )}
-            <ProfileImg src={room.image} alt="프로필" />
+            <ProfileImg src={room.image?.trim() ? room.image : "/icons/defaultUser.svg"} alt="프로필" />
             <Wrapper.FlexBox direction="column" gap="6px" style={{ minWidth: 0 }}>
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                     <Text.Title4>{room.title}</Text.Title4>

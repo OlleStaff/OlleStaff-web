@@ -39,7 +39,7 @@ export function ApplicantCard({ title, detail }: { title: string; detail: string
         if (userType === "GUESTHOUSE") {
             navigate(`/user/application/${chatroom.userId}`, { state: { fromChat: true } });
         } else {
-            navigate(`/user/application`);
+            navigate(`/user/application`, { state: { fromChat: true } });
         }
     };
 
