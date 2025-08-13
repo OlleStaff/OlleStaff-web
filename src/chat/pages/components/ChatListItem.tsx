@@ -5,6 +5,7 @@ import theme from "@/styles/theme";
 import { Style as RadioStyle } from "@/components/RadioButton";
 import { timeAgo } from "@/utils/date";
 import { ChatRoomPreview } from "@/chat/types/chatRooms";
+import { truncateText } from "@/utils/truncateText";
 
 interface ChatListItemProps {
     room: ChatRoomPreview;
@@ -24,7 +25,9 @@ export default function ChatListItem({ room, onEditMode, onClick, isSelected, on
 
     const previewMessage =
         room.lastMessage.messageType === "TEXT"
-            ? (room.lastMessage.content?.text ?? "")
+            ? onEditMode
+                ? truncateText(room.lastMessage.content?.text, 15)
+                : (truncateText(room.lastMessage.content?.text, 18) ?? "")
             : (MESSAGE_LABELS[room.lastMessage.messageType] ?? "");
 
     return (
