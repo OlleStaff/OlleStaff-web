@@ -59,12 +59,7 @@ export default function RecruitDetailPage() {
         {
             icon: "/icons/link.svg",
             label: (
-                <a
-                    href={instarUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ textDecoration: "none", color: "inherit" }}
-                >
+                <a href={instarUrl} target="_blank">
                     {truncateText(instarUrl, 25)}
                 </a>
             ),
@@ -96,7 +91,7 @@ export default function RecruitDetailPage() {
                 onRightClick={userType === "GUESTHOUSE" ? handleEditClick : undefined}
             />
 
-            <Wrapper.FlexBox direction="column" margin="43px 0 0 0" gap="20px">
+            <Wrapper.FlexBox direction="column" margin="43px 0 20px 0" gap="20px">
                 {Array.isArray(images) && images.length > 0 && (
                     <ImageCarousel images={images} onImageClick={handleImageClick} />
                 )}

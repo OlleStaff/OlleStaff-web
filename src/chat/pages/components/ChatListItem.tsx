@@ -15,6 +15,18 @@ interface ChatListItemProps {
 }
 
 export default function ChatListItem({ room, onEditMode, onClick, isSelected, onSelectToggle }: ChatListItemProps) {
+    const MESSAGE_LABELS = {
+        FILE: "파일을 보냈습니다.",
+        IMAGE: "이미지를 보냈습니다.",
+        APPLICANT: "지원서를 보냈습니다.",
+        ACCEPTED: "합격 메시지를 보냈습니다.",
+    } as const;
+
+    const previewMessage =
+        room.lastMessage.messageType === "TEXT"
+            ? (room.lastMessage.content?.text ?? "")
+            : (MESSAGE_LABELS[room.lastMessage.messageType] ?? "");
+
     return (
         <ItemContainer onClick={onEditMode ? onSelectToggle : onClick}>
             {onEditMode && (
@@ -24,15 +36,13 @@ export default function ChatListItem({ room, onEditMode, onClick, isSelected, on
                 </CheckboxWrapper>
             )}
             <ProfileImg src={room.image} alt="프로필" />
-            <Wrapper.FlexBox direction="column" gap="8px" style={{ minWidth: 0 }}>
+            <Wrapper.FlexBox direction="column" gap="6px" style={{ minWidth: 0 }}>
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                     <Text.Title4>{room.title}</Text.Title4>
                     <Text.Body3_1 color="Gray4">{timeAgo(room.lastMessage.timestamp)}</Text.Body3_1>
                 </Wrapper.FlexBox>
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
-                    <LastMessage>
-                        {room.lastMessage.messageType === "TEXT" && <>{room.lastMessage.content.text}</>}
-                    </LastMessage>
+                    <LastMessage>{previewMessage}</LastMessage>
                     {room.unreadMessageCount > 0 && <Unread>{room.unreadMessageCount}</Unread>}
                 </Wrapper.FlexBox>
             </Wrapper.FlexBox>

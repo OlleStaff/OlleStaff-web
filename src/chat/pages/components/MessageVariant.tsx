@@ -1,8 +1,8 @@
-import { useGetUserApplication } from "@/chat/hooks/useGetUserApplication";
+import { useGetChatRoomDetail } from "@/chat/hooks/useGetChatRoomDetail";
 import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
 import styled from "@emotion/styled";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export function TextMessage({ text }: { text: string }) {
     return <>{text}</>;
@@ -26,8 +26,6 @@ export function FileMessage({ name, link }: { name: string; link: string }) {
 }
 
 export function ApplicantCard({
-    applicantId,
-    employmentId,
     title,
     detail,
 }: {
@@ -36,14 +34,16 @@ export function ApplicantCard({
     title: string;
     detail: string;
 }) {
-    const { data: application } = useGetUserApplication(applicantId);
-    console.log("applicantId", applicantId);
-    console.log("employmentId", employmentId);
-    console.log("title", title);
-    console.log("detail", detail);
+    const { chatRoomId } = useParams();
+    const { data: chatroom } = useGetChatRoomDetail(Number(chatRoomId));
 
-    console.log("지원서보께요", application);
     const navigate = useNavigate();
+
+    const handleShowApplication = () => {
+        if (!chatroom?.userId) return;
+
+        navigate(`/user/application/${chatroom.userId}`, { state: { fromChat: true } });
+    };
 
     return (
         <>
@@ -51,7 +51,7 @@ export function ApplicantCard({
                 <Text.Title4>{title} </Text.Title4>
                 <Text.Body2_1 color="Gray4">{detail}</Text.Body2_1>
 
-                <Style.ViewApplicationWrapper onClick={() => navigate("/user/application")}>
+                <Style.ViewApplicationWrapper onClick={handleShowApplication}>
                     <img src="/icons/letter.svg" alt="지원서" />
                     <Text.Body2_1 color="White"> 지원서 보기</Text.Body2_1>
                 </Style.ViewApplicationWrapper>

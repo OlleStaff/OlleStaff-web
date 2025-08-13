@@ -78,7 +78,13 @@ export default function RecruitEditPrecautionPage({
                 <Modal
                     variant="confirm"
                     title="게시글 수정을 완료하시겠습니까?"
-                    message={`수정 버튼을 누를 시 게시글이 업로드 됩니다.\n업로드 게시글 수정은 나의 공고 > 더보기`}
+                    message={
+                        <>
+                            수정 버튼을 누를 시 게시글이 업로드 됩니다.
+                            <br />
+                            업로드 게시글 수정은 나의 공고 &gt; 더보기
+                        </>
+                    }
                     cancelText="취소"
                     confirmText="수정"
                     handleModalClose={() => setIsModalOpen(false)}

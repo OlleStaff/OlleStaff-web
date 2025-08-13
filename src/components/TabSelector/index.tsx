@@ -48,13 +48,30 @@ const TabButton = styled.button<{
     padding: 0;
     width: ${({ variant }) => (variant === "underline" ? "100%" : "auto")};
 
+    padding-bottom: 14px;
+
+    &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: ${({ variant }) => (variant === "underline" ? "2px" : "0")};
+        background-color: #e3e3e3;
+    }
+
     &::after {
         content: "";
-        display: block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
         height: ${({ variant }) => (variant === "underline" ? "2px" : "0")};
-        margin-top: 15px;
-        border-radius: ${({ variant }) => (variant === "underline" ? "1px" : "0")};
-        background-color: ${({ isSelected, variant }) =>
-            variant === "underline" ? (isSelected ? "#1FC4DB" : "#E3E3E3") : "transparent"};
+        background-color: #1fc4db;
+
+        transform: scaleX(${({ isSelected, variant }) => (variant === "underline" ? (isSelected ? 1 : 0) : 1)});
+        transform-origin: center;
+        transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        will-change: transform;
     }
 `;

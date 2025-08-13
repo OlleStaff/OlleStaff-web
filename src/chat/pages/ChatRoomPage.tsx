@@ -21,6 +21,7 @@ export default function ChatRoomPage() {
     const roomId = Number(chatRoomId);
     const queryClient = useQueryClient();
     const [message, setMessage] = useState("");
+    const isInputActive = message.trim().length > 0;
 
     const { data: chat, isLoading } = useGetChatRoomDetail(roomId);
     const { data: chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useGetChatMessages(roomId);
@@ -160,9 +161,15 @@ export default function ChatRoomPage() {
                                 placeholder="채팅을 입력하세요."
                                 variant="message"
                                 leftIcon={<PlusButton src="/icons/plusCircle.svg" />}
-                                rightIcon={<SendButton src="/icons/send.svg" />}
+                                rightIcon={
+                                    <SendButton
+                                        src={isInputActive ? "/icons/sendMain.svg" : "/icons/send.svg"}
+                                        $active={isInputActive}
+                                        alt="send"
+                                    />
+                                }
                                 onLeftIconClick={() => {}}
-                                onRightIconClick={handleSendMessage}
+                                onRightIconClick={isInputActive ? handleSendMessage : undefined}
                             />
                         </form>
                     </InputWrapper>
@@ -213,9 +220,10 @@ const PlusButton = styled.img`
     cursor: pointer;
 `;
 
-const SendButton = styled.img`
+const SendButton = styled.img<{ $active?: boolean }>`
     width: 30px;
     height: 30px;
     padding: 5px;
-    cursor: pointer;
+    cursor: ${p => (p.$active ? "pointer" : "default")};
+    opacity: ${p => (p.$active ? 1 : 0.5)};
 `;

@@ -15,11 +15,14 @@ import { useClipboard } from "@/hooks/useClipboard";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/Button";
 import Modal from "@/components/Modal";
-import theme from "@/styles/theme";
 import api from "@/apis/axios";
+import { formatPhoneNumberKR } from "@/utils/formatPhoneNumberKR";
+import { truncateText } from "@/utils/truncateText";
 
-export default function ApplicationViewPage() {
-    const { state } = useLocation() as { state?: { fromRecruit?: boolean; employmentId?: string } };
+export default function StaffApplicationViewPage() {
+    const { state } = useLocation() as {
+        state?: { fromRecruit?: boolean; employmentId?: string; targetUserId?: number; fromChat?: boolean };
+    };
     const fromRecruit = !!state?.fromRecruit;
     const employmentId = state?.employmentId;
     const [tab, setTab] = useState<StaffTabTypes["MY_APPLICATION"]>("자기소개");
@@ -75,12 +78,7 @@ export default function ApplicationViewPage() {
                 onRightClick={fromRecruit ? undefined : onEditClick}
             />
 
-            <Wrapper.FlexBox
-                direction="column"
-                justifyContent="space-between"
-                height={`calc(100vh - ${theme.size.HeaderHeight})`}
-                margin="42px 0 0 0"
-            >
+            <Wrapper.FlexBox direction="column" margin="42px 0 0 0">
                 <div>
                     <Wrapper.FlexBox direction="column" alignItems="center" margin="0px 0px 24px 0px">
                         <ProfileImage src={application.profileImage} alt="프로필 이미지" />
@@ -96,11 +94,13 @@ export default function ApplicationViewPage() {
                         >
                             <Text.Body2_1 color="Gray5">
                                 <Icon src="/icons/call.svg" />
-                                {profile.phone}
+                                {formatPhoneNumberKR(profile.phone)}
                             </Text.Body2_1>
                             <Text.Body2_1 color="Gray5">
                                 <Icon src="/icons/insta.svg" />
-                                {application.link}
+                                <a href={application.link} target="_blank">
+                                    {truncateText(application.link, 45)}
+                                </a>
                             </Text.Body2_1>
                         </Wrapper.FlexBox>
                     </Wrapper.FlexBox>
@@ -146,7 +146,7 @@ export default function ApplicationViewPage() {
                 </div>
 
                 {fromRecruit && (
-                    <Wrapper.FlexBox padding="10px 0px 40px 0px" justifyContent="center">
+                    <Wrapper.FlexBox padding="10px 0px 0px 0px" justifyContent="center">
                         <Button label="지원 완료 버튼" width="large" isActive onClick={onClickApply}>
                             지원 완료
                         </Button>
