@@ -3,6 +3,7 @@ import { UserInfo, ErrorState } from "@/types/user";
 
 export default function useValidation() {
     const [userInfo, setUserInfo] = useState<UserInfo>({
+        id: 0,
         nickname: "",
         phone: "",
         verificationCode: "",

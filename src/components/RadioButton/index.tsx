@@ -31,11 +31,12 @@ export default function RadioButton({
     return (
         <>
             <Wrapper.FlexBox direction="column" gap="18px">
-                <Text.Body1_1>
-                    {radioTitle}
-
-                    {required && <RequiredStar>*</RequiredStar>}
-                </Text.Body1_1>
+                {radioTitle && (
+                    <Text.Body1_1>
+                        {radioTitle}
+                        {required && <RequiredStar>*</RequiredStar>}
+                    </Text.Body1_1>
+                )}
                 <Wrapper.FlexBox gap="20px" style={{ flexWrap: "wrap" }}>
                     {labelList.map((name, index) => (
                         <Style.RadioButton key={index}>

@@ -59,7 +59,7 @@ const StarFull = styled.div`
 
 const StarHalf = styled.div`
     position: absolute;
-    width: 50%;
+    width: 100%;
     height: 100%;
     background: url("/icons/halfStar.svg") no-repeat center/contain; // 변경할 이미지
     overflow: hidden;
