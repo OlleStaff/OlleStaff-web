@@ -1,4 +1,5 @@
 import { useGetChatRoomDetail } from "@/chat/hooks/useGetChatRoomDetail";
+import { useUserStore } from "@/store/useUserStore";
 import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
 import styled from "@emotion/styled";
@@ -25,24 +26,21 @@ export function FileMessage({ name, link }: { name: string; link: string }) {
     );
 }
 
-export function ApplicantCard({
-    title,
-    detail,
-}: {
-    applicantId: number;
-    employmentId: number;
-    title: string;
-    detail: string;
-}) {
+export function ApplicantCard({ title, detail }: { title: string; detail: string }) {
     const { chatRoomId } = useParams();
     const { data: chatroom } = useGetChatRoomDetail(Number(chatRoomId));
 
     const navigate = useNavigate();
+    const userType = useUserStore(u => u.type);
 
     const handleShowApplication = () => {
         if (!chatroom?.userId) return;
 
-        navigate(`/user/application/${chatroom.userId}`, { state: { fromChat: true } });
+        if (userType === "GUESTHOUSE") {
+            navigate(`/user/application/${chatroom.userId}`, { state: { fromChat: true } });
+        } else {
+            navigate(`/user/application`);
+        }
     };
 
     return (

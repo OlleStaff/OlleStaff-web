@@ -15,8 +15,10 @@ import { useGetChatMessages } from "../hooks/useGetChatMessages";
 import { useQueryClient } from "@tanstack/react-query";
 import MessageItem from "./components/MessageItem";
 import { v4 as uuidv4 } from "uuid";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function ChatRoomPage() {
+    const userId = useUserStore(u => u.id);
     const { chatRoomId } = useParams();
     const roomId = Number(chatRoomId);
     const queryClient = useQueryClient();
@@ -31,8 +33,6 @@ export default function ChatRoomPage() {
         return flat.sort((a, b) => a.timestamp - b.timestamp);
     }, [chatMessages]);
 
-    const myid = 10; // 임시
-
     const handleSendMessage = async () => {
         const text = message.trim();
         if (!text) return;
@@ -40,7 +40,7 @@ export default function ChatRoomPage() {
         const optimisticMessage = {
             id: uuidv4(),
             chatRoomId: roomId,
-            senderId: myid, // 임시
+            senderId: userId, // 임시
             messageType: "TEXT",
             content: { text },
             timestamp: Date.now(),
@@ -149,7 +149,7 @@ export default function ChatRoomPage() {
                     <ChatScrollArea ref={listRef}>
                         <div ref={topRef} />
                         {messages?.map(m => (
-                            <MessageItem key={m.id} message={m} isMine={Number(m.senderId) === Number(myid)} />
+                            <MessageItem key={m.id} message={m} isMine={Number(m.senderId) === Number(userId)} />
                         ))}
                     </ChatScrollArea>
 
