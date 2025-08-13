@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import styled from "@emotion/styled";
 import Header from "@/components/Header";
 import Input from "@/components/Input";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import theme from "@/styles/theme";
 import { Wrapper } from "@/styles/Wrapper";
 import PageWrapper from "@/components/PageWrapper";
@@ -16,6 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import MessageItem from "./components/MessageItem";
 import { v4 as uuidv4 } from "uuid";
 import { useUserStore } from "@/store/useUserStore";
+import OptionButton from "@/components/OptionButton";
 
 export default function ChatRoomPage() {
     const userId = useUserStore(u => u.id);
@@ -40,7 +41,7 @@ export default function ChatRoomPage() {
         const optimisticMessage = {
             id: uuidv4(),
             chatRoomId: roomId,
-            senderId: userId, // 임시
+            senderId: userId,
             messageType: "TEXT",
             content: { text },
             timestamp: Date.now(),
@@ -130,6 +131,41 @@ export default function ChatRoomPage() {
         return () => io.disconnect();
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+    const imgInputRef = useRef<HTMLInputElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleSendAccepted = useCallback(() => {
+        // 합격 처리
+    }, []);
+
+    const handlePickImages = useCallback(() => {
+        imgInputRef.current?.click();
+    }, []);
+
+    const onImagesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const images = Array.from(e.target.files ?? []);
+        // 업로드/전송 처리
+    };
+
+    const handlePickFiles = useCallback(() => {
+        fileInputRef.current?.click();
+    }, []);
+
+    const onFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files ?? []);
+        // 업로드/전송 처리
+    };
+
+    const userType = useUserStore(u => u.type);
+    const optionMenus = useMemo(() => {
+        const menus = [
+            { label: "사진 업로드", onClick: handlePickImages },
+            { label: "파일 업로드", onClick: handlePickFiles },
+        ];
+        if (userType !== "STAFF") menus.unshift({ label: "스탭 합격", onClick: handleSendAccepted });
+        return menus;
+    }, [userType, handleSendAccepted, handlePickImages, handlePickFiles]);
+
     if (isLoading || status === "pending") return <LoadingSpinner />;
     return (
         <>
@@ -156,6 +192,15 @@ export default function ChatRoomPage() {
                         ))}
                     </ChatScrollArea>
 
+                    <VisuallyHiddenFileInput
+                        ref={imgInputRef}
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={onImagesSelected}
+                    />
+                    <VisuallyHiddenFileInput ref={fileInputRef} type="file" onChange={onFilesSelected} />
+
                     <InputWrapper>
                         <form onSubmit={handleFormSubmit}>
                             <Input
@@ -163,7 +208,15 @@ export default function ChatRoomPage() {
                                 onChange={e => setMessage(e.target.value)}
                                 placeholder="채팅을 입력하세요."
                                 variant="message"
-                                leftIcon={<PlusButton src="/icons/plusCircle.svg" />}
+                                leftIcon={
+                                    <OptionButton
+                                        buttonIcon={<PlusButton src="/icons/plusCircle.svg" alt="추가" />}
+                                        buttonActiveIcon={<PlusButton src="/icons/plusCircleActive.svg" alt="추가" />}
+                                        placement="top"
+                                        align="left"
+                                        menus={optionMenus}
+                                    />
+                                }
                                 rightIcon={
                                     <SendButton
                                         src={isInputActive ? "/icons/sendMain.svg" : "/icons/send.svg"}
@@ -229,4 +282,12 @@ const SendButton = styled.img<{ $active?: boolean }>`
     padding: 5px;
     cursor: ${p => (p.$active ? "pointer" : "default")};
     opacity: ${p => (p.$active ? 1 : 0.5)};
+`;
+
+const VisuallyHiddenFileInput = styled.input`
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
 `;
