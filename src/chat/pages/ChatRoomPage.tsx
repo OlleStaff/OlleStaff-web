@@ -17,6 +17,7 @@ import MessageItem from "./components/MessageItem";
 import { v4 as uuidv4 } from "uuid";
 import { useUserStore } from "@/store/useUserStore";
 import OptionButton from "@/components/OptionButton";
+import { dateKey, formatDateHeader, formatTimestamp } from "@/utils/date";
 
 export default function ChatRoomPage() {
     const userId = useUserStore(u => u.id);
@@ -187,19 +188,34 @@ export default function ChatRoomPage() {
 
                     <ChatScrollArea ref={listRef}>
                         <div ref={topRef} />
-                        {messages?.map(m => (
-                            <MessageItem key={m.id} message={m} isMine={Number(m.senderId) === Number(userId)} />
-                        ))}
+                        {messages?.map((m, i) => {
+                            const isMine = Number(m.senderId) === Number(userId);
+                            const isFirst = i === 0;
+                            const showDateHeader =
+                                isFirst || dateKey(messages[i - 1].timestamp) !== dateKey(m.timestamp);
+                            return (
+                                <div key={m.id}>
+                                    {showDateHeader && (
+                                        <DateDivider isFirst={isFirst}>{formatDateHeader(m.timestamp)}</DateDivider>
+                                    )}
+                                    <MessageLine key={m.id} isMine={isMine}>
+                                        <MessageSendTime>{formatTimestamp(m.timestamp)}</MessageSendTime>
+                                        <MessageItem message={m} isMine={isMine} />
+                                    </MessageLine>
+                                </div>
+                            );
+                        })}
                     </ChatScrollArea>
 
-                    <VisuallyHiddenFileInput
+                    <input
                         ref={imgInputRef}
                         type="file"
                         accept="image/*"
                         multiple
                         onChange={onImagesSelected}
+                        style={{ display: "none" }}
                     />
-                    <VisuallyHiddenFileInput ref={fileInputRef} type="file" onChange={onFilesSelected} />
+                    <input ref={fileInputRef} type="file" onChange={onFilesSelected} style={{ display: "none" }} />
 
                     <InputWrapper>
                         <form onSubmit={handleFormSubmit}>
@@ -284,10 +300,39 @@ const SendButton = styled.img<{ $active?: boolean }>`
     opacity: ${p => (p.$active ? 1 : 0.5)};
 `;
 
-const VisuallyHiddenFileInput = styled.input`
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
+const MessageLine = styled.div<{ isMine: boolean }>`
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    flex-direction: ${p => (p.isMine ? "row" : "row-reverse")};
+    margin: 12px 0;
+`;
+const MessageSendTime = styled(Text.Body3_1)`
+    color: ${theme.color.Gray3};
+    margin: 0 8px;
+`;
+
+const DateDivider = styled.div<{ isFirst?: boolean }>`
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: ${({ isFirst }) => (isFirst ? "0" : "20px 0")};
+    color: #cbd0d4;
+    font-size: 12px;
+    justify-content: center;
+
+    &::before,
+    &::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #e8ecef;
+    }
+
+    ${p =>
+        p.isFirst &&
+        `
+    &::before,
+    &::after { content: none; }
+  `}
 `;

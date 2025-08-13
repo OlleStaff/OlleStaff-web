@@ -73,7 +73,7 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
-const TriggerButton = styled.button`
+const TriggerButton = styled.div`
     background: none;
     border: 0;
     padding: 0;
@@ -105,7 +105,7 @@ const DropMenuWrapper = styled.div`
     }
 `;
 
-const MenuItem = styled.button`
+const MenuItem = styled.div`
     width: 100%;
     display: flex;
     justify-content: center;
