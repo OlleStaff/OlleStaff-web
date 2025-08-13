@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import PageWrapper from "@/components/PageWrapper";
 import SectionTitle from "@/components/SectionTitle";
 import styled from "@emotion/styled";
 import CategoryList from "./components/CategoryList";
