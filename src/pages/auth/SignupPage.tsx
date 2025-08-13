@@ -12,6 +12,7 @@ import Header from "@/components/Header";
 import PageWrapper from "@/components/PageWrapper";
 import styled from "@emotion/styled";
 import { UserInfo } from "@/types/user";
+import { formatPhoneNumberKR } from "@/utils/formatPhoneKr";
 
 export default function SignupPage() {
     const { userInfo, errors, handleInputChange, validate } = useValidation();
@@ -58,12 +59,6 @@ export default function SignupPage() {
             image: selectedImage,
             agreements: passedAgreements,
         });
-    };
-
-    const formatPhoneNumber = (value: string) => {
-        const digits = value.replace(/\D/g, "").slice(0, 11);
-        const matched = digits.match(/^(\d{3})(\d{0,4})(\d{0,4})$/);
-        return matched ? [matched[1], matched[2], matched[3]].filter(Boolean).join("-") : digits;
     };
 
     useEffect(() => {
@@ -113,7 +108,7 @@ export default function SignupPage() {
                         <Wrapper.FlexBox gap="4px" alignItems="center">
                             <Input
                                 inputTitle="전화번호"
-                                value={formatPhoneNumber(userInfo.phone)}
+                                value={formatPhoneNumberKR(userInfo.phone)}
                                 onChange={e => {
                                     const onlyDigits = e.target.value.replace(/\D/g, "").slice(0, 11);
                                     const formattedEvent = {

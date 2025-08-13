@@ -16,9 +16,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/Button";
 import Modal from "@/components/Modal";
 import api from "@/apis/axios";
-import { useGetOtherUserApplication } from "@/chat/hooks/useGetUserApplication";
+import { formatPhoneNumberKR } from "@/utils/formatPhoneKr";
+import { truncateText } from "@/utils/truncateText";
 
-export default function ApplicationViewPage() {
+export default function StaffApplicationViewPage() {
     const { state } = useLocation() as {
         state?: { fromRecruit?: boolean; employmentId?: string; targetUserId?: number; fromChat?: boolean };
     };
@@ -66,12 +67,6 @@ export default function ApplicationViewPage() {
         navigate("/staff/user/edit-application");
     };
 
-    //
-    const targetUserId = state?.targetUserId;
-    const { data: otherUserApplication } = useGetOtherUserApplication(targetUserId ?? 0);
-    console.log(otherUserApplication);
-    //
-
     if (isAppLoading || isProfileLoading || !application || !profile) return null;
 
     return (
@@ -99,11 +94,13 @@ export default function ApplicationViewPage() {
                         >
                             <Text.Body2_1 color="Gray5">
                                 <Icon src="/icons/call.svg" />
-                                {profile.phone}
+                                {formatPhoneNumberKR(profile.phone)}
                             </Text.Body2_1>
                             <Text.Body2_1 color="Gray5">
                                 <Icon src="/icons/insta.svg" />
-                                {application.link}
+                                <a href={application.link} target="_blank">
+                                    {truncateText(application.link, 45)}
+                                </a>
                             </Text.Body2_1>
                         </Wrapper.FlexBox>
                     </Wrapper.FlexBox>

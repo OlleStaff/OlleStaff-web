@@ -42,9 +42,7 @@ export function ApplicantCard({
     const handleShowApplication = () => {
         if (!chatroom?.userId) return;
 
-        navigate("/user/application", {
-            state: { targetUserId: chatroom.userId, fromChat: true },
-        });
+        navigate(`/user/application/${chatroom.userId}`, { state: { fromChat: true } });
     };
 
     return (

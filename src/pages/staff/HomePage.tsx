@@ -120,80 +120,75 @@ export default function HomePage() {
 
     return (
         <>
-            <PageWrapper>
-                <Input
-                    value={searchValue}
-                    onChange={e => setSearchValue(e.target.value)}
-                    placeholder="어떤 공고를 검색하시겠어요?"
-                    variant="message"
-                    leftIcon={<img src="/icons/searchIcon.svg" alt="검색" width={16} height={16} />}
-                />
+            <Input
+                value={searchValue}
+                onChange={e => setSearchValue(e.target.value)}
+                placeholder="어떤 공고를 검색하시겠어요?"
+                variant="message"
+                leftIcon={<img src="/icons/searchIcon.svg" alt="검색" width={16} height={16} />}
+            />
 
-                {searchValue ? (
-                    <Section>
-                        {isDebouncing || isLoading ? (
-                            <SkeletonList variant="guesthouse" count={5} />
-                        ) : isError ? (
-                            <Oops message="에러가 발생했어요" description="다시 시도해주세요" />
-                        ) : searchResults.length === 0 ? (
-                            <>
-                                <Wrapper.FlexBox
-                                    direction="column"
-                                    alignItems="center"
-                                    justifyContent="center"
-                                    gap="12px"
-                                    margin="20px 0"
-                                    style={{ flex: 1 }}
-                                >
-                                    <img
-                                        src="/icons/searchIcon.svg"
-                                        alt="oops"
-                                        style={{ width: "55px", padding: "10px" }}
-                                    />
-                                    <Wrapper.FlexBox gap="8px" direction="column" alignItems="center">
-                                        <Text.Body1_1 color="Gray3">
-                                            '{searchValue}'에 대한 검색 결과가 없어요.
-                                        </Text.Body1_1>
-                                        <Text.Body2_1
-                                            color="Gray3"
-                                            style={{ whiteSpace: "pre-line", textAlign: "center" }}
-                                        >
-                                            새로운 검색어로 다시 시도해보세요.
-                                        </Text.Body2_1>
-                                    </Wrapper.FlexBox>
-                                </Wrapper.FlexBox>
-                            </>
-                        ) : (
-                            <>
-                                <TabSelector
-                                    labels={[...TAB_LABELS.STAFF.SEARCH]}
-                                    selected={sort}
-                                    onChange={value => setSort(value as SearchTab)}
-                                    variant="bold"
-                                ></TabSelector>
-                                <GuesthouseList
-                                    data={searchResults}
-                                    fetchNextPage={fetchNextPage}
-                                    hasNextPage={hasNextPage}
-                                    isFetchingNextPage={isFetchingNextPage}
+            {searchValue ? (
+                <Section>
+                    {isDebouncing || isLoading ? (
+                        <SkeletonList variant="guesthouse" count={5} />
+                    ) : isError ? (
+                        <Oops message="에러가 발생했어요" description="다시 시도해주세요" />
+                    ) : searchResults.length === 0 ? (
+                        <>
+                            <Wrapper.FlexBox
+                                direction="column"
+                                alignItems="center"
+                                justifyContent="center"
+                                gap="12px"
+                                margin="20px 0"
+                                style={{ flex: 1 }}
+                            >
+                                <img
+                                    src="/icons/searchIcon.svg"
+                                    alt="oops"
+                                    style={{ width: "55px", padding: "10px" }}
                                 />
-                            </>
-                        )}
+                                <Wrapper.FlexBox gap="8px" direction="column" alignItems="center">
+                                    <Text.Body1_1 color="Gray3">
+                                        '{searchValue}'에 대한 검색 결과가 없어요.
+                                    </Text.Body1_1>
+                                    <Text.Body2_1 color="Gray3" style={{ whiteSpace: "pre-line", textAlign: "center" }}>
+                                        새로운 검색어로 다시 시도해보세요.
+                                    </Text.Body2_1>
+                                </Wrapper.FlexBox>
+                            </Wrapper.FlexBox>
+                        </>
+                    ) : (
+                        <>
+                            <TabSelector
+                                labels={[...TAB_LABELS.STAFF.SEARCH]}
+                                selected={sort}
+                                onChange={value => setSort(value as SearchTab)}
+                                variant="bold"
+                            ></TabSelector>
+                            <GuesthouseList
+                                data={searchResults}
+                                fetchNextPage={fetchNextPage}
+                                hasNextPage={hasNextPage}
+                                isFetchingNextPage={isFetchingNextPage}
+                            />
+                        </>
+                    )}
+                </Section>
+            ) : (
+                <>
+                    <CategoryList />
+                    <Section>
+                        <SectionTitle title="취향저격 게스트하우스 🌴" link="" />
+                        <CardCarousel />
                     </Section>
-                ) : (
-                    <>
-                        <CategoryList />
-                        <Section>
-                            <SectionTitle title="취향저격 게스트하우스 🌴" link="" />
-                            <CardCarousel />
-                        </Section>
-                        <Section>
-                            <SectionTitle title="나와 취향이 맞는 동행 구하기🎒" link="accompany" />
-                            <AccompanyList data={mockAccompanyData} />
-                        </Section>
-                    </>
-                )}
-            </PageWrapper>
+                    <Section>
+                        <SectionTitle title="나와 취향이 맞는 동행 구하기🎒" link="accompany" />
+                        <AccompanyList data={mockAccompanyData} />
+                    </Section>
+                </>
+            )}
         </>
     );
 }

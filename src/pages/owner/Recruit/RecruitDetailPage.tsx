@@ -56,12 +56,7 @@ export default function RecruitDetailPage() {
         {
             icon: "/icons/link.svg",
             label: (
-                <a
-                    href={instarUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ textDecoration: "none", color: "inherit" }}
-                >
+                <a href={instarUrl} target="_blank">
                     {truncateText(instarUrl, 25)}
                 </a>
             ),
