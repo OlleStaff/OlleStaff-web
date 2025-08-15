@@ -52,4 +52,19 @@ export const ChatRoomApi = {
             throw error;
         }
     },
+
+    //  DELETE: 채팅방 삭제
+    deleteChatRooms: async (chatRoomIds: number[]) => {
+        try {
+            const res = await api.delete(`/chat-rooms`, {
+                params: { chatRoomIds },
+                paramsSerializer: { indexes: null },
+            });
+
+            return res.data;
+        } catch (error) {
+            console.error("채팅방 삭제 실패", error);
+            throw error;
+        }
+    },
 };

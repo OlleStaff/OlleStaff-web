@@ -10,6 +10,8 @@ import { Text } from "@/styles/Text";
 import { useGetChatList } from "../hooks/useGetChatList";
 import Oops from "@/components/Oops";
 import { useUserStore } from "@/store/useUserStore";
+import { useDeleteChatRooms } from "../hooks/useDeleteChatRooms";
+import Modal from "@/components/Modal";
 
 const STAFF_TABS = TAB_LABELS.STAFF.CHAT_LIST;
 const OWNER_TABS = TAB_LABELS.OWNER.CHAT_LIST;
@@ -55,6 +57,22 @@ export default function ChatPage() {
         }
     };
 
+    const { mutate: deleteChatRooms } = useDeleteChatRooms();
+
+    const handleDeleteChatRooms = () => {
+        if (selectedIds.length === 0) return;
+        deleteChatRooms(selectedIds, {
+            onSuccess: () => {
+                setSelectedIds([]);
+                setOnEditMode(false);
+                setIsCompleteOpen(true);
+            },
+        });
+    };
+
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [isCompleteOpen, setIsCompleteOpen] = useState(false);
+
     return (
         <>
             <Header
@@ -78,7 +96,9 @@ export default function ChatPage() {
                         <Text.Body1_1 color={allSelected ? "Main" : "Gray4"} onClick={handleToggleAll}>
                             전체선택
                         </Text.Body1_1>
-                        <Text.Body1_1 color="Gray4">삭제</Text.Body1_1>
+                        <Text.Body1_1 color="Gray4" onClick={() => setIsConfirmOpen(true)}>
+                            삭제
+                        </Text.Body1_1>
                     </Wrapper.FlexBox>
                 )}
 
@@ -111,6 +131,40 @@ export default function ChatPage() {
                         </>
                     )}
                 </div>
+
+                {isConfirmOpen && (
+                    <Modal
+                        variant="confirm"
+                        title="채팅방을 삭제하시겠습니까?"
+                        message={
+                            <>
+                                확인 버튼 클릭 시 채팅방만 삭제되고
+                                <br />
+                                게스트하우스 스텝 지원은 유지됩니다.
+                            </>
+                        }
+                        cancelText="취소"
+                        confirmText="확인"
+                        handleModalClose={() => setIsConfirmOpen(false)}
+                        onConfirm={handleDeleteChatRooms}
+                    />
+                )}
+
+                {isCompleteOpen && (
+                    <Modal
+                        variant="default"
+                        title="채팅방 삭제 완료"
+                        confirmText="확인"
+                        handleModalClose={() => {
+                            setIsCompleteOpen(false);
+                            navigate(-1);
+                        }}
+                        onConfirm={() => {
+                            setIsCompleteOpen(false);
+                            navigate("/");
+                        }}
+                    />
+                )}
             </PageWrapper>
         </>
     );

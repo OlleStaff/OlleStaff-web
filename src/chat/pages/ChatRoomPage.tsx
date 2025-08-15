@@ -1,5 +1,5 @@
 import { useUserStore } from "@/store/useUserStore";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGetChatRoomDetail } from "../hooks/useGetChatRoomDetail";
 import { useGetChatMessages } from "../hooks/useGetChatMessages";
@@ -26,36 +26,13 @@ export default function ChatRoomPage() {
     const [message, setMessage] = useState("");
     const isInputActive = message.trim().length > 0;
 
-    const { data: chat, isLoading } = useGetChatRoomDetail(roomId);
-    const { data: chatMessages, status } = useGetChatMessages(roomId);
+    const { data: chat } = useGetChatRoomDetail(roomId);
+    const myId = userType === "GUESTHOUSE" ? Number(chat?.userId) : Number(userId);
+
+    const { data: chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useGetChatMessages(roomId);
 
     const { sendText } = useChatMessenger(roomId, chat?.userId);
     const { pickAndSend } = useChatPickAndSend(roomId);
-
-    const handleSendMessage = useCallback(async () => {
-        const text = message.trim();
-        if (!text) return;
-        await sendText(text);
-        setMessage("");
-    }, [message, sendText]);
-
-    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        handleSendMessage();
-    };
-
-    const handleSendAccepted = useCallback(() => {
-        // 합격 처리
-    }, []);
-
-    const optionMenus = useMemo(() => {
-        const menus = [
-            { label: "사진 업로드", onClick: () => pickAndSend("image") },
-            { label: "파일 업로드", onClick: () => pickAndSend("file") },
-        ];
-        if (userType !== "STAFF") menus.unshift({ label: "스탭 합격", onClick: handleSendAccepted });
-        return menus;
-    }, [userType, handleSendAccepted, pickAndSend]);
 
     const messages = useMemo(() => {
         const flat = (chatMessages?.pages ?? []).flatMap(p => p.messages);
@@ -63,8 +40,88 @@ export default function ChatRoomPage() {
     }, [chatMessages]);
 
     const listRef = useRef<HTMLDivElement | null>(null);
-    const topRef = useRef<HTMLDivElement | null>(null); // 화면 상단 감지해서 이전 페이지 로드하도록
-    if (isLoading || status === "pending") return <LoadingSpinner />;
+    const topRef = useRef<HTMLDivElement | null>(null);
+    const bottomRef = useRef<HTMLDivElement | null>(null);
+
+    const jumpToBottom = useCallback(() => {
+        bottomRef.current?.scrollIntoView({ block: "end", inline: "nearest", behavior: "smooth" });
+    }, []);
+
+    const handleSendMessage = useCallback(async () => {
+        const text = message.trim();
+        if (!text) return;
+        await sendText(text);
+        setMessage("");
+        requestAnimationFrame(() => {
+            jumpToBottom();
+        });
+    }, [message, sendText, jumpToBottom]);
+
+    //  채팅 페이지 진입 시 애니메이션 없이 바닥 고정
+    const didInit = useRef(false);
+    useLayoutEffect(() => {
+        if (didInit.current) return;
+        if (status !== "success") return;
+        jumpToBottom();
+        didInit.current = true;
+    }, [status, messages.length, jumpToBottom]);
+
+    // 위로 무한스크롤 ( + 스크롤 이어서)
+    useEffect(() => {
+        const root = listRef.current;
+        const target = topRef.current;
+        if (!root || !target) return;
+
+        let locked = false;
+        const io = new IntersectionObserver(
+            async ([entry]) => {
+                if (!entry.isIntersecting || locked) return;
+                if (!hasNextPage || isFetchingNextPage) return;
+
+                locked = true;
+                const prevHeight = root.scrollHeight;
+                const prevTop = root.scrollTop;
+
+                await fetchNextPage();
+
+                requestAnimationFrame(() => {
+                    const nextHeight = root.scrollHeight;
+                    const delta = nextHeight - prevHeight;
+                    root.scrollTop = prevTop + delta;
+                    locked = false;
+                });
+            },
+            { root, rootMargin: "150px 0px 0px 0px", threshold: 0 }
+        );
+
+        io.observe(target);
+        return () => io.disconnect();
+    }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+    // 새 메시지 도착 시 바닥으로
+    useEffect(() => {
+        const el = listRef.current;
+        if (!el || messages.length === 0) return;
+
+        const last = messages[messages.length - 1];
+        const nearBottom = el.scrollHeight - el.clientHeight - el.scrollTop < 16;
+
+        if (Number(last.senderId) === myId || nearBottom) {
+            requestAnimationFrame(() => {
+                jumpToBottom();
+            });
+        }
+    }, [messages.length, myId, jumpToBottom]);
+
+    if (status === "pending" || !chat) {
+        return <LoadingSpinner />;
+    }
+
+    const optionMenus = [
+        { label: "사진 업로드", onClick: () => pickAndSend("image") },
+        { label: "파일 업로드", onClick: () => pickAndSend("file") },
+    ];
+    if (userType !== "STAFF") optionMenus.unshift({ label: "스탭 합격", onClick: () => {} });
 
     return (
         <>
@@ -86,11 +143,8 @@ export default function ChatRoomPage() {
 
                     <ChatScrollArea ref={listRef}>
                         <div ref={topRef} />
-                        {messages?.map((m, i) => {
-                            const isMine =
-                                userType === "GUESTHOUSE"
-                                    ? Number(m.senderId) !== Number(userId)
-                                    : Number(m.senderId) !== Number(chat.userId);
+                        {messages.map((m, i) => {
+                            const isMine = Number(m.senderId) !== myId;
                             const isFirst = i === 0;
                             const showDateHeader =
                                 isFirst || dateKey(messages[i - 1].timestamp) !== dateKey(m.timestamp);
@@ -106,10 +160,16 @@ export default function ChatRoomPage() {
                                 </div>
                             );
                         })}
+                        <div ref={bottomRef} />
                     </ChatScrollArea>
 
                     <InputWrapper>
-                        <form onSubmit={handleFormSubmit}>
+                        <form
+                            onSubmit={e => {
+                                e.preventDefault();
+                                handleSendMessage();
+                            }}
+                        >
                             <Input
                                 value={message}
                                 onChange={e => setMessage(e.target.value)}
@@ -156,10 +216,9 @@ const ProfileSection = styled.div`
 
 const ChatScrollArea = styled.div`
     min-height: 0;
-    padding: 10px 0;
+    padding: 10px 0 0 0;
     overflow-y: auto;
     scrollbar-width: none;
-    scroll-behavior: smooth;
 `;
 
 const InputWrapper = styled.div`
@@ -219,8 +278,8 @@ const DateDivider = styled.div<{ isFirst?: boolean }>`
         background: #e8ecef;
     }
 
-    ${p =>
-        p.isFirst &&
+    ${({ isFirst }) =>
+        isFirst &&
         `
     &::before,
     &::after { content: none; }
