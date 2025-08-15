@@ -13,8 +13,9 @@ type CompanionTab = StaffTabTypes["COMPANION"]; // "전체", "인기순"
 export default function AccompanyPage() {
     const [sort, setSort] = useState<CompanionTab>("전체");
     const navigate = useNavigate();
-    const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useAccompanyList();
-
+    const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useAccompanyList(
+        sort === "인기순" ? "HOT" : undefined
+    );
     const handleWriteClick = () => {
         navigate("write");
     };
