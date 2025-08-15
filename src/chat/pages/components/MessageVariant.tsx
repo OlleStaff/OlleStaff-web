@@ -15,16 +15,18 @@ export function ImageMessage({ images }: { images: string[] }) {
 }
 
 export function FileMessage({ name, link }: { name: string; link: string }) {
-    console.log("name", name);
-    console.log("link", link);
-
     return (
-        <>
-            {name}
-            {link}
-        </>
+        <a href={link} target="_blank" rel="noopener noreferrer" title={name}>
+            {name} <DownloadIcon src="/icons/download.svg" alt="다운로드" />
+        </a>
     );
 }
+
+const DownloadIcon = styled.img`
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+`;
 
 export function ApplicantCard({ title, detail }: { title: string; detail: string }) {
     const { chatRoomId } = useParams();
