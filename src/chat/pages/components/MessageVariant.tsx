@@ -1,8 +1,11 @@
 import { useGetChatRoomDetail } from "@/chat/hooks/useGetChatRoomDetail";
+import ImageGrid from "@/components/ImageGrid";
+import ImageViewer from "@/components/ImageViewer";
 import { useUserStore } from "@/store/useUserStore";
 import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
 import styled from "@emotion/styled";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export function TextMessage({ text }: { text: string }) {
@@ -10,8 +13,21 @@ export function TextMessage({ text }: { text: string }) {
 }
 
 export function ImageMessage({ images }: { images: string[] }) {
-    console.log("이미지 배열", images);
-    return <>{images}</>;
+    const [isViewerOpen, setViewerOpen] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const handleImageClick = (idx: number) => {
+        setCurrentImageIndex(idx);
+        setViewerOpen(true);
+    };
+
+    return (
+        <>
+            {images.length > 0 && <ImageGrid images={images} onImageClick={handleImageClick} />}
+            {isViewerOpen && (
+                <ImageViewer images={images} startIndex={currentImageIndex} onClose={() => setViewerOpen(false)} />
+            )}
+        </>
+    );
 }
 
 export function FileMessage({ name, link }: { name: string; link: string }) {
