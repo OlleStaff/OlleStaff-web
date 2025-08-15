@@ -13,12 +13,14 @@ export function TextMessage({ text }: { text: string }) {
 }
 
 export function ImageMessage({ images }: { images: string[] }) {
+    const list = (images ?? []).filter(Boolean);
     const [isViewerOpen, setViewerOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const handleImageClick = (idx: number) => {
         setCurrentImageIndex(idx);
         setViewerOpen(true);
     };
+    if (list.length === 0) return null;
 
     return (
         <>

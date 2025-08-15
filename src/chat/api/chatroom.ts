@@ -1,10 +1,10 @@
 import api from "@/apis/axios";
-
+export type ChatRoomsFilter = "ALL" | "APPLIED" | "ACCEPTED";
 export const ChatRoomApi = {
     // GET: 채팅방 목록 조회
-    getChatRoomsALL: async () => {
+    getChatRoomsALL: async (filter: ChatRoomsFilter = "ALL") => {
         try {
-            const res = await api.get(`/chat-rooms/all`);
+            const res = await api.get(`/chat-rooms/all`, { params: { filter } });
             return res.data.data.chatRooms ?? [];
         } catch (error) {
             console.error("채팅방 목록 조회 실패", error);
