@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { Wrapper } from "@/styles/Wrapper";
 import { Text } from "@/styles/Text";
 import { useGetChatList } from "../hooks/useGetChatList";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import Oops from "@/components/Oops";
 import { useUserStore } from "@/store/useUserStore";
 
@@ -35,14 +34,12 @@ export default function ChatPage() {
 
     const serverFilter: ServerFilter = isStaff ? "ALL" : OWNER_MAP[selectedTab as OwnerTab];
 
-    const { data: chatList = [], isLoading } = useGetChatList(serverFilter);
+    const { data: chatList = [] } = useGetChatList(serverFilter);
 
     const [onEditMode, setOnEditMode] = useState(false);
     const navigate = useNavigate();
 
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
-
-    if (isLoading) return <LoadingSpinner />;
 
     const allSelected = selectedIds.length === chatList?.length;
 
