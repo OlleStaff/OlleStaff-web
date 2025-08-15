@@ -6,8 +6,10 @@ export const ApplyApi = {
         const { data } = await api.get(`/apply`, {
             params: { applicantUserId },
         });
+        const list = data.data.employmentPreviewDTOS;
+        console.log("dd ????? ", list);
 
-        return data?.data;
+        return list;
     },
 
     // 채팅 내에서 특정 지원자의 지원서 보기
