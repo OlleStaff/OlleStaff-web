@@ -29,7 +29,7 @@ const BubbleWrapper = styled.div<{ isMine: boolean }>`
 
 const Bubble = styled.div<{ isMine: boolean }>`
     padding: 10px 16px;
-    min-width: 100%;
+    max-width: 203px;
     line-height: 1.5;
     white-space: pre-wrap;
     word-break: break-word;
