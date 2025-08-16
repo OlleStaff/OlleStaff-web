@@ -16,6 +16,7 @@ import OptionButton from "@/components/OptionButton";
 import theme from "@/styles/theme";
 import styled from "@emotion/styled";
 import MessageItem from "./components/MessageItem";
+import { useMarkLatestMessageRead } from "../hooks/useMarkLatestMessageRead";
 
 export default function ChatRoomPage() {
     const userId = useUserStore(u => u.id);
@@ -30,6 +31,7 @@ export default function ChatRoomPage() {
     const myId = userType === "GUESTHOUSE" ? Number(chat?.userId) : Number(userId);
 
     const { data: chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useGetChatMessages(roomId);
+    console.log("테슽테슽 ::: ", chatMessages);
 
     const { sendText } = useChatMessenger(roomId, chat?.userId);
     const { pickAndSend } = useChatPickAndSend(roomId);
@@ -123,6 +125,33 @@ export default function ChatRoomPage() {
             });
         }
     }, [messages.length, myId, jumpToBottom]);
+
+    const { markLatestMessageRead } = useMarkLatestMessageRead();
+    const lastReadMessageRef = useRef<string | null>(null);
+
+    useEffect(() => {
+        lastReadMessageRef.current = null;
+    }, [roomId]);
+
+    useEffect(() => {
+        if (status !== "success" || messages.length === 0) return;
+
+        const lastFromOther = [...messages].reverse().find(m => Number(m.senderId) !== myId);
+        if (!lastFromOther) return; // 내 메세지면 요청 X
+
+        if (lastReadMessageRef.current === lastFromOther.id) return; // 같은 메시지 중복 전송 방지
+
+        markLatestMessageRead(roomId, {
+            id: lastFromOther.id,
+            chatRoomId: lastFromOther.chatRoomId,
+            senderId: lastFromOther.senderId,
+            timestamp: lastFromOther.timestamp,
+            messageType: lastFromOther.messageType,
+            content: lastFromOther.content,
+        });
+
+        lastReadMessageRef.current = lastFromOther.id;
+    }, [status, messages, roomId, myId, markLatestMessageRead]);
 
     if (status === "pending" || !chat) {
         return <LoadingSpinner />;

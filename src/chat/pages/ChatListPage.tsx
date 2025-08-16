@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import PageWrapper from "@/components/PageWrapper";
 import TabSelector from "@/components/TabSelector";
 import { TAB_LABELS } from "@/constants/tabs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChatListItem from "./components/ChatListItem";
 import { useNavigate } from "react-router-dom";
 import { Wrapper } from "@/styles/Wrapper";
@@ -12,6 +12,7 @@ import Oops from "@/components/Oops";
 import { useUserStore } from "@/store/useUserStore";
 import { useDeleteChatRooms } from "../hooks/useDeleteChatRooms";
 import Modal from "@/components/Modal";
+import { connectStomp } from "../websocket/connectStomp";
 
 const STAFF_TABS = TAB_LABELS.STAFF.CHAT_LIST;
 const OWNER_TABS = TAB_LABELS.OWNER.CHAT_LIST;
@@ -37,6 +38,7 @@ export default function ChatPage() {
     const serverFilter: ServerFilter = isStaff ? "ALL" : OWNER_MAP[selectedTab as OwnerTab];
 
     const { data: chatList = [] } = useGetChatList(serverFilter);
+    console.log("테슽테슽 ::: 안읽은거몇갠데", chatList);
 
     const [onEditMode, setOnEditMode] = useState(false);
     const navigate = useNavigate();
@@ -72,6 +74,9 @@ export default function ChatPage() {
 
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [isCompleteOpen, setIsCompleteOpen] = useState(false);
+    useEffect(() => {
+        connectStomp(() => {});
+    }, []);
 
     return (
         <>
