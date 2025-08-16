@@ -17,6 +17,7 @@ import theme from "@/styles/theme";
 import styled from "@emotion/styled";
 import MessageItem from "./components/MessageItem";
 import { useMarkLatestMessageRead } from "../hooks/useMarkLatestMessageRead";
+import { usePostAcceptApplicant } from "../hooks/usePostAcceptApplicant";
 
 export default function ChatRoomPage() {
     const userId = useUserStore(u => u.id);
@@ -69,6 +70,24 @@ export default function ChatRoomPage() {
             jumpToBottom({ smooth: true });
         });
     }, [message, sendText, jumpToBottom]);
+
+    const optionMenus = [
+        { label: "사진 업로드", onClick: () => pickAndSend("image") },
+        { label: "파일 업로드", onClick: () => pickAndSend("file") },
+    ];
+    const { mutate: acceptApplicant } = usePostAcceptApplicant();
+
+    const handleAccept = () => {
+        const applicantId = chat?.userId; //  지원자 ID
+        const employmentId = 72; // 임시 공고 ID (지원자가 지원한 나의 공고 목록 중에서 어떤 글에 합격 시킬건지 처리한 뒤에 acceptApplicant에 공고 아이디 전달해줘야함)
+
+        if (!Number.isFinite(applicantId) || !Number.isFinite(employmentId)) {
+            console.error("합격 불가: 파라미터 누락/무효", { applicantId, employmentId });
+            return;
+        }
+
+        acceptApplicant({ applicantId: applicantId!, employmentId: employmentId! });
+    };
 
     //  채팅 페이지 진입 시 애니메이션 없이 바닥 고정
     const didInit = useRef(false);
@@ -153,15 +172,15 @@ export default function ChatRoomPage() {
         lastReadMessageRef.current = lastFromOther.id;
     }, [status, messages, roomId, myId, markLatestMessageRead]);
 
+    if (userType === "GUESTHOUSE")
+        optionMenus.unshift({
+            label: "스탭 합격",
+            onClick: handleAccept,
+        });
+
     if (status === "pending" || !chat) {
         return <LoadingSpinner />;
     }
-
-    const optionMenus = [
-        { label: "사진 업로드", onClick: () => pickAndSend("image") },
-        { label: "파일 업로드", onClick: () => pickAndSend("file") },
-    ];
-    if (userType !== "STAFF") optionMenus.unshift({ label: "스탭 합격", onClick: () => {} });
 
     return (
         <>
