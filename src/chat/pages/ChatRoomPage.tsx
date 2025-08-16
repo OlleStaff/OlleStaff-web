@@ -43,17 +43,28 @@ export default function ChatRoomPage() {
     const topRef = useRef<HTMLDivElement | null>(null);
     const bottomRef = useRef<HTMLDivElement | null>(null);
 
-    const jumpToBottom = useCallback(() => {
-        bottomRef.current?.scrollIntoView({ block: "end", inline: "nearest", behavior: "smooth" });
-    }, []);
+    const jumpToBottom = useCallback((opts?: { smooth?: boolean }) => {
+        const el = listRef.current;
+        if (!el) return;
 
+        const prev = el.style.scrollBehavior;
+        el.style.scrollBehavior = "auto";
+
+        bottomRef.current?.scrollIntoView({
+            block: "end",
+            inline: "nearest",
+            behavior: opts?.smooth ? "smooth" : "auto",
+        });
+
+        el.style.scrollBehavior = prev || "";
+    }, []);
     const handleSendMessage = useCallback(async () => {
         const text = message.trim();
         if (!text) return;
         await sendText(text);
         setMessage("");
         requestAnimationFrame(() => {
-            jumpToBottom();
+            jumpToBottom({ smooth: true });
         });
     }, [message, sendText, jumpToBottom]);
 
@@ -62,7 +73,7 @@ export default function ChatRoomPage() {
     useLayoutEffect(() => {
         if (didInit.current) return;
         if (status !== "success") return;
-        jumpToBottom();
+        jumpToBottom({ smooth: false });
         didInit.current = true;
     }, [status, messages.length, jumpToBottom]);
 
@@ -108,7 +119,7 @@ export default function ChatRoomPage() {
 
         if (Number(last.senderId) === myId || nearBottom) {
             requestAnimationFrame(() => {
-                jumpToBottom();
+                jumpToBottom({ smooth: true });
             });
         }
     }, [messages.length, myId, jumpToBottom]);
