@@ -182,11 +182,11 @@ export default function HomePage() {
                 <>
                     <CategoryList />
                     <Section>
-                        <SectionTitle title="취향저격 게스트하우스 🌴" link="" />
+                        <SectionTitle title="취향저격 게스트하우스 🌴" />
                         <CardCarousel />
                     </Section>
                     <Section>
-                        <SectionTitle title="나와 취향이 맞는 동행 구하기🎒" link="accompany" />
+                        <SectionTitle title="새롭게 올라온 게스트하우스 🏡" link="accompany" />
                         <AccompanyList data={mockAccompanyData} />
                     </Section>
                 </>
