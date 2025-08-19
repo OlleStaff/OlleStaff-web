@@ -28,10 +28,17 @@ export default function ChatRoomPage() {
     const [message, setMessage] = useState("");
     const isInputActive = message.trim().length > 0;
 
-    const { data: chat } = useGetChatRoomDetail(roomId);
+    const { data: chat, isLoading: isChatLoading } = useGetChatRoomDetail(roomId);
     const myId = userType === "GUESTHOUSE" ? Number(chat?.userId) : Number(userId);
 
-    const { data: chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useGetChatMessages(roomId);
+    const {
+        data: chatMessages,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        status,
+        isLoading: isMsgLoading,
+    } = useGetChatMessages(roomId);
     console.log("테슽테슽 ::: ", chatMessages);
 
     const { sendText } = useChatMessenger(roomId, chat?.userId);
@@ -76,7 +83,7 @@ export default function ChatRoomPage() {
         { label: "파일 업로드", onClick: () => pickAndSend("file") },
     ];
     const { mutate: acceptApplicant } = usePostAcceptApplicant();
-
+    const isBootLoading = isChatLoading || isMsgLoading || status === "pending";
     const handleAccept = () => {
         const applicantId = chat?.userId; //  지원자 ID
         const employmentId = 72; // 임시 공고 ID (지원자가 지원한 나의 공고 목록 중에서 어떤 글에 합격 시킬건지 처리한 뒤에 acceptApplicant에 공고 아이디 전달해줘야함)
@@ -140,7 +147,7 @@ export default function ChatRoomPage() {
 
         if (Number(last.senderId) === myId || nearBottom) {
             requestAnimationFrame(() => {
-                jumpToBottom({ smooth: true });
+                jumpToBottom({ smooth: false });
             });
         }
     }, [messages.length, myId, jumpToBottom]);
@@ -178,7 +185,7 @@ export default function ChatRoomPage() {
             onClick: handleAccept,
         });
 
-    if (status === "pending" || !chat) {
+    if (isBootLoading || !chat) {
         return <LoadingSpinner />;
     }
 
@@ -203,7 +210,10 @@ export default function ChatRoomPage() {
                     <ChatScrollArea ref={listRef}>
                         <div ref={topRef} />
                         {messages.map((m, i) => {
-                            const isMine = Number(m.senderId) !== myId;
+                            const isMine =
+                                userType === "GUESTHOUSE"
+                                    ? Number(m.senderId) !== Number(userId)
+                                    : Number(m.senderId) === Number(userId);
                             const isFirst = i === 0;
                             const showDateHeader =
                                 isFirst || dateKey(messages[i - 1].timestamp) !== dateKey(m.timestamp);
