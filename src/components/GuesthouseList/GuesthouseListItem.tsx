@@ -46,9 +46,9 @@ export const GuesthouseListItem = ({
     const sexIconSrc =
         sex === "female" ? "/icons/onlyWoman.svg" : sex === "male" ? "/icons/onlyMan.svg" : "/icons/manAndWoman.svg";
     return (
-        <Wrapper.FlexBox alignItems="center" gap="10px">
+        <Wrapper.FlexBox alignItems="center" gap="10px" onClick={handleCheckToggle}>
             {isEditActive && (
-                <CheckBoxWrapper onClick={handleCheckToggle}>
+                <CheckBoxWrapper>
                     <img src={isChecked ? "/icons/circle.svg" : "/icons/emptyCircle.svg"} alt="선택 체크박스" />
                 </CheckBoxWrapper>
             )}
@@ -85,7 +85,7 @@ export const GuesthouseListItem = ({
                                     ? hasHashtag
                                         ? isEditActive
                                             ? 15
-                                            : 20
+                                            : 18
                                         : 30
                                     : hasHashtag
                                       ? isEditActive

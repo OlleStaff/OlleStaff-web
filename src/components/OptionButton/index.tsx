@@ -1,69 +1,124 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { Text } from "@/styles/Text";
+import theme from "@/styles/theme";
+
+type item = { label: string; onClick: () => void; iconSrc?: string };
 
 interface OptionProps {
-    items: {
-        label: string;
-        onClick: () => void;
-    }[];
+    menus: item[];
+    buttonIcon?: React.ReactNode;
+    buttonActiveIcon?: React.ReactNode; // 버튼 활성화됐을때
+    placement?: "top" | "bottom"; // 아이콘 기준 dropdown 메뉴 위에 띄울건지 아래에 띄울건지
+    align?: "left" | "right"; // 화면 오른쪽에 띄울건지 왼쪽에 띄울건지
 }
 
-export default function OptionButton({ items }: OptionProps) {
-    const [isOpenMenu, setIsOpenMenu] = useState(false);
-    const handleOpenMenu = () => {
-        setIsOpenMenu(prev => !prev);
+export default function OptionButton({
+    menus,
+    buttonIcon,
+    buttonActiveIcon,
+    placement = "top",
+    align = "right",
+}: OptionProps) {
+    const wrapperRef = useRef<HTMLDivElement>(null);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const handleMenuOpen = (e?: React.MouseEvent) => {
+        e?.preventDefault();
+        setIsMenuOpen(prev => !prev);
+    };
+    const handleItemClick = (fn: () => void) => (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsMenuOpen(false);
+        fn();
     };
 
-    const wrapperRef = useRef<HTMLDivElement>(null);
-
     useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
-                setIsOpenMenu(false);
-            }
+        if (!isMenuOpen) return;
+        const escape = (e: MouseEvent) => {
+            if (!wrapperRef.current) return;
+            if (!wrapperRef.current.contains(e.target as Node)) setIsMenuOpen(false);
         };
 
-        if (isOpenMenu) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isOpenMenu]);
+        document.addEventListener("mousedown", escape);
+    }, [isMenuOpen]);
 
     return (
-        <OptionButtonWrapper ref={wrapperRef} onClick={handleOpenMenu}>
-            <img src="/icons/more.svg" alt="기타" />
-            {isOpenMenu &&
-                items.map((item, index) => (
-                    <DropMenuWrapper key={index} onClick={item.onClick}>
-                        <Text.Body2 color="Gray3">{item.label}</Text.Body2>
-                    </DropMenuWrapper>
-                ))}
-        </OptionButtonWrapper>
+        <Wrapper ref={wrapperRef}>
+            <TriggerButton onClick={handleMenuOpen}>
+                {isMenuOpen
+                    ? (buttonActiveIcon ?? <img src="/icons/more.svg" alt="기타" />)
+                    : (buttonIcon ?? <img src="/icons/more.svg" alt="기타" />)}
+            </TriggerButton>
+
+            {isMenuOpen && (
+                <DropMenuWrapper data-placement={placement} data-align={align}>
+                    {menus.map((item, i) => (
+                        <div key={i}>
+                            <MenuItem onClick={handleItemClick(item.onClick)}>
+                                <Text.Body2 color="Gray4">{item.label}</Text.Body2>
+                            </MenuItem>
+                            {i < menus.length - 1 && <Divider aria-hidden />}
+                        </div>
+                    ))}
+                </DropMenuWrapper>
+            )}
+        </Wrapper>
     );
 }
 
-const DropMenuWrapper = styled.div`
-    position: absolute;
-    top: 19px;
-    right: 0;
-    width: 100px;
-    height: 37px;
+const Wrapper = styled.div`
+    position: relative;
     display: flex;
-    justify-content: center;
     align-items: center;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
-    z-index: 10;
 `;
 
-const OptionButtonWrapper = styled.div`
-    position: relative;
+const TriggerButton = styled.div`
+    background: none;
+    border: 0;
+    padding: 0;
     cursor: pointer;
+    display: inline-flex;
+`;
+
+const DropMenuWrapper = styled.div`
+    position: absolute;
+    min-width: 110px;
+    background: ${theme.color.White};
+    border-radius: 4px;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
+
+    overflow: hidden;
+    z-index: 10;
+
+    &[data-placement="top"] {
+        bottom: 50px;
+    }
+    &[data-placement="bottom"] {
+        top: 20px;
+    }
+    &[data-align="right"] {
+        right: 0px;
+    }
+    &[data-align="left"] {
+        left: -8px;
+    }
+`;
+
+const MenuItem = styled.div`
+    width: 100%;
     display: flex;
-    padding: 6px 0;
+    justify-content: center;
+    padding: 10px 8px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    &:hover {
+        background: ${theme.color.Gray0};
+    }
+`;
+const Divider = styled.div`
+    height: 1px;
+    background: ${theme.color.Gray2};
+    margin: 0 8px;
 `;

@@ -1,7 +1,11 @@
 import { useGetChatRoomDetail } from "@/chat/hooks/useGetChatRoomDetail";
+import ImageGrid from "@/components/ImageGrid";
+import ImageViewer from "@/components/ImageViewer";
+import { useUserStore } from "@/store/useUserStore";
 import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
 import styled from "@emotion/styled";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export function TextMessage({ text }: { text: string }) {
@@ -9,82 +13,121 @@ export function TextMessage({ text }: { text: string }) {
 }
 
 export function ImageMessage({ images }: { images: string[] }) {
-    console.log("이미지 배열", images);
-    return <>{images}</>;
-}
-
-export function FileMessage({ name, link }: { name: string; link: string }) {
-    console.log("name", name);
-    console.log("link", link);
+    const list = (images ?? []).filter(Boolean);
+    const [isViewerOpen, setViewerOpen] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const handleImageClick = (idx: number) => {
+        setCurrentImageIndex(idx);
+        setViewerOpen(true);
+    };
+    if (list.length === 0) return null;
 
     return (
         <>
-            {name}
-            {link}
+            {images.length > 0 && <ImageGrid images={images} onImageClick={handleImageClick} />}
+            {isViewerOpen && (
+                <ImageViewer images={images} startIndex={currentImageIndex} onClose={() => setViewerOpen(false)} />
+            )}
         </>
     );
 }
 
-export function ApplicantCard({
-    title,
-    detail,
-}: {
-    applicantId: number;
-    employmentId: number;
-    title: string;
-    detail: string;
-}) {
+export function FileMessage({ name, link }: { name: string; link: string }) {
+    return (
+        <a href={link} target="_blank" rel="noopener noreferrer" title={name}>
+            {name} <DownloadIcon src="/icons/download.svg" alt="다운로드" />
+        </a>
+    );
+}
+
+export function ApplicantCard({ title, detail }: { title: string; detail: string }) {
     const { chatRoomId } = useParams();
     const { data: chatroom } = useGetChatRoomDetail(Number(chatRoomId));
 
     const navigate = useNavigate();
+    const userType = useUserStore(u => u.type);
 
     const handleShowApplication = () => {
         if (!chatroom?.userId) return;
 
-        navigate(`/user/application/${chatroom.userId}`, { state: { fromChat: true } });
+        if (userType === "GUESTHOUSE") {
+            navigate(`/user/application/${chatroom.userId}`, { state: { fromChat: true } });
+        } else {
+            navigate(`/user/application`, { state: { fromChat: true } });
+        }
     };
 
     return (
         <>
             <Wrapper.FlexBox direction="column">
                 <Text.Title4>{title} </Text.Title4>
-                <Text.Body2_1 color="Gray4">{detail}</Text.Body2_1>
-
-                <Style.ViewApplicationWrapper onClick={handleShowApplication}>
+                <Wrapper.FlexBox direction="column" margin="6px 0 0 0">
+                    <Text.Body2_1 color="Gray4">{detail}</Text.Body2_1>
+                </Wrapper.FlexBox>
+                <ViewApplicationWrapper onClick={handleShowApplication}>
                     <img src="/icons/letter.svg" alt="지원서" />
                     <Text.Body2_1 color="White"> 지원서 보기</Text.Body2_1>
-                </Style.ViewApplicationWrapper>
+                </ViewApplicationWrapper>
             </Wrapper.FlexBox>
         </>
     );
 }
-
-const Style = {
-    ViewApplicationWrapper: styled.div`
-        background-color: #02ccda;
-        width: 100%;
-        height: 30px;
-        border-radius: 8px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 6px;
-        margin-top: 12px;
-        cursor: pointer;
-    `,
-};
 
 export function AcceptedCard({ employmentId, title, detail }: { employmentId: number; title: string; detail: string }) {
     console.log("employmentId", employmentId);
     console.log("title", title);
     console.log("detail", detail);
 
+    const handleShowPrecautions = () => {
+        // 주의사항 모달 띄우기
+    };
+
     return (
         <>
-            {employmentId}
-            {title}
-            {detail}
+            <Wrapper.FlexBox direction="column">
+                <Text.Title4> {title} </Text.Title4>
+
+                <Wrapper.FlexBox direction="column" margin="6px 0 0 0">
+                    <Text.Body2_1 color="Gray4">{detail}</Text.Body2_1>
+                </Wrapper.FlexBox>
+
+                <ViewPrecautionsWrapper onClick={handleShowPrecautions}>
+                    <img src="/icons/precautions.svg" alt="지원서" />
+                    <Text.Body2_1 color="Main"> 주의사항 보기</Text.Body2_1>
+                </ViewPrecautionsWrapper>
+            </Wrapper.FlexBox>
         </>
     );
 }
+
+const DownloadIcon = styled.img`
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+`;
+
+const ViewApplicationWrapper = styled.div`
+    background-color: #02ccda;
+    width: 100%;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    cursor: pointer;
+`;
+
+const ViewPrecautionsWrapper = styled.div`
+    background-color: #f2feff;
+    width: 100%;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    cursor: pointer;
+`;

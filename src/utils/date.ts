@@ -71,3 +71,49 @@ export const formatDateInput = (value: string): string => {
     if (digits.length < 7) return `${digits.slice(0, 4)}-${digits.slice(4)}`;
     return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6)}`;
 };
+
+export const formatTimestamp = (timestamp: number) => {
+    const ms = timestamp < 1e12 ? timestamp * 1000 : timestamp; // 초 → 밀리초 보정
+    const d = new Date(ms);
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    return `${hh}:${mm}`;
+};
+
+export function toMs(ts: number | string | Date) {
+    if (ts instanceof Date) return ts.getTime();
+    const n = typeof ts === "string" ? Number(ts) : ts;
+    if (!Number.isFinite(n) || n <= 0 || n >= Number.MAX_SAFE_INTEGER) return NaN;
+    return n < 1e12 ? n * 1000 : n; // 초 단위면 ms로
+}
+
+export function formatChatTime(ts: number | string | Date): string {
+    const ms = toMs(ts);
+    if (!Number.isFinite(ms)) return "";
+    const d = new Date(ms);
+    return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
+// 같은 날 여부 판단
+export function dateKey(ts: number | string | Date): string {
+    const ms = toMs(ts);
+    if (!Number.isFinite(ms)) return "";
+    const d = new Date(ms);
+    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
+export function formatDateHeader(ts: number | string | Date): string {
+    const ms = toMs(ts);
+    if (!Number.isFinite(ms)) return "";
+    const d = new Date(ms);
+
+    // 오늘,어제 처리 (로컬 자정 기준)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diff = Math.floor((ms - today.getTime()) / 86400000);
+    const day = ["일", "월", "화", "수", "목", "금", "토"][d.getDay()];
+
+    if (diff === 0) return `오늘 (${day})`;
+    if (diff === -1) return `어제 (${day})`;
+    return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")} `;
+}

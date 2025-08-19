@@ -6,7 +6,7 @@ import { useGetChatList } from "./useGetChatList";
 export function useStartOrGetChat() {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
-    const { refetch } = useGetChatList();
+    const { refetch } = useGetChatList("ALL");
 
     const startOrGet = async (targetUserId: number) => {
         setIsLoading(true);
