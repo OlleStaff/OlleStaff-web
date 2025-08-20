@@ -162,7 +162,9 @@ export default function ChatRoomPage() {
     useEffect(() => {
         if (status !== "success" || messages.length === 0) return;
 
-        const lastFromOther = [...messages].reverse().find(m => Number(m.senderId) !== myId);
+        const lastFromOther = [...messages]
+            .reverse()
+            .find(m => (userType === "STAFF" ? Number(m.senderId) !== myId : Number(m.senderId) === myId));
         if (!lastFromOther) return; // 내 메세지면 요청 X
 
         if (lastReadMessageRef.current === lastFromOther.id) return; // 같은 메시지 중복 전송 방지
