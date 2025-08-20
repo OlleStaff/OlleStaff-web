@@ -174,7 +174,7 @@ export default function ChatListPage() {
                         }}
                         onConfirm={() => {
                             setIsCompleteOpen(false);
-                            navigate("/");
+                            navigate(-1);
                         }}
                     />
                 )}
