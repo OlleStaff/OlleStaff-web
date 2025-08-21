@@ -132,7 +132,7 @@ export const Card = styled.div`
     cursor: pointer;
     width: 100%;
     min-height: 90px;
-    max-height: 112px;
+    max-height: 115px;
 `;
 
 const ImageWrapper = styled.div<{ $closed: boolean }>`
