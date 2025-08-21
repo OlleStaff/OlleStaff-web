@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import { Text } from "@/styles/Text";
 import { GuesthouseListItemProps } from "@/types/guesthouse";
 import { useNavigate } from "react-router-dom";
-import { truncateText } from "@/utils/truncateText";
 import { Wrapper } from "@/styles/Wrapper";
 
 interface Props extends GuesthouseListItemProps {
@@ -77,27 +76,13 @@ export const GuesthouseListItem = ({
                     )}
 
                     <Wrapper.FlexBox direction="column">
-                        <Text.Title3_1>
-                            {truncateText(title, isEditActive ? (hasImage ? 10 : 15) : hasImage ? 8 : 15)}
-                        </Text.Title3_1>
-                        <Text.Body3_1 color="Gray4">
-                            {truncateText(
-                                content,
-                                hasImage
-                                    ? hasHashtag
-                                        ? isEditActive
-                                            ? 15
-                                            : 18
-                                        : 30
-                                    : hasHashtag
-                                      ? isEditActive
-                                          ? 25
-                                          : 28
-                                      : isEditActive
-                                        ? 10
-                                        : 59
-                            )}
-                        </Text.Body3_1>
+                        <Title>
+                            <Text.Title3_1>{title}</Text.Title3_1>
+                        </Title>
+
+                        <Content>
+                            <Text.Body3_1 color="Gray4">{content}</Text.Body3_1>
+                        </Content>
                     </Wrapper.FlexBox>
                     <Footer hasImage={hasImage}>
                         {closed ? (
@@ -111,19 +96,22 @@ export const GuesthouseListItem = ({
                             <>
                                 <IconText>
                                     <Icon src="/icons/locationIcon.svg" />
-                                    <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
-                                        {truncateText(
-                                            locationName,
-                                            isEditActive ? (hasImage ? 6 : 20) : hasImage ? 9 : 18
-                                        )}
-                                    </Text.Body3>
+
+                                    <Location>
+                                        <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
+                                            {locationName}
+                                        </Text.Body3>
+                                    </Location>
                                 </IconText>
                                 <IconText>
                                     <Icon src={sexIconSrc} alt="모집 성별 아이콘" />
-                                    <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
-                                        {sex === "female" ? "여자" : sex === "male" ? "남자" : "남녀"} {personNum}명
-                                        모집
-                                    </Text.Body3>
+
+                                    <PersonNum>
+                                        <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
+                                            {sex === "female" ? "여자" : sex === "male" ? "남자" : "남녀"} {personNum}명
+                                            모집
+                                        </Text.Body3>
+                                    </PersonNum>
                                 </IconText>
                             </>
                         )}
@@ -193,11 +181,51 @@ const Tag = styled.div`
     }
 `;
 
+const Title = styled.div`
+    display: flex;
+    max-width: 150px;
+    & > * {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+`;
+
+const Content = styled.div`
+    display: flex;
+    max-width: 160px;
+    & > * {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+`;
+
+const Location = styled.div`
+    display: flex;
+    max-width: 60px;
+    & > * {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    margin-right: 8px;
+`;
+
+const PersonNum = styled.div`
+    display: flex;
+    max-width: 60px;
+    & > * {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+`;
+
 const Footer = styled.div<{ hasImage: boolean }>`
     display: flex;
     align-items: center;
-    justify-content: ${({ hasImage }) => (hasImage ? "space-between" : "flex-start")};
-    gap: ${({ hasImage }) => (hasImage ? "0" : "20px")};
+    justify-content: flex-start;
     height: 14px;
 `;
 
