@@ -161,4 +161,13 @@ export const Text = {
         line-height: 20px;
         letter-spacing: 0.24px;
     `,
+    Caption1: styled.span<StyleText>`
+        ${baseTextStyle};
+        font-weight: 500;
+        font-size: 10px;
+        color: ${({ color }) => (color ? theme.color[color] : theme.color.Black)};
+        cursor: ${props => props.pointer && "pointer"};
+        line-height: 20px;
+        letter-spacing: 0.24px;
+    `,
 };

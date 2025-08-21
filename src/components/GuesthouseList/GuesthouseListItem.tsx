@@ -65,7 +65,7 @@ export const GuesthouseListItem = ({
                         <TagWrapper>
                             {safeHashtagName.slice(0, visibleHashtagCount).map((tag, idx) => (
                                 <Tag key={`${tag}-${idx}`}>
-                                    <Text.Body3_1 color="Gray4">{truncateText(tag, isEditActive ? 2 : 4)}</Text.Body3_1>
+                                    <Text.Caption1 color="Gray4">{tag}</Text.Caption1>
                                 </Tag>
                             ))}
                             {hiddenHashtagCount > 0 && (
@@ -185,6 +185,12 @@ const Tag = styled.div`
     background-color: ${({ theme }) => theme.color.Gray0};
     border-radius: 40px;
     padding: 0px 10px;
+    max-width: 60px;
+    & > * {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 `;
 
 const Footer = styled.div<{ hasImage: boolean }>`
