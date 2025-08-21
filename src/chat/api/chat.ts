@@ -39,13 +39,13 @@ export const ChatApi = {
     },
 
     // POST: 채팅 내 합격 처리
-    postAcceptApplicant: async (applicantId: number, employmentId: number) => {
+    postAcceptApplicant: async (applicantUserId: number, employmentId: number) => {
         try {
             const res = await api.post(`/apply/accept`, null, {
-                params: { applicantId, employmentId },
+                params: { applicantUserId, employmentId },
             });
 
-            console.log(applicantId, "님 합격 처리 :: ", res);
+            console.log(applicantUserId, "님 합격 처리 :: ", res);
             return res.data;
         } catch (error) {
             console.error("합격 처리 실패", error);

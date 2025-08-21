@@ -18,6 +18,10 @@ import styled from "@emotion/styled";
 import MessageItem from "./components/MessageItem";
 import { useMarkLatestMessageRead } from "../hooks/useMarkLatestMessageRead";
 import { usePostAcceptApplicant } from "../hooks/usePostAcceptApplicant";
+import Modal from "@/components/Modal";
+import { useGetMyRecruitmentsAppliedByUser } from "../hooks/useGetMyRecruitmentsAppliedByUser";
+import { GuesthouseListItemProps } from "@/types/guesthouse";
+import SelectableRecruitCard from "./components/SelectableRecruitCard";
 
 export default function ChatRoomPage() {
     const userId = useUserStore(u => u.id);
@@ -39,7 +43,6 @@ export default function ChatRoomPage() {
         status,
         isLoading: isMsgLoading,
     } = useGetChatMessages(roomId);
-    console.log("테슽테슽 ::: ", chatMessages);
 
     const { sendText } = useChatMessenger(roomId, chat?.userId);
     const { pickAndSend } = useChatPickAndSend(roomId);
@@ -82,18 +85,31 @@ export default function ChatRoomPage() {
         { label: "사진 업로드", onClick: () => pickAndSend("image") },
         { label: "파일 업로드", onClick: () => pickAndSend("file") },
     ];
-    const { mutate: acceptApplicant } = usePostAcceptApplicant();
     const isBootLoading = isChatLoading || isMsgLoading || status === "pending";
-    const handleAccept = () => {
-        const applicantId = chat?.userId; //  지원자 ID
-        const employmentId = 72; // 임시 공고 ID (지원자가 지원한 나의 공고 목록 중에서 어떤 글에 합격 시킬건지 처리한 뒤에 acceptApplicant에 공고 아이디 전달해줘야함)
 
-        if (!Number.isFinite(applicantId) || !Number.isFinite(employmentId)) {
-            console.error("합격 불가: 파라미터 누락/무효", { applicantId, employmentId });
-            return;
-        }
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-        acceptApplicant({ applicantId: applicantId!, employmentId: employmentId! });
+    const { data: myRecruits } = useGetMyRecruitmentsAppliedByUser(chat?.userId);
+
+    const [checkedId, setCheckedId] = useState<number>();
+
+    const handleAcceptModalOpen = () => {
+        setCheckedId(undefined);
+        setIsModalOpen(true);
+    };
+
+    const { mutate: acceptApplicant } = usePostAcceptApplicant();
+    const handleAcceptApplicantClick = () => {
+        if (!checkedId) return;
+        acceptApplicant(
+            { applicantUserId: chat?.userId, employmentId: checkedId },
+            {
+                onSuccess: () => {
+                    setIsModalOpen(false);
+                    setCheckedId(undefined);
+                },
+            }
+        );
     };
 
     //  채팅 페이지 진입 시 애니메이션 없이 바닥 고정
@@ -184,7 +200,7 @@ export default function ChatRoomPage() {
     if (userType === "GUESTHOUSE")
         optionMenus.unshift({
             label: "스탭 합격",
-            onClick: handleAccept,
+            onClick: handleAcceptModalOpen,
         });
 
     if (isBootLoading || !chat) {
@@ -233,6 +249,31 @@ export default function ChatRoomPage() {
                         })}
                         <div ref={bottomRef} />
                     </ChatScrollArea>
+                    {isModalOpen && (
+                        <Modal variant="page" handleModalClose={() => setIsModalOpen(false)}>
+                            <Wrapper.FlexBox direction="column" alignItems="center" gap="6px">
+                                <Text.Title3_1> 해당 지원자를 합격으로</Text.Title3_1>
+                                <Text.Title3_1> 지정할 공고를 선택해 주세요.</Text.Title3_1>
+                            </Wrapper.FlexBox>
+
+                            <RecruitListScroll>
+                                {myRecruits.map((item: GuesthouseListItemProps) => (
+                                    <SelectableRecruitCard
+                                        key={item.employmentId}
+                                        item={item}
+                                        selected={checkedId === item.employmentId}
+                                        onSelect={setCheckedId}
+                                    />
+                                ))}
+                            </RecruitListScroll>
+
+                            <ConfirmBox>
+                                <ConfirmButton disabled={!checkedId} onClick={handleAcceptApplicantClick}>
+                                    <Text.Title3_1 color="White"> 확인</Text.Title3_1>
+                                </ConfirmButton>
+                            </ConfirmBox>
+                        </Modal>
+                    )}
 
                     <InputWrapper>
                         <form
@@ -355,4 +396,29 @@ const DateDivider = styled.div<{ isFirst?: boolean }>`
     &::before,
     &::after { content: none; }
   `}
+`;
+const RecruitListScroll = styled.div`
+    max-height: 420px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scrollbar-width: none;
+`;
+
+const ConfirmBox = styled.div`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+`;
+
+const ConfirmButton = styled.button<{ disabled?: boolean }>`
+    width: 100%;
+    height: 44px;
+    border: 0;
+    border-radius: 12px;
+    background: ${({ theme, disabled }) => (disabled ? theme.color.Gray2 : theme.color.Main)};
+    cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
+    transition: opacity 0.2s;
+    opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
 `;
