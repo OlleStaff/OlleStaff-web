@@ -41,7 +41,6 @@ export default function RecruitCreateContainer() {
             },
             {
                 onSuccess: () => {
-                    alert("공고 등록 완료!");
                     navigate("/owner");
                 },
             }

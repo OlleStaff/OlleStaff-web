@@ -170,11 +170,11 @@ export default function ChatListPage() {
                         confirmText="확인"
                         handleModalClose={() => {
                             setIsCompleteOpen(false);
-                            navigate(-1);
+                            navigate("/chat");
                         }}
                         onConfirm={() => {
                             setIsCompleteOpen(false);
-                            navigate(-1);
+                            navigate("/chat");
                         }}
                     />
                 )}
