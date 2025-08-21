@@ -77,7 +77,9 @@ export const GuesthouseListItem = ({
                     )}
 
                     <Wrapper.FlexBox direction="column">
-                        <Text.Title3_1>{truncateText(title, isEditActive ? (hasImage ? 10 : 15) : 13)}</Text.Title3_1>
+                        <Text.Title3_1>
+                            {truncateText(title, isEditActive ? (hasImage ? 10 : 15) : hasImage ? 8 : 15)}
+                        </Text.Title3_1>
                         <Text.Body3_1 color="Gray4">
                             {truncateText(
                                 content,
@@ -141,7 +143,8 @@ export const Card = styled.div`
     background-color: white;
     cursor: pointer;
     width: 100%;
-    height: 112px;
+    min-height: 90px;
+    max-height: 112px;
 `;
 
 const ImageWrapper = styled.div<{ $closed: boolean }>`
@@ -188,7 +191,7 @@ const Footer = styled.div<{ hasImage: boolean }>`
     display: flex;
     align-items: center;
     justify-content: ${({ hasImage }) => (hasImage ? "space-between" : "flex-start")};
-    gap: ${({ hasImage }) => (hasImage ? "0" : "10px")};
+    gap: ${({ hasImage }) => (hasImage ? "0" : "20px")};
     height: 14px;
 `;
 
