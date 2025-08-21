@@ -1,6 +1,6 @@
 import { useUserStore } from "@/store/useUserStore";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetChatRoomDetail } from "../hooks/useGetChatRoomDetail";
 import { useGetChatMessages } from "../hooks/useGetChatMessages";
 import { useChatMessenger } from "../hooks/useChatMessenger";
@@ -22,12 +22,15 @@ import Modal from "@/components/Modal";
 import { useGetMyRecruitmentsAppliedByUser } from "../hooks/useGetMyRecruitmentsAppliedByUser";
 import { GuesthouseListItemProps } from "@/types/guesthouse";
 import SelectableRecruitCard from "./components/SelectableRecruitCard";
+import { useGetEmploymentDetail } from "@/hooks/owner/employment";
+import { truncateText } from "@/utils/truncateText";
 
 export default function ChatRoomPage() {
     const userId = useUserStore(u => u.id);
     const userType = useUserStore(u => u.type);
     const { chatRoomId } = useParams();
     const roomId = Number(chatRoomId);
+    const navigate = useNavigate();
 
     const [message, setMessage] = useState("");
     const isInputActive = message.trim().length > 0;
@@ -106,11 +109,17 @@ export default function ChatRoomPage() {
             {
                 onSuccess: () => {
                     setIsModalOpen(false);
+                    setIsAcceptConfirmModal(false);
+                    setIsAcceptCompleteModal(false);
                     setCheckedId(undefined);
                 },
             }
         );
     };
+    const { data: employment } = useGetEmploymentDetail(checkedId as number);
+
+    const [isAcceptConfirmModal, setIsAcceptConfirmModal] = useState(false);
+    const [isAcceptCompleteModal, setIsAcceptCompleteModal] = useState(false);
 
     //  채팅 페이지 진입 시 애니메이션 없이 바닥 고정
     const didInit = useRef(false);
@@ -268,11 +277,50 @@ export default function ChatRoomPage() {
                             </RecruitListScroll>
 
                             <ConfirmBox>
-                                <ConfirmButton disabled={!checkedId} onClick={handleAcceptApplicantClick}>
-                                    <Text.Title3_1 color="White"> 확인</Text.Title3_1>
+                                <ConfirmButton disabled={!checkedId} onClick={() => setIsAcceptConfirmModal(true)}>
+                                    <Text.Title3_1 color="White">확인</Text.Title3_1>
                                 </ConfirmButton>
                             </ConfirmBox>
                         </Modal>
+                    )}
+
+                    {isAcceptConfirmModal && (
+                        <>
+                            <Modal
+                                variant="confirm"
+                                title="해당 공고글로 합격을 시키겠습니까?"
+                                message={
+                                    <>
+                                        확인 버튼 클릭 시, '{truncateText(String(employment?.data.title), 12)}'
+                                        <br />
+                                        게시글에 {chat.title}님을 합격 처리합니다.
+                                    </>
+                                }
+                                handleModalClose={() => setIsAcceptConfirmModal(false)}
+                                onConfirm={() => {
+                                    setIsModalOpen(false);
+                                    setIsAcceptConfirmModal(false);
+                                    setIsAcceptCompleteModal(true);
+                                }}
+                                cancelText="이전으로"
+                                confirmText="확인"
+                            />
+                        </>
+                    )}
+
+                    {isAcceptCompleteModal && (
+                        <>
+                            <Modal
+                                variant="default"
+                                title="합격 처리 완료"
+                                confirmText="확인"
+                                handleModalClose={() => {
+                                    setIsAcceptConfirmModal(false);
+                                    navigate(-1);
+                                }}
+                                onConfirm={handleAcceptApplicantClick}
+                            />
+                        </>
                     )}
 
                     <InputWrapper>
