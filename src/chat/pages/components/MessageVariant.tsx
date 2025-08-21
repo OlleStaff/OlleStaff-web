@@ -1,5 +1,4 @@
 import { useGetChatRoomDetail } from "@/chat/hooks/useGetChatRoomDetail";
-import ImageGrid from "@/components/ImageGrid";
 import ImageViewer from "@/components/ImageViewer";
 import Modal from "@/components/Modal";
 import { useGetEmploymentDetail } from "@/hooks/owner/employment";
@@ -10,6 +9,7 @@ import { Wrapper } from "@/styles/Wrapper";
 import styled from "@emotion/styled";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ChatImageGrid from "./ChatImageGrid";
 
 export function TextMessage({ text }: { text: string }) {
     return <>{text}</>;
@@ -27,7 +27,7 @@ export function ImageMessage({ images }: { images: string[] }) {
 
     return (
         <>
-            {images.length > 0 && <ImageGrid images={images} onImageClick={handleImageClick} />}
+            {images.length > 0 && <ChatImageGrid images={images} onImageClick={handleImageClick} />}
             {isViewerOpen && (
                 <ImageViewer images={images} startIndex={currentImageIndex} onClose={() => setViewerOpen(false)} />
             )}

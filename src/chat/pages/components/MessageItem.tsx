@@ -27,9 +27,9 @@ function renderMessage<M extends ChatMessage>(m: M) {
 
 function MessageItem({ message, isMine }: MessageItemProps) {
     const isCard = message.messageType === "APPLICANT" || message.messageType === "ACCEPTED";
-
+    const isImage = message.messageType === "IMAGE";
     return (
-        <MessageBubble isMine={isMine} noBubble={isCard}>
+        <MessageBubble isMine={isMine} isCard={isCard} isImage={isImage}>
             {renderMessage(message)}
         </MessageBubble>
     );
