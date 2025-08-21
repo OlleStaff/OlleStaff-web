@@ -26,17 +26,23 @@ export default function RecruitCreatePrecautionPage({
             item => item.precautionsTitle.trim() !== "" && item.precautionsContent.trim() !== ""
         );
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
     const navigate = useNavigate();
 
     const handleOpenModal = () => {
-        if (isFormValid) setIsModalOpen(true);
+        if (isFormValid) setIsConfirmModalOpen(true);
     };
 
-    const handleConfirm = () => {
-        handleSubmit();
-        navigate("/owner");
-        setIsModalOpen(false);
+    const handleConfirm = async () => {
+        try {
+            await handleSubmit();
+            setIsConfirmModalOpen(false);
+            setIsCompleteModalOpen(true);
+        } catch (e) {
+            console.error(e);
+            setIsConfirmModalOpen(false);
+        }
     };
 
     return (
@@ -66,15 +72,31 @@ export default function RecruitCreatePrecautionPage({
                 </Wrapper.FlexBox>
             </PageWrapper>
 
-            {isModalOpen && (
+            {isConfirmModalOpen && (
                 <Modal
                     variant="confirm"
                     title="게시글 등록을 완료하시겠습니까?"
                     message={`등록 버튼을 누를 시 게시글이 업로드 됩니다.\n업로드 게시글 수정은 나의 공고 > 더보기`}
                     cancelText="취소"
                     confirmText="등록"
-                    handleModalClose={() => setIsModalOpen(false)}
+                    handleModalClose={() => setIsConfirmModalOpen(false)}
                     onConfirm={handleConfirm}
+                />
+            )}
+
+            {isCompleteModalOpen && (
+                <Modal
+                    variant="default"
+                    title="게시글 등록 완료"
+                    confirmText="확인"
+                    handleModalClose={() => {
+                        setIsCompleteModalOpen(false);
+                        navigate("/owner");
+                    }}
+                    onConfirm={() => {
+                        setIsCompleteModalOpen(false);
+                        navigate("/owner");
+                    }}
                 />
             )}
         </>
