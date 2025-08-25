@@ -24,13 +24,8 @@ import { GuesthouseListItemProps } from "@/types/guesthouse";
 import SelectableRecruitCard from "./components/SelectableRecruitCard";
 import { useGetEmploymentDetail } from "@/hooks/owner/employment";
 import { truncateText } from "@/utils/truncateText";
-import { InfiniteData, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { receiveChatMessage } from "../websocket/receiveChatMessage";
-import { ReceiveMessagePayload } from "../types/websocket";
-
-type ChatMessagesPage = {
-    messages: ReceiveMessagePayload[];
-};
 
 export default function ChatRoomPage() {
     const userId = useUserStore(u => u.id);
@@ -213,40 +208,20 @@ export default function ChatRoomPage() {
         }
     }, [messages.length, isMine, jumpToBottom]);
 
-    const seenIdsRef = useRef<Set<string>>(new Set());
-
-    type ChatMessagesInfinite = InfiniteData<ChatMessagesPage>;
+    const lastMsgRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        const off = receiveChatMessage(payload => {
+        const off = receiveChatMessage(async payload => {
             if (payload.chatRoomId !== roomId) return;
 
-            // 중복 방지
-            if (seenIdsRef.current.has(payload.id)) return;
-            seenIdsRef.current.add(payload.id);
+            await queryClient.refetchQueries({ queryKey: ["chatMessages", roomId], exact: true });
 
-            shouldSmoothScrollRef.current = true;
-
-            queryClient.setQueryData<ChatMessagesInfinite>(["chatMessages", roomId], old => {
-                if (!old) return old;
-
-                const pages = [...(old.pages ?? [])];
-
-                if (pages.length === 0) {
-                    return {
-                        ...old,
-                        pages: [{ messages: [payload] }],
-                        pageParams: old.pageParams ?? [],
-                    };
-                }
-
-                const last = pages[pages.length - 1];
-                pages[pages.length - 1] = {
-                    ...last,
-                    messages: [...(last.messages ?? []), payload],
-                };
-
-                return { ...old, pages };
+            requestAnimationFrame(() => {
+                (lastMsgRef.current ?? bottomRef.current)?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "end",
+                    inline: "nearest",
+                });
             });
         });
 
@@ -318,6 +293,7 @@ export default function ChatRoomPage() {
                                     ? Number(m.senderId) !== Number(myId)
                                     : Number(m.senderId) === Number(myId);
                             const isFirst = i === 0;
+                            const isLast = i === messages.length - 1;
                             const showDateHeader =
                                 isFirst || dateKey(messages[i - 1].timestamp) !== dateKey(m.timestamp);
                             return (
@@ -325,7 +301,7 @@ export default function ChatRoomPage() {
                                     {showDateHeader && (
                                         <DateDivider isFirst={isFirst}>{formatDateHeader(m.timestamp)}</DateDivider>
                                     )}
-                                    <MessageLine isMine={isMine}>
+                                    <MessageLine isMine={isMine} ref={isLast ? lastMsgRef : undefined}>
                                         <MessageSendTime>{formatTimestamp(m.timestamp)}</MessageSendTime>
                                         <MessageItem message={m} isMine={isMine} />
                                     </MessageLine>
@@ -502,6 +478,7 @@ const MessageLine = styled.div<{ isMine: boolean }>`
     justify-content: flex-end;
     flex-direction: ${p => (p.isMine ? "row" : "row-reverse")};
     margin: 12px 0;
+    scroll-margin-bottom: 24px;
 `;
 const MessageSendTime = styled(Text.Body3_1)`
     color: ${theme.color.Gray3};
