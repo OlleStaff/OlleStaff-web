@@ -24,6 +24,7 @@ import { GuesthouseListItemProps } from "@/types/guesthouse";
 import SelectableRecruitCard from "./components/SelectableRecruitCard";
 import { useGetEmploymentDetail } from "@/hooks/owner/employment";
 import { truncateText } from "@/utils/truncateText";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function ChatRoomPage() {
     const userId = useUserStore(u => u.id);
@@ -31,6 +32,7 @@ export default function ChatRoomPage() {
     const { chatRoomId } = useParams();
     const roomId = Number(chatRoomId);
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const [message, setMessage] = useState("");
     const isInputActive = message.trim().length > 0;
@@ -74,19 +76,34 @@ export default function ChatRoomPage() {
 
         el.style.scrollBehavior = prev || "";
     }, []);
+
+    const shouldSmoothScrollRef = useRef(false);
+
+    const isMine = useCallback(
+        (m: { senderId: number | string }) =>
+            userType === "GUESTHOUSE" ? Number(m.senderId) !== Number(myId) : Number(m.senderId) === Number(myId),
+        [userType, myId]
+    );
+
     const handleSendMessage = useCallback(async () => {
         const text = message.trim();
         if (!text) return;
+        shouldSmoothScrollRef.current = true;
         await sendText(text);
         setMessage("");
-        requestAnimationFrame(() => {
-            jumpToBottom({ smooth: true });
-        });
-    }, [message, sendText, jumpToBottom]);
+    }, [message, sendText]);
+
+    const pickAndSendWithScroll = useCallback(
+        (kind: "image" | "file") => {
+            shouldSmoothScrollRef.current = true;
+            pickAndSend(kind);
+        },
+        [pickAndSend]
+    );
 
     const optionMenus = [
-        { label: "사진 업로드", onClick: () => pickAndSend("image") },
-        { label: "파일 업로드", onClick: () => pickAndSend("file") },
+        { label: "사진 업로드", onClick: () => pickAndSendWithScroll("image") },
+        { label: "파일 업로드", onClick: () => pickAndSendWithScroll("file") },
     ];
     const isBootLoading = isChatLoading || isMsgLoading || status === "pending";
 
@@ -104,14 +121,21 @@ export default function ChatRoomPage() {
     const { mutate: acceptApplicant } = usePostAcceptApplicant();
     const handleAcceptApplicantClick = () => {
         if (!checkedId) return;
+        shouldSmoothScrollRef.current = true;
         acceptApplicant(
             { applicantUserId: chat?.userId, employmentId: checkedId },
             {
-                onSuccess: () => {
+                onSuccess: async () => {
                     setIsModalOpen(false);
                     setIsAcceptConfirmModal(false);
                     setIsAcceptCompleteModal(false);
                     setCheckedId(undefined);
+
+                    await queryClient.refetchQueries({ queryKey: ["chatMessages", roomId] });
+
+                    requestAnimationFrame(() => {
+                        jumpToBottom({ smooth: true });
+                    });
                 },
             }
         );
@@ -167,15 +191,21 @@ export default function ChatRoomPage() {
         const el = listRef.current;
         if (!el || messages.length === 0) return;
 
-        const last = messages[messages.length - 1];
+        const lastMessage = messages[messages.length - 1];
         const nearBottom = el.scrollHeight - el.clientHeight - el.scrollTop < 16;
+        const mine = isMine(lastMessage);
 
-        if (Number(last.senderId) === myId || nearBottom) {
-            requestAnimationFrame(() => {
-                jumpToBottom({ smooth: false });
-            });
+        if (shouldSmoothScrollRef.current) {
+            shouldSmoothScrollRef.current = false;
+            requestAnimationFrame(() => jumpToBottom({ smooth: true }));
+            return;
         }
-    }, [messages.length, myId, jumpToBottom]);
+
+        // 내가 보낸 메시지거나 혹은 유저가 거의 채팅방 아래에 있을 때
+        if (mine || nearBottom) {
+            requestAnimationFrame(() => jumpToBottom({ smooth: false }));
+        }
+    }, [messages.length, isMine, jumpToBottom]);
 
     const { markLatestMessageRead } = useMarkLatestMessageRead();
     const lastReadMessageRef = useRef<string | null>(null);
@@ -204,7 +234,7 @@ export default function ChatRoomPage() {
         });
 
         lastReadMessageRef.current = lastFromOther.id;
-    }, [status, messages, roomId, myId, markLatestMessageRead]);
+    }, [status, messages, roomId, myId, markLatestMessageRead, userType]);
 
     if (userType === "GUESTHOUSE")
         optionMenus.unshift({
@@ -267,9 +297,8 @@ export default function ChatRoomPage() {
 
                             <RecruitListScroll>
                                 {myRecruits.map((item: GuesthouseListItemProps) => (
-                                    <RecruitCardWrapper>
+                                    <RecruitCardWrapper key={item.employmentId}>
                                         <SelectableRecruitCard
-                                            key={item.employmentId}
                                             item={item}
                                             selected={checkedId === item.employmentId}
                                             onSelect={setCheckedId}
@@ -279,7 +308,13 @@ export default function ChatRoomPage() {
                             </RecruitListScroll>
 
                             <ConfirmBox>
-                                <ConfirmButton disabled={!checkedId} onClick={() => setIsAcceptConfirmModal(true)}>
+                                <ConfirmButton
+                                    disabled={!checkedId}
+                                    onClick={() => {
+                                        setIsModalOpen(false);
+                                        setIsAcceptConfirmModal(true);
+                                    }}
+                                >
                                     <Text.Title3_1 color="White">확인</Text.Title3_1>
                                 </ConfirmButton>
                             </ConfirmBox>
