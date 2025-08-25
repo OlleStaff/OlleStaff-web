@@ -24,7 +24,13 @@ import { GuesthouseListItemProps } from "@/types/guesthouse";
 import SelectableRecruitCard from "./components/SelectableRecruitCard";
 import { useGetEmploymentDetail } from "@/hooks/owner/employment";
 import { truncateText } from "@/utils/truncateText";
-import { useQueryClient } from "@tanstack/react-query";
+import { InfiniteData, useQueryClient } from "@tanstack/react-query";
+import { receiveChatMessage } from "../websocket/receiveChatMessage";
+import { ReceiveMessagePayload } from "../types/websocket";
+
+type ChatMessagesPage = {
+    messages: ReceiveMessagePayload[];
+};
 
 export default function ChatRoomPage() {
     const userId = useUserStore(u => u.id);
@@ -206,6 +212,46 @@ export default function ChatRoomPage() {
             requestAnimationFrame(() => jumpToBottom({ smooth: false }));
         }
     }, [messages.length, isMine, jumpToBottom]);
+
+    const seenIdsRef = useRef<Set<string>>(new Set());
+
+    type ChatMessagesInfinite = InfiniteData<ChatMessagesPage>;
+
+    useEffect(() => {
+        const off = receiveChatMessage(payload => {
+            if (payload.chatRoomId !== roomId) return;
+
+            // 중복 방지
+            if (seenIdsRef.current.has(payload.id)) return;
+            seenIdsRef.current.add(payload.id);
+
+            shouldSmoothScrollRef.current = true;
+
+            queryClient.setQueryData<ChatMessagesInfinite>(["chatMessages", roomId], old => {
+                if (!old) return old;
+
+                const pages = [...(old.pages ?? [])];
+
+                if (pages.length === 0) {
+                    return {
+                        ...old,
+                        pages: [{ messages: [payload] }],
+                        pageParams: old.pageParams ?? [],
+                    };
+                }
+
+                const last = pages[pages.length - 1];
+                pages[pages.length - 1] = {
+                    ...last,
+                    messages: [...(last.messages ?? []), payload],
+                };
+
+                return { ...old, pages };
+            });
+        });
+
+        return off; // 언마운트, 방 변경 시 구독 해제
+    }, [roomId, queryClient]);
 
     const { markLatestMessageRead } = useMarkLatestMessageRead();
     const lastReadMessageRef = useRef<string | null>(null);
