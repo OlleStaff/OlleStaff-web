@@ -229,6 +229,7 @@ const Footer = styled.div<{ hasImage: boolean }>`
     display: flex;
     align-items: center;
     min-width: 0;
+    height: 10px;
 `;
 
 const IconText = styled.div`
