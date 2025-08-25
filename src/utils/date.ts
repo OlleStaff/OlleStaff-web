@@ -72,6 +72,11 @@ export const formatDateInput = (value: string): string => {
     return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6)}`;
 };
 
+// YYYY-MM-DD → YYYY.MM.DD 형식으로 변환
+export const toDotDate = (date: string): string => {
+    return /^\d{4}-\d{2}-\d{2}$/.test(date) ? date.replace(/-/g, ".") : date;
+};
+
 export const formatTimestamp = (timestamp: number) => {
     const ms = timestamp < 1e12 ? timestamp * 1000 : timestamp; // 초 → 밀리초 보정
     const d = new Date(ms);

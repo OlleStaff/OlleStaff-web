@@ -15,15 +15,26 @@ export default function TabSelector({ labels, selected, onChange, variant = "und
         <TabWrapper variant={variant}>
             {labels.map(label => {
                 const isSelected = selected === label;
-                const color = isSelected ? (variant === "bold" ? "Black" : "Main") : "Gray3";
+
+                // 텍스트 분기
+                let Content: React.ReactNode;
+                if (variant === "underline") {
+                    Content = isSelected ? (
+                        <Text.Body1_2 color="Main">{label}</Text.Body1_2>
+                    ) : (
+                        <Text.Body1_1 color="Gray3">{label}</Text.Body1_1>
+                    );
+                } else {
+                    Content = isSelected ? (
+                        <Text.Body1_1 color="Black">{label}</Text.Body1_1>
+                    ) : (
+                        <Text.Body1 color="Gray2">{label}</Text.Body1>
+                    );
+                }
 
                 return (
                     <TabButton key={label} onClick={() => onChange(label)} isSelected={isSelected} variant={variant}>
-                        {isSelected ? (
-                            <Text.Body1_1 color={color}>{label}</Text.Body1_1>
-                        ) : (
-                            <Text.Body1 color={color}>{label}</Text.Body1>
-                        )}
+                        {Content}
                     </TabButton>
                 );
             })}
