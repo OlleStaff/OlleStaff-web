@@ -1,6 +1,6 @@
 import { useUserStore } from "@/store/useUserStore";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetChatRoomDetail } from "../hooks/useGetChatRoomDetail";
 import { useGetChatMessages } from "../hooks/useGetChatMessages";
 import { useChatMessenger } from "../hooks/useChatMessenger";
@@ -18,21 +18,34 @@ import styled from "@emotion/styled";
 import MessageItem from "./components/MessageItem";
 import { useMarkLatestMessageRead } from "../hooks/useMarkLatestMessageRead";
 import { usePostAcceptApplicant } from "../hooks/usePostAcceptApplicant";
+import Modal from "@/components/Modal";
+import { useGetMyRecruitmentsAppliedByUser } from "../hooks/useGetMyRecruitmentsAppliedByUser";
+import { GuesthouseListItemProps } from "@/types/guesthouse";
+import SelectableRecruitCard from "./components/SelectableRecruitCard";
+import { useGetEmploymentDetail } from "@/hooks/owner/employment";
+import { truncateText } from "@/utils/truncateText";
 
 export default function ChatRoomPage() {
     const userId = useUserStore(u => u.id);
     const userType = useUserStore(u => u.type);
     const { chatRoomId } = useParams();
     const roomId = Number(chatRoomId);
+    const navigate = useNavigate();
 
     const [message, setMessage] = useState("");
     const isInputActive = message.trim().length > 0;
 
-    const { data: chat } = useGetChatRoomDetail(roomId);
+    const { data: chat, isLoading: isChatLoading } = useGetChatRoomDetail(roomId);
     const myId = userType === "GUESTHOUSE" ? Number(chat?.userId) : Number(userId);
 
-    const { data: chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useGetChatMessages(roomId);
-    console.log("테슽테슽 ::: ", chatMessages);
+    const {
+        data: chatMessages,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        status,
+        isLoading: isMsgLoading,
+    } = useGetChatMessages(roomId);
 
     const { sendText } = useChatMessenger(roomId, chat?.userId);
     const { pickAndSend } = useChatPickAndSend(roomId);
@@ -75,19 +88,38 @@ export default function ChatRoomPage() {
         { label: "사진 업로드", onClick: () => pickAndSend("image") },
         { label: "파일 업로드", onClick: () => pickAndSend("file") },
     ];
-    const { mutate: acceptApplicant } = usePostAcceptApplicant();
+    const isBootLoading = isChatLoading || isMsgLoading || status === "pending";
 
-    const handleAccept = () => {
-        const applicantId = chat?.userId; //  지원자 ID
-        const employmentId = 72; // 임시 공고 ID (지원자가 지원한 나의 공고 목록 중에서 어떤 글에 합격 시킬건지 처리한 뒤에 acceptApplicant에 공고 아이디 전달해줘야함)
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-        if (!Number.isFinite(applicantId) || !Number.isFinite(employmentId)) {
-            console.error("합격 불가: 파라미터 누락/무효", { applicantId, employmentId });
-            return;
-        }
+    const { data: myRecruits } = useGetMyRecruitmentsAppliedByUser(chat?.userId);
 
-        acceptApplicant({ applicantId: applicantId!, employmentId: employmentId! });
+    const [checkedId, setCheckedId] = useState<number>();
+
+    const handleAcceptModalOpen = () => {
+        setCheckedId(undefined);
+        setIsModalOpen(true);
     };
+
+    const { mutate: acceptApplicant } = usePostAcceptApplicant();
+    const handleAcceptApplicantClick = () => {
+        if (!checkedId) return;
+        acceptApplicant(
+            { applicantUserId: chat?.userId, employmentId: checkedId },
+            {
+                onSuccess: () => {
+                    setIsModalOpen(false);
+                    setIsAcceptConfirmModal(false);
+                    setIsAcceptCompleteModal(false);
+                    setCheckedId(undefined);
+                },
+            }
+        );
+    };
+    const { data: employment } = useGetEmploymentDetail(checkedId as number);
+
+    const [isAcceptConfirmModal, setIsAcceptConfirmModal] = useState(false);
+    const [isAcceptCompleteModal, setIsAcceptCompleteModal] = useState(false);
 
     //  채팅 페이지 진입 시 애니메이션 없이 바닥 고정
     const didInit = useRef(false);
@@ -140,7 +172,7 @@ export default function ChatRoomPage() {
 
         if (Number(last.senderId) === myId || nearBottom) {
             requestAnimationFrame(() => {
-                jumpToBottom({ smooth: true });
+                jumpToBottom({ smooth: false });
             });
         }
     }, [messages.length, myId, jumpToBottom]);
@@ -155,7 +187,9 @@ export default function ChatRoomPage() {
     useEffect(() => {
         if (status !== "success" || messages.length === 0) return;
 
-        const lastFromOther = [...messages].reverse().find(m => Number(m.senderId) !== myId);
+        const lastFromOther = [...messages]
+            .reverse()
+            .find(m => (userType === "STAFF" ? Number(m.senderId) !== myId : Number(m.senderId) === myId));
         if (!lastFromOther) return; // 내 메세지면 요청 X
 
         if (lastReadMessageRef.current === lastFromOther.id) return; // 같은 메시지 중복 전송 방지
@@ -175,10 +209,10 @@ export default function ChatRoomPage() {
     if (userType === "GUESTHOUSE")
         optionMenus.unshift({
             label: "스탭 합격",
-            onClick: handleAccept,
+            onClick: handleAcceptModalOpen,
         });
 
-    if (status === "pending" || !chat) {
+    if (isBootLoading || !chat) {
         return <LoadingSpinner />;
     }
 
@@ -203,7 +237,10 @@ export default function ChatRoomPage() {
                     <ChatScrollArea ref={listRef}>
                         <div ref={topRef} />
                         {messages.map((m, i) => {
-                            const isMine = Number(m.senderId) !== myId;
+                            const isMine =
+                                userType === "GUESTHOUSE"
+                                    ? Number(m.senderId) !== Number(userId)
+                                    : Number(m.senderId) === Number(userId);
                             const isFirst = i === 0;
                             const showDateHeader =
                                 isFirst || dateKey(messages[i - 1].timestamp) !== dateKey(m.timestamp);
@@ -221,6 +258,70 @@ export default function ChatRoomPage() {
                         })}
                         <div ref={bottomRef} />
                     </ChatScrollArea>
+                    {isModalOpen && (
+                        <Modal variant="page" handleModalClose={() => setIsModalOpen(false)}>
+                            <Wrapper.FlexBox direction="column" alignItems="center" gap="6px">
+                                <Text.Title3_1> 해당 지원자를 합격으로</Text.Title3_1>
+                                <Text.Title3_1> 지정할 공고를 선택해 주세요.</Text.Title3_1>
+                            </Wrapper.FlexBox>
+
+                            <RecruitListScroll>
+                                {myRecruits.map((item: GuesthouseListItemProps) => (
+                                    <SelectableRecruitCard
+                                        key={item.employmentId}
+                                        item={item}
+                                        selected={checkedId === item.employmentId}
+                                        onSelect={setCheckedId}
+                                    />
+                                ))}
+                            </RecruitListScroll>
+
+                            <ConfirmBox>
+                                <ConfirmButton disabled={!checkedId} onClick={() => setIsAcceptConfirmModal(true)}>
+                                    <Text.Title3_1 color="White">확인</Text.Title3_1>
+                                </ConfirmButton>
+                            </ConfirmBox>
+                        </Modal>
+                    )}
+
+                    {isAcceptConfirmModal && (
+                        <>
+                            <Modal
+                                variant="confirm"
+                                title="해당 공고글로 합격을 시키겠습니까?"
+                                message={
+                                    <>
+                                        확인 버튼 클릭 시, '{truncateText(String(employment?.data.title), 12)}'
+                                        <br />
+                                        게시글에 {chat.title}님을 합격 처리합니다.
+                                    </>
+                                }
+                                handleModalClose={() => setIsAcceptConfirmModal(false)}
+                                onConfirm={() => {
+                                    setIsModalOpen(false);
+                                    setIsAcceptConfirmModal(false);
+                                    setIsAcceptCompleteModal(true);
+                                }}
+                                cancelText="이전으로"
+                                confirmText="확인"
+                            />
+                        </>
+                    )}
+
+                    {isAcceptCompleteModal && (
+                        <>
+                            <Modal
+                                variant="default"
+                                title="합격 처리 완료"
+                                confirmText="확인"
+                                handleModalClose={() => {
+                                    setIsAcceptConfirmModal(false);
+                                    navigate(-1);
+                                }}
+                                onConfirm={handleAcceptApplicantClick}
+                            />
+                        </>
+                    )}
 
                     <InputWrapper>
                         <form
@@ -343,4 +444,29 @@ const DateDivider = styled.div<{ isFirst?: boolean }>`
     &::before,
     &::after { content: none; }
   `}
+`;
+const RecruitListScroll = styled.div`
+    max-height: 420px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scrollbar-width: none;
+`;
+
+const ConfirmBox = styled.div`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+`;
+
+const ConfirmButton = styled.button<{ disabled?: boolean }>`
+    width: 100%;
+    height: 44px;
+    border: 0;
+    border-radius: 12px;
+    background: ${({ theme, disabled }) => (disabled ? theme.color.Gray2 : theme.color.Main)};
+    cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
+    transition: opacity 0.2s;
+    opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
 `;

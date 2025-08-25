@@ -13,6 +13,7 @@ import { useUserStore } from "@/store/useUserStore";
 import { useDeleteChatRooms } from "../hooks/useDeleteChatRooms";
 import Modal from "@/components/Modal";
 import { connectStomp } from "../websocket/connectStomp";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const STAFF_TABS = TAB_LABELS.STAFF.CHAT_LIST;
 const OWNER_TABS = TAB_LABELS.OWNER.CHAT_LIST;
@@ -22,7 +23,7 @@ type OwnerTab = (typeof OWNER_TABS)[number];
 type ChatListTab = StaffTab | OwnerTab;
 type ServerFilter = "ALL" | "APPLIED" | "ACCEPTED";
 
-export default function ChatPage() {
+export default function ChatListPage() {
     const userType = useUserStore(s => s.type);
 
     const isStaff = userType === "STAFF";
@@ -37,7 +38,8 @@ export default function ChatPage() {
 
     const serverFilter: ServerFilter = isStaff ? "ALL" : OWNER_MAP[selectedTab as OwnerTab];
 
-    const { data: chatList = [] } = useGetChatList(serverFilter);
+    const { data: chatList, isPending, isLoading } = useGetChatList(serverFilter);
+    const isInitialLoading = (isPending ?? false) || (isLoading && !chatList);
     console.log("테슽테슽 ::: 안읽은거몇갠데", chatList);
 
     const [onEditMode, setOnEditMode] = useState(false);
@@ -125,7 +127,13 @@ export default function ChatPage() {
                         />
                     ))}
 
-                    {chatList?.length === 0 && (
+                    {isInitialLoading && (
+                        <div style={{ padding: "250px 0 0 0" }}>
+                            <LoadingSpinner />
+                        </div>
+                    )}
+
+                    {!isInitialLoading && (chatList?.length ?? 0) === 0 && (
                         <>
                             <div style={{ padding: "150px 0 0 0" }}>
                                 <Oops
@@ -162,11 +170,11 @@ export default function ChatPage() {
                         confirmText="확인"
                         handleModalClose={() => {
                             setIsCompleteOpen(false);
-                            navigate(-1);
+                            navigate("/chat");
                         }}
                         onConfirm={() => {
                             setIsCompleteOpen(false);
-                            navigate("/");
+                            navigate("/chat");
                         }}
                     />
                 )}

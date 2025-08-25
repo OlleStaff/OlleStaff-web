@@ -9,6 +9,7 @@ export const notifyReadMessage = (message: ReadMessagePayload) => {
     }
     stompClient.publish({
         destination: "/app/chat/read",
+        headers: { "content-type": "application/json" },
         body: JSON.stringify(message),
     });
     console.log("websocket 읽음 처리 :", message);

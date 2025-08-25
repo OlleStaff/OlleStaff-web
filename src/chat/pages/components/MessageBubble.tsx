@@ -3,14 +3,22 @@ import styled from "@emotion/styled";
 type Props = {
     isMine: boolean;
     children: React.ReactNode;
-    noBubble?: boolean;
+    isCard?: boolean;
+    isImage?: boolean;
 };
 
-export default function MessageBubble({ isMine, children, noBubble }: Props) {
-    if (noBubble) {
+export default function MessageBubble({ isMine, children, isCard, isImage }: Props) {
+    if (isCard) {
         return (
             <BubbleWrapper isMine={isMine}>
                 <CardContainer isMine={isMine}>{children}</CardContainer>
+            </BubbleWrapper>
+        );
+    }
+    if (isImage) {
+        return (
+            <BubbleWrapper isMine={isMine}>
+                <ImageContainer isMine={isMine}>{children}</ImageContainer>
             </BubbleWrapper>
         );
     }
@@ -46,5 +54,9 @@ const CardContainer = styled.div<{ isMine: boolean }>`
     border-radius: 16px;
     padding: 14px 16px;
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+    max-width: 200px;
+`;
+
+const ImageContainer = styled.div<{ isMine: boolean }>`
     max-width: 200px;
 `;

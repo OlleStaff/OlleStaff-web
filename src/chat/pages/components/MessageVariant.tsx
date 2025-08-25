@@ -1,12 +1,15 @@
 import { useGetChatRoomDetail } from "@/chat/hooks/useGetChatRoomDetail";
-import ImageGrid from "@/components/ImageGrid";
 import ImageViewer from "@/components/ImageViewer";
+import Modal from "@/components/Modal";
+import { useGetEmploymentDetail } from "@/hooks/owner/employment";
 import { useUserStore } from "@/store/useUserStore";
 import { Text } from "@/styles/Text";
+import theme from "@/styles/theme";
 import { Wrapper } from "@/styles/Wrapper";
 import styled from "@emotion/styled";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ChatImageGrid from "./ChatImageGrid";
 
 export function TextMessage({ text }: { text: string }) {
     return <>{text}</>;
@@ -24,7 +27,7 @@ export function ImageMessage({ images }: { images: string[] }) {
 
     return (
         <>
-            {images.length > 0 && <ImageGrid images={images} onImageClick={handleImageClick} />}
+            {images.length > 0 && <ChatImageGrid images={images} onImageClick={handleImageClick} />}
             {isViewerOpen && (
                 <ImageViewer images={images} startIndex={currentImageIndex} onClose={() => setViewerOpen(false)} />
             )}
@@ -74,12 +77,16 @@ export function ApplicantCard({ title, detail }: { title: string; detail: string
 }
 
 export function AcceptedCard({ employmentId, title, detail }: { employmentId: number; title: string; detail: string }) {
-    console.log("employmentId", employmentId);
-    console.log("title", title);
-    console.log("detail", detail);
+    const { data: employment } = useGetEmploymentDetail(employmentId);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleShowPrecautions = () => {
-        // 주의사항 모달 띄우기
+        setIsModalOpen(true);
+    };
+
+    const handleClosePrecautions = () => {
+        setIsModalOpen(false);
     };
 
     return (
@@ -95,6 +102,40 @@ export function AcceptedCard({ employmentId, title, detail }: { employmentId: nu
                     <img src="/icons/precautions.svg" alt="지원서" />
                     <Text.Body2_1 color="Main"> 주의사항 보기</Text.Body2_1>
                 </ViewPrecautionsWrapper>
+
+                {isModalOpen && (
+                    <>
+                        <Modal variant="page" handleModalClose={handleClosePrecautions}>
+                            <Wrapper.FlexBox justifyContent="space-between">
+                                <Wrapper.FlexBox gap="10px">
+                                    <img src="/icons/smile.svg" alt="주의사항" />
+                                    <Text.Title3_2>주의사항</Text.Title3_2>
+                                </Wrapper.FlexBox>
+                                <img
+                                    src="/icons/xButton.svg"
+                                    alt="닫기"
+                                    onClick={handleClosePrecautions}
+                                    style={{ cursor: "pointer" }}
+                                />
+                            </Wrapper.FlexBox>
+
+                            <Wrapper.FlexBox direction="column">
+                                <ScrollableArea>
+                                    {employment?.data.precautions.map(item => {
+                                        return (
+                                            <>
+                                                <PrecautionItem>
+                                                    <Text.Body1_1>{item.precautionsTitle}</Text.Body1_1>
+                                                    <Text.Body2_1 color="Gray4">{item.precautionsTitle}</Text.Body2_1>
+                                                </PrecautionItem>
+                                            </>
+                                        );
+                                    })}
+                                </ScrollableArea>
+                            </Wrapper.FlexBox>
+                        </Modal>
+                    </>
+                )}
             </Wrapper.FlexBox>
         </>
     );
@@ -130,4 +171,21 @@ const ViewPrecautionsWrapper = styled.div`
     gap: 6px;
     margin-top: 12px;
     cursor: pointer;
+`;
+
+const PrecautionItem = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 0;
+    border-bottom: 1px solid ${theme.color.Gray1};
+    &:last-child {
+        border-bottom: none;
+    }
+`;
+
+const ScrollableArea = styled.div`
+    max-height: 328px;
+    overflow-y: auto;
+    scrollbar-width: none;
 `;
