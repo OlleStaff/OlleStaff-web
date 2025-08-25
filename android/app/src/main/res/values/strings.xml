@@ -4,5 +4,5 @@
     <string name="title_activity_main">OlleStaff</string>
     <string name="package_name">com.ollestaff.ollestaff</string>
     <string name="custom_url_scheme">com.ollestaff.ollestaff</string>
-    
+    <string name="kakao_app_key">42007a0bda31f53373f0c8d76b2167e7</string>
 </resources>

@@ -21,6 +21,13 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Kakao Redirect URI에서 스키마를 앱키로 교체 -->
+                <data android:scheme="kakao${KAKAO_NATIVE_APP_KEY}" android:host="oauth" />
+            </intent-filter>
 
         </activity>
 
