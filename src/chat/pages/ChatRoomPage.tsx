@@ -24,13 +24,9 @@ import { GuesthouseListItemProps } from "@/types/guesthouse";
 import SelectableRecruitCard from "./components/SelectableRecruitCard";
 import { useGetEmploymentDetail } from "@/hooks/owner/employment";
 import { truncateText } from "@/utils/truncateText";
-import { InfiniteData, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { receiveChatMessage } from "../websocket/receiveChatMessage";
-import { ReceiveMessagePayload } from "../types/websocket";
-
-type ChatMessagesPage = {
-    messages: ReceiveMessagePayload[];
-};
+import Oops from "@/components/Oops";
 
 export default function ChatRoomPage() {
     const userId = useUserStore(u => u.id);
@@ -213,40 +209,20 @@ export default function ChatRoomPage() {
         }
     }, [messages.length, isMine, jumpToBottom]);
 
-    const seenIdsRef = useRef<Set<string>>(new Set());
-
-    type ChatMessagesInfinite = InfiniteData<ChatMessagesPage>;
+    const lastMsgRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        const off = receiveChatMessage(payload => {
+        const off = receiveChatMessage(async payload => {
             if (payload.chatRoomId !== roomId) return;
 
-            // 중복 방지
-            if (seenIdsRef.current.has(payload.id)) return;
-            seenIdsRef.current.add(payload.id);
+            await queryClient.refetchQueries({ queryKey: ["chatMessages", roomId], exact: true });
 
-            shouldSmoothScrollRef.current = true;
-
-            queryClient.setQueryData<ChatMessagesInfinite>(["chatMessages", roomId], old => {
-                if (!old) return old;
-
-                const pages = [...(old.pages ?? [])];
-
-                if (pages.length === 0) {
-                    return {
-                        ...old,
-                        pages: [{ messages: [payload] }],
-                        pageParams: old.pageParams ?? [],
-                    };
-                }
-
-                const last = pages[pages.length - 1];
-                pages[pages.length - 1] = {
-                    ...last,
-                    messages: [...(last.messages ?? []), payload],
-                };
-
-                return { ...old, pages };
+            requestAnimationFrame(() => {
+                (lastMsgRef.current ?? bottomRef.current)?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "end",
+                    inline: "nearest",
+                });
             });
         });
 
@@ -318,6 +294,7 @@ export default function ChatRoomPage() {
                                     ? Number(m.senderId) !== Number(myId)
                                     : Number(m.senderId) === Number(myId);
                             const isFirst = i === 0;
+                            const isLast = i === messages.length - 1;
                             const showDateHeader =
                                 isFirst || dateKey(messages[i - 1].timestamp) !== dateKey(m.timestamp);
                             return (
@@ -325,7 +302,7 @@ export default function ChatRoomPage() {
                                     {showDateHeader && (
                                         <DateDivider isFirst={isFirst}>{formatDateHeader(m.timestamp)}</DateDivider>
                                     )}
-                                    <MessageLine isMine={isMine}>
+                                    <MessageLine isMine={isMine} ref={isLast ? lastMsgRef : undefined}>
                                         <MessageSendTime>{formatTimestamp(m.timestamp)}</MessageSendTime>
                                         <MessageItem message={m} isMine={isMine} />
                                     </MessageLine>
@@ -334,38 +311,46 @@ export default function ChatRoomPage() {
                         })}
                         <div ref={bottomRef} />
                     </ChatScrollArea>
-                    {isModalOpen && (
-                        <Modal variant="page" handleModalClose={() => setIsModalOpen(false)}>
-                            <Wrapper.FlexBox direction="column" alignItems="center" gap="6px">
-                                <Text.Title3_1> 해당 지원자를 합격으로</Text.Title3_1>
-                                <Text.Title3_1> 지정할 공고를 선택해 주세요.</Text.Title3_1>
-                            </Wrapper.FlexBox>
+                    {isModalOpen &&
+                        (myRecruits.length !== 0 ? (
+                            <Modal variant="page" handleModalClose={() => setIsModalOpen(false)}>
+                                <Wrapper.FlexBox direction="column" alignItems="center" gap="6px">
+                                    <Text.Title3_1> 해당 지원자를 합격으로</Text.Title3_1>
+                                    <Text.Title3_1> 지정할 공고를 선택해 주세요.</Text.Title3_1>
+                                </Wrapper.FlexBox>
 
-                            <RecruitListScroll>
-                                {myRecruits.map((item: GuesthouseListItemProps) => (
-                                    <RecruitCardWrapper key={item.employmentId}>
-                                        <SelectableRecruitCard
-                                            item={item}
-                                            selected={checkedId === item.employmentId}
-                                            onSelect={setCheckedId}
-                                        />
-                                    </RecruitCardWrapper>
-                                ))}
-                            </RecruitListScroll>
+                                <RecruitListScroll>
+                                    {myRecruits.map((item: GuesthouseListItemProps) => (
+                                        <RecruitCardWrapper key={item.employmentId}>
+                                            <SelectableRecruitCard
+                                                item={item}
+                                                selected={checkedId === item.employmentId}
+                                                onSelect={setCheckedId}
+                                            />
+                                        </RecruitCardWrapper>
+                                    ))}
+                                </RecruitListScroll>
 
-                            <ConfirmBox>
-                                <ConfirmButton
-                                    disabled={!checkedId}
-                                    onClick={() => {
-                                        setIsModalOpen(false);
-                                        setIsAcceptConfirmModal(true);
-                                    }}
-                                >
-                                    <Text.Title3_1 color="White">확인</Text.Title3_1>
-                                </ConfirmButton>
-                            </ConfirmBox>
-                        </Modal>
-                    )}
+                                <ConfirmBox>
+                                    <ConfirmButton
+                                        disabled={!checkedId}
+                                        onClick={() => {
+                                            setIsModalOpen(false);
+                                            setIsAcceptConfirmModal(true);
+                                        }}
+                                    >
+                                        <Text.Title3_1 color="White">확인</Text.Title3_1>
+                                    </ConfirmButton>
+                                </ConfirmBox>
+                            </Modal>
+                        ) : (
+                            <Modal variant="page" handleModalClose={() => setIsModalOpen(false)}>
+                                <Oops
+                                    message="이런, 선택할 공고가 없네요"
+                                    description="합격 처리는 지원 내역이 있어야만 가능해요!"
+                                />
+                            </Modal>
+                        ))}
 
                     {isAcceptConfirmModal && (
                         <>
@@ -502,6 +487,7 @@ const MessageLine = styled.div<{ isMine: boolean }>`
     justify-content: flex-end;
     flex-direction: ${p => (p.isMine ? "row" : "row-reverse")};
     margin: 12px 0;
+    scroll-margin-bottom: 24px;
 `;
 const MessageSendTime = styled(Text.Body3_1)`
     color: ${theme.color.Gray3};
