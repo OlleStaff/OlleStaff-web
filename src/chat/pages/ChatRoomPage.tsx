@@ -26,6 +26,7 @@ import { useGetEmploymentDetail } from "@/hooks/owner/employment";
 import { truncateText } from "@/utils/truncateText";
 import { useQueryClient } from "@tanstack/react-query";
 import { receiveChatMessage } from "../websocket/receiveChatMessage";
+import Oops from "@/components/Oops";
 
 export default function ChatRoomPage() {
     const userId = useUserStore(u => u.id);
@@ -310,38 +311,46 @@ export default function ChatRoomPage() {
                         })}
                         <div ref={bottomRef} />
                     </ChatScrollArea>
-                    {isModalOpen && (
-                        <Modal variant="page" handleModalClose={() => setIsModalOpen(false)}>
-                            <Wrapper.FlexBox direction="column" alignItems="center" gap="6px">
-                                <Text.Title3_1> 해당 지원자를 합격으로</Text.Title3_1>
-                                <Text.Title3_1> 지정할 공고를 선택해 주세요.</Text.Title3_1>
-                            </Wrapper.FlexBox>
+                    {isModalOpen &&
+                        (myRecruits.length !== 0 ? (
+                            <Modal variant="page" handleModalClose={() => setIsModalOpen(false)}>
+                                <Wrapper.FlexBox direction="column" alignItems="center" gap="6px">
+                                    <Text.Title3_1> 해당 지원자를 합격으로</Text.Title3_1>
+                                    <Text.Title3_1> 지정할 공고를 선택해 주세요.</Text.Title3_1>
+                                </Wrapper.FlexBox>
 
-                            <RecruitListScroll>
-                                {myRecruits.map((item: GuesthouseListItemProps) => (
-                                    <RecruitCardWrapper key={item.employmentId}>
-                                        <SelectableRecruitCard
-                                            item={item}
-                                            selected={checkedId === item.employmentId}
-                                            onSelect={setCheckedId}
-                                        />
-                                    </RecruitCardWrapper>
-                                ))}
-                            </RecruitListScroll>
+                                <RecruitListScroll>
+                                    {myRecruits.map((item: GuesthouseListItemProps) => (
+                                        <RecruitCardWrapper key={item.employmentId}>
+                                            <SelectableRecruitCard
+                                                item={item}
+                                                selected={checkedId === item.employmentId}
+                                                onSelect={setCheckedId}
+                                            />
+                                        </RecruitCardWrapper>
+                                    ))}
+                                </RecruitListScroll>
 
-                            <ConfirmBox>
-                                <ConfirmButton
-                                    disabled={!checkedId}
-                                    onClick={() => {
-                                        setIsModalOpen(false);
-                                        setIsAcceptConfirmModal(true);
-                                    }}
-                                >
-                                    <Text.Title3_1 color="White">확인</Text.Title3_1>
-                                </ConfirmButton>
-                            </ConfirmBox>
-                        </Modal>
-                    )}
+                                <ConfirmBox>
+                                    <ConfirmButton
+                                        disabled={!checkedId}
+                                        onClick={() => {
+                                            setIsModalOpen(false);
+                                            setIsAcceptConfirmModal(true);
+                                        }}
+                                    >
+                                        <Text.Title3_1 color="White">확인</Text.Title3_1>
+                                    </ConfirmButton>
+                                </ConfirmBox>
+                            </Modal>
+                        ) : (
+                            <Modal variant="page" handleModalClose={() => setIsModalOpen(false)}>
+                                <Oops
+                                    message="이런, 선택할 공고가 없네요"
+                                    description="합격 처리는 지원 내역이 있어야만 가능해요!"
+                                />
+                            </Modal>
+                        ))}
 
                     {isAcceptConfirmModal && (
                         <>
