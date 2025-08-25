@@ -10,6 +10,7 @@ import styled from "@emotion/styled";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ChatImageGrid from "./ChatImageGrid";
+import { v4 as uuidv4 } from "uuid";
 
 export function TextMessage({ text }: { text: string }) {
     return <>{text}</>;
@@ -124,7 +125,7 @@ export function AcceptedCard({ employmentId, title, detail }: { employmentId: nu
                                     {employment?.data.precautions.map(item => {
                                         return (
                                             <>
-                                                <PrecautionItem>
+                                                <PrecautionItem key={uuidv4()}>
                                                     <Text.Body1_1>{item.precautionsTitle}</Text.Body1_1>
                                                     <Text.Body2_1 color="Gray4">{item.precautionsTitle}</Text.Body2_1>
                                                 </PrecautionItem>
