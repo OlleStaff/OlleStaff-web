@@ -131,8 +131,8 @@ export const Card = styled.div`
     background-color: white;
     cursor: pointer;
     width: 100%;
-    min-height: 90px;
-    max-height: 115px;
+    height: 115px;
+    min-width: 0;
 `;
 
 const ImageWrapper = styled.div<{ $closed: boolean }>`
@@ -156,6 +156,7 @@ const ContentWrapper = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
+    min-width: 0;
     justify-content: space-between;
 `;
 
@@ -163,6 +164,7 @@ const TagWrapper = styled.div`
     display: flex;
     gap: 4px;
     width: 100%;
+    min-width: 0;
 `;
 
 const Tag = styled.div`
@@ -183,18 +185,19 @@ const Tag = styled.div`
 
 const Title = styled.div`
     display: flex;
-    max-width: 150px;
+    min-width: 0;
     & > * {
+        display: block;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 `;
-
 const Content = styled.div`
     display: flex;
-    max-width: 160px;
+    min-width: 0;
     & > * {
+        display: block;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -203,7 +206,7 @@ const Content = styled.div`
 
 const Location = styled.div`
     display: flex;
-    max-width: 60px;
+    min-width: 0;
     & > * {
         overflow: hidden;
         text-overflow: ellipsis;
@@ -214,7 +217,7 @@ const Location = styled.div`
 
 const PersonNum = styled.div`
     display: flex;
-    max-width: 60px;
+    min-width: 0;
     & > * {
         overflow: hidden;
         text-overflow: ellipsis;
@@ -225,14 +228,14 @@ const PersonNum = styled.div`
 const Footer = styled.div<{ hasImage: boolean }>`
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    height: 14px;
+    min-width: 0;
 `;
 
 const IconText = styled.div`
     display: flex;
     align-items: center;
     gap: 2px;
+    min-width: 0;
 `;
 
 const Icon = styled.img`

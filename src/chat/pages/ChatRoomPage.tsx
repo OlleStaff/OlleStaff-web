@@ -267,12 +267,14 @@ export default function ChatRoomPage() {
 
                             <RecruitListScroll>
                                 {myRecruits.map((item: GuesthouseListItemProps) => (
-                                    <SelectableRecruitCard
-                                        key={item.employmentId}
-                                        item={item}
-                                        selected={checkedId === item.employmentId}
-                                        onSelect={setCheckedId}
-                                    />
+                                    <RecruitCardWrapper>
+                                        <SelectableRecruitCard
+                                            key={item.employmentId}
+                                            item={item}
+                                            selected={checkedId === item.employmentId}
+                                            onSelect={setCheckedId}
+                                        />
+                                    </RecruitCardWrapper>
                                 ))}
                             </RecruitListScroll>
 
@@ -379,6 +381,10 @@ const ChatScrollArea = styled.div`
     padding: 10px 0 0 0;
     overflow-y: auto;
     scrollbar-width: none;
+`;
+
+const RecruitCardWrapper = styled.div`
+    width: 302px;
 `;
 
 const InputWrapper = styled.div`
