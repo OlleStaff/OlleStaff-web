@@ -11,10 +11,17 @@ import { Text } from "@/styles/Text";
 import theme from "@/styles/theme";
 import { Wrapper } from "@/styles/Wrapper";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
+type ReviewWriteState = {
+    employmentId?: number;
+    title?: string;
+};
 
 export default function ReviewWritePage() {
     const writeReview = useWriteReview();
+    const { state } = useLocation();
+    const { employmentId, title } = (state as ReviewWriteState) || {};
 
     const labelList = ["전체공개", "게스트하우스에게만 공개"];
     const [selectedIndex, setSelectedIndex] = useState<number>(0);
@@ -27,7 +34,6 @@ export default function ReviewWritePage() {
     const [review, setReview] = useState<string>("");
     const [disclosure, setDisclosure] = useState<boolean>(false);
     const [images, setImages] = useState<File[]>([]);
-    const employmentId = 71; // 추후 useParams으로 대체 예정
 
     useEffect(() => {
         setDisclosure(selectedIndex === 1);
@@ -38,6 +44,7 @@ export default function ReviewWritePage() {
     };
 
     const confirmWriteReview = () => {
+        if (!employmentId) return;
         writeReview.mutate(
             {
                 rating,
@@ -72,7 +79,7 @@ export default function ReviewWritePage() {
                 >
                     <Wrapper.FlexBox direction="column" gap="24px">
                         <Wrapper.FlexBox justifyContent="center">
-                            <Text.Body3_1 color="Gray4">“필게스트 하우스"의 생생한 후기를 작성해주세요!</Text.Body3_1>
+                            <Text.Body3_1 color="Gray4">{title}의 생생한 후기를 작성해주세요!</Text.Body3_1>
                         </Wrapper.FlexBox>
                         <Wrapper.FlexBox direction="column" alignItems="center" gap="12px">
                             <Text.Body1_2>게스트하우스 평점</Text.Body1_2>

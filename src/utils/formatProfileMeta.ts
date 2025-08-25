@@ -7,7 +7,7 @@ export function formatProfileMeta(birthDate?: string | null, gender?: string | n
     const agePart = age !== null ? `만 ${age}세` : "";
     const genderPart = genderShort ? `(${genderShort})` : "";
 
-    if (agePart && genderPart) return `${agePart} / ${genderPart}`;
+    if (agePart && genderPart) return `${agePart} ${genderPart}`;
     return agePart || genderPart || "";
 }
 

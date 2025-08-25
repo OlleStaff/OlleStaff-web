@@ -17,7 +17,8 @@ import FullscreenLayout from "@/layout/FullScreenLayout";
 import RecruitEditContainer from "@/pages/owner/Recruit/Edit/RecruitEditContainer";
 import TermsDetailPage from "@/pages/auth/TermsDetailPage";
 import EditProfilePage from "@/pages/staff/user/EditProfilePage";
-import ApplicationViewPage from "@/pages/staff/ApplicationViewPage";
+import StaffApplicationViewPage from "@/pages/staff/StaffApplicationViewPage";
+import OwnerApplicationViewPage from "@/pages/owner/OwnerApplicationViewPage";
 
 const AuthRoutes: RouteObject[] = [
     {
@@ -80,7 +81,11 @@ const AuthRoutes: RouteObject[] = [
             },
             {
                 path: "user/application",
-                element: <ApplicationViewPage />,
+                element: <StaffApplicationViewPage />,
+            },
+            {
+                path: "user/application/:userId",
+                element: <OwnerApplicationViewPage />,
             },
         ],
     },

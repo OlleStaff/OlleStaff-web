@@ -3,14 +3,22 @@ import styled from "@emotion/styled";
 type Props = {
     isMine: boolean;
     children: React.ReactNode;
-    noBubble?: boolean;
+    isCard?: boolean;
+    isImage?: boolean;
 };
 
-export default function MessageBubble({ isMine, children, noBubble }: Props) {
-    if (noBubble) {
+export default function MessageBubble({ isMine, children, isCard, isImage }: Props) {
+    if (isCard) {
         return (
             <BubbleWrapper isMine={isMine}>
                 <CardContainer isMine={isMine}>{children}</CardContainer>
+            </BubbleWrapper>
+        );
+    }
+    if (isImage) {
+        return (
+            <BubbleWrapper isMine={isMine}>
+                <ImageContainer isMine={isMine}>{children}</ImageContainer>
             </BubbleWrapper>
         );
     }
@@ -25,11 +33,11 @@ const BubbleWrapper = styled.div<{ isMine: boolean }>`
     display: flex;
     justify-content: ${({ isMine }) => (isMine ? "flex-end" : "flex-start")};
     align-items: flex-end;
-    margin: 8px 0;
 `;
 
 const Bubble = styled.div<{ isMine: boolean }>`
     padding: 10px 16px;
+    max-width: 203px;
     line-height: 1.5;
     white-space: pre-wrap;
     word-break: break-word;
@@ -38,7 +46,6 @@ const Bubble = styled.div<{ isMine: boolean }>`
     border: 1px solid ${({ isMine }) => (isMine ? "transparent" : "#E6E9EE")};
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
     border-radius: ${({ isMine }) => (isMine ? "18px 18px 4px 18px" : "18px 18px 18px 4px")};
-    max-width: 76%;
 `;
 
 const CardContainer = styled.div<{ isMine: boolean }>`
@@ -47,5 +54,9 @@ const CardContainer = styled.div<{ isMine: boolean }>`
     border-radius: 16px;
     padding: 14px 16px;
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
-    max-width: 86%;
+    max-width: 200px;
+`;
+
+const ImageContainer = styled.div<{ isMine: boolean }>`
+    max-width: 200px;
 `;

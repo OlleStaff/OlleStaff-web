@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import { Text } from "@/styles/Text";
 import { GuesthouseListItemProps } from "@/types/guesthouse";
 import { useNavigate } from "react-router-dom";
-import { truncateText } from "@/utils/truncateText";
 import { Wrapper } from "@/styles/Wrapper";
 
 interface Props extends GuesthouseListItemProps {
@@ -43,11 +42,12 @@ export const GuesthouseListItem = ({
     const hasHashtag = safeHashtagName.length > 0;
     const visibleHashtagCount = hasImage ? 2 : 3;
     const hiddenHashtagCount = safeHashtagName.length - visibleHashtagCount;
-
+    const sexIconSrc =
+        sex === "female" ? "/icons/onlyWoman.svg" : sex === "male" ? "/icons/onlyMan.svg" : "/icons/manAndWoman.svg";
     return (
-        <Wrapper.FlexBox alignItems="center" gap="10px">
+        <Wrapper.FlexBox alignItems="center" gap="10px" onClick={handleCheckToggle}>
             {isEditActive && (
-                <CheckBoxWrapper onClick={handleCheckToggle}>
+                <CheckBoxWrapper>
                     <img src={isChecked ? "/icons/circle.svg" : "/icons/emptyCircle.svg"} alt="선택 체크박스" />
                 </CheckBoxWrapper>
             )}
@@ -64,7 +64,7 @@ export const GuesthouseListItem = ({
                         <TagWrapper>
                             {safeHashtagName.slice(0, visibleHashtagCount).map((tag, idx) => (
                                 <Tag key={`${tag}-${idx}`}>
-                                    <Text.Body3_1 color="Gray4">{truncateText(tag, isEditActive ? 2 : 4)}</Text.Body3_1>
+                                    <Text.Caption1 color="Gray4">{tag}</Text.Caption1>
                                 </Tag>
                             ))}
                             {hiddenHashtagCount > 0 && (
@@ -76,31 +76,19 @@ export const GuesthouseListItem = ({
                     )}
 
                     <Wrapper.FlexBox direction="column">
-                        <Text.Title3_1>{truncateText(title, isEditActive ? (hasImage ? 10 : 15) : 13)}</Text.Title3_1>
-                        <Text.Body3_1 color="Gray4">
-                            {truncateText(
-                                content,
-                                hasImage
-                                    ? hasHashtag
-                                        ? isEditActive
-                                            ? 15
-                                            : 20
-                                        : 30
-                                    : hasHashtag
-                                      ? isEditActive
-                                          ? 25
-                                          : 28
-                                      : isEditActive
-                                        ? 10
-                                        : 59
-                            )}
-                        </Text.Body3_1>
+                        <Title>
+                            <Text.Title3_1>{title}</Text.Title3_1>
+                        </Title>
+
+                        <Content>
+                            <Text.Body3_1 color="Gray4">{content}</Text.Body3_1>
+                        </Content>
                     </Wrapper.FlexBox>
                     <Footer hasImage={hasImage}>
                         {closed ? (
                             <IconText>
-                                <img src="/icons/unChecked.svg" alt="마감됨" width={12} height={12} />
-                                <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
+                                <img src="/icons/finished.svg" alt="마감됨" width={12} height={12} />
+                                <Text.Body3 color="Gray4" style={{ margin: "1px 0 0 3px" }}>
                                     마감됨
                                 </Text.Body3>
                             </IconText>
@@ -108,19 +96,22 @@ export const GuesthouseListItem = ({
                             <>
                                 <IconText>
                                     <Icon src="/icons/locationIcon.svg" />
-                                    <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
-                                        {truncateText(
-                                            locationName,
-                                            isEditActive ? (hasImage ? 6 : 20) : hasImage ? 9 : 18
-                                        )}
-                                    </Text.Body3>
+
+                                    <Location>
+                                        <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
+                                            {locationName}
+                                        </Text.Body3>
+                                    </Location>
                                 </IconText>
                                 <IconText>
-                                    <Icon src="/icons/groupIcon.svg" />
-                                    <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
-                                        {sex === "female" ? "여자" : sex === "male" ? "남자" : "전체"} {personNum}명
-                                        모집
-                                    </Text.Body3>
+                                    <Icon src={sexIconSrc} alt="모집 성별 아이콘" />
+
+                                    <PersonNum>
+                                        <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>
+                                            {sex === "female" ? "여자" : sex === "male" ? "남자" : "남녀"} {personNum}명
+                                            모집
+                                        </Text.Body3>
+                                    </PersonNum>
                                 </IconText>
                             </>
                         )}
@@ -140,7 +131,8 @@ export const Card = styled.div`
     background-color: white;
     cursor: pointer;
     width: 100%;
-    height: 112px;
+    height: 115px;
+    min-width: 0;
 `;
 
 const ImageWrapper = styled.div<{ $closed: boolean }>`
@@ -164,6 +156,7 @@ const ContentWrapper = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
+    min-width: 0;
     justify-content: space-between;
 `;
 
@@ -171,6 +164,7 @@ const TagWrapper = styled.div`
     display: flex;
     gap: 4px;
     width: 100%;
+    min-width: 0;
 `;
 
 const Tag = styled.div`
@@ -181,20 +175,68 @@ const Tag = styled.div`
     background-color: ${({ theme }) => theme.color.Gray0};
     border-radius: 40px;
     padding: 0px 10px;
+    max-width: 60px;
+    & > * {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+`;
+
+const Title = styled.div`
+    display: flex;
+    min-width: 0;
+    & > * {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+`;
+const Content = styled.div`
+    display: flex;
+    min-width: 0;
+    & > * {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+`;
+
+const Location = styled.div`
+    display: flex;
+    min-width: 0;
+    & > * {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    margin-right: 8px;
+`;
+
+const PersonNum = styled.div`
+    display: flex;
+    min-width: 0;
+    & > * {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 `;
 
 const Footer = styled.div<{ hasImage: boolean }>`
     display: flex;
     align-items: center;
-    justify-content: ${({ hasImage }) => (hasImage ? "space-between" : "flex-start")};
-    gap: ${({ hasImage }) => (hasImage ? "0" : "10px")};
-    height: 14px;
+    min-width: 0;
+    height: 10px;
 `;
 
 const IconText = styled.div`
     display: flex;
     align-items: center;
     gap: 2px;
+    min-width: 0;
 `;
 
 const Icon = styled.img`

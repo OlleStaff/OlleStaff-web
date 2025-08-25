@@ -1,26 +1,51 @@
 import Header from "@/components/Header";
 import PageWrapper from "@/components/PageWrapper";
 import TabSelector from "@/components/TabSelector";
-import { StaffTabTypes, TAB_LABELS } from "@/constants/tabs";
-import { useState } from "react";
+import { TAB_LABELS } from "@/constants/tabs";
+import { useEffect, useState } from "react";
 import ChatListItem from "./components/ChatListItem";
 import { useNavigate } from "react-router-dom";
 import { Wrapper } from "@/styles/Wrapper";
 import { Text } from "@/styles/Text";
 import { useGetChatList } from "../hooks/useGetChatList";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import Oops from "@/components/Oops";
+import { useUserStore } from "@/store/useUserStore";
+import { useDeleteChatRooms } from "../hooks/useDeleteChatRooms";
+import Modal from "@/components/Modal";
+import { connectStomp } from "../websocket/connectStomp";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
-export default function ChatPage() {
-    const [filter, setFilter] = useState<StaffTabTypes["CHAT_LIST"]>("전체");
+const STAFF_TABS = TAB_LABELS.STAFF.CHAT_LIST;
+const OWNER_TABS = TAB_LABELS.OWNER.CHAT_LIST;
+
+type StaffTab = (typeof STAFF_TABS)[number];
+type OwnerTab = (typeof OWNER_TABS)[number];
+type ChatListTab = StaffTab | OwnerTab;
+type ServerFilter = "ALL" | "APPLIED" | "ACCEPTED";
+
+export default function ChatListPage() {
+    const userType = useUserStore(s => s.type);
+
+    const isStaff = userType === "STAFF";
+
+    const labels = (isStaff ? STAFF_TABS : OWNER_TABS) as readonly ChatListTab[];
+    const [selectedTab, setSelectedTab] = useState<ChatListTab>(labels[0]);
+
+    const OWNER_MAP: Record<OwnerTab, ServerFilter> = {
+        [OWNER_TABS[0]]: "APPLIED",
+        [OWNER_TABS[1]]: "ACCEPTED",
+    };
+
+    const serverFilter: ServerFilter = isStaff ? "ALL" : OWNER_MAP[selectedTab as OwnerTab];
+
+    const { data: chatList, isPending, isLoading } = useGetChatList(serverFilter);
+    const isInitialLoading = (isPending ?? false) || (isLoading && !chatList);
+    console.log("테슽테슽 ::: 안읽은거몇갠데", chatList);
+
     const [onEditMode, setOnEditMode] = useState(false);
     const navigate = useNavigate();
 
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
-
-    const { data: chatList, isLoading } = useGetChatList();
-
-    if (isLoading) return <LoadingSpinner />;
 
     const allSelected = selectedIds.length === chatList?.length;
 
@@ -36,13 +61,30 @@ export default function ChatPage() {
         }
     };
 
+    const { mutate: deleteChatRooms } = useDeleteChatRooms();
+
+    const handleDeleteChatRooms = () => {
+        if (selectedIds.length === 0) return;
+        deleteChatRooms(selectedIds, {
+            onSuccess: () => {
+                setSelectedIds([]);
+                setOnEditMode(false);
+                setIsCompleteOpen(true);
+            },
+        });
+    };
+
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [isCompleteOpen, setIsCompleteOpen] = useState(false);
+    useEffect(() => {
+        connectStomp(() => {});
+    }, []);
+
     return (
         <>
             <Header
                 title="채팅 리스트"
-                rightText={
-                    <Text.Body1 color={onEditMode ? "Black" : "Gray3"}>{onEditMode ? "완료" : "편집"}</Text.Body1>
-                }
+                rightText={<Text.Body1 color={onEditMode ? "Black" : "Gray3"}>편집</Text.Body1>}
                 onRightClick={() => {
                     setOnEditMode(prev => !prev);
                     setSelectedIds([]);
@@ -50,18 +92,20 @@ export default function ChatPage() {
             />
             <PageWrapper hasHeader hasNav>
                 <TabSelector
-                    labels={[...TAB_LABELS.STAFF.CHAT_LIST]}
-                    selected={filter}
-                    onChange={label => setFilter(label as StaffTabTypes["CHAT_LIST"])}
+                    labels={[...labels]}
+                    selected={selectedTab}
+                    onChange={label => setSelectedTab(label as ChatListTab)}
                     variant="underline"
-                ></TabSelector>
+                />
 
                 {onEditMode && (
-                    <Wrapper.FlexBox justifyContent="space-between" padding="18px 0px 6px 0px">
+                    <Wrapper.FlexBox justifyContent="space-between" padding="18px 0px 6px 0px" pointer>
                         <Text.Body1_1 color={allSelected ? "Main" : "Gray4"} onClick={handleToggleAll}>
                             전체선택
                         </Text.Body1_1>
-                        <Text.Body1_1 color="Gray4">삭제</Text.Body1_1>
+                        <Text.Body1_1 color="Gray4" onClick={() => setIsConfirmOpen(true)}>
+                            삭제
+                        </Text.Body1_1>
                     </Wrapper.FlexBox>
                 )}
 
@@ -83,7 +127,13 @@ export default function ChatPage() {
                         />
                     ))}
 
-                    {chatList?.length === 0 && (
+                    {isInitialLoading && (
+                        <div style={{ padding: "250px 0 0 0" }}>
+                            <LoadingSpinner />
+                        </div>
+                    )}
+
+                    {!isInitialLoading && (chatList?.length ?? 0) === 0 && (
                         <>
                             <div style={{ padding: "150px 0 0 0" }}>
                                 <Oops
@@ -94,6 +144,40 @@ export default function ChatPage() {
                         </>
                     )}
                 </div>
+
+                {isConfirmOpen && (
+                    <Modal
+                        variant="confirm"
+                        title="채팅방을 삭제하시겠습니까?"
+                        message={
+                            <>
+                                확인 버튼 클릭 시 채팅방만 삭제되고
+                                <br />
+                                게스트하우스 스텝 지원은 유지됩니다.
+                            </>
+                        }
+                        cancelText="취소"
+                        confirmText="확인"
+                        handleModalClose={() => setIsConfirmOpen(false)}
+                        onConfirm={handleDeleteChatRooms}
+                    />
+                )}
+
+                {isCompleteOpen && (
+                    <Modal
+                        variant="default"
+                        title="채팅방 삭제 완료"
+                        confirmText="확인"
+                        handleModalClose={() => {
+                            setIsCompleteOpen(false);
+                            navigate("/chat");
+                        }}
+                        onConfirm={() => {
+                            setIsCompleteOpen(false);
+                            navigate("/chat");
+                        }}
+                    />
+                )}
             </PageWrapper>
         </>
     );

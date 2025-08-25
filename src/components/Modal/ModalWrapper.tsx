@@ -32,8 +32,7 @@ const Content = styled.div`
     flex-direction: column;
     align-items: center;
     border-radius: 12px;
-    width: 100%;
-    max-width: 333px;
+    width: 333px;
     padding: 32px 25px 19px 25px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     animation: fadeIn 0.3s ease;

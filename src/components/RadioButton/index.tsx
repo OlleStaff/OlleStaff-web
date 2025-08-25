@@ -65,8 +65,6 @@ export const Style = {
         display: flex;
         align-items: center;
         cursor: pointer;
-        margin-bottom: 8px;
-
         input[type="radio"] {
             display: none;
         }

@@ -34,18 +34,10 @@ export default function RecruitCreateContainer() {
     };
 
     const handleSubmit = async () => {
-        createMutation.mutate(
-            {
-                employment: formData,
-                imageFiles,
-            },
-            {
-                onSuccess: () => {
-                    alert("공고 등록 완료!");
-                    navigate("/owner");
-                },
-            }
-        );
+        createMutation.mutate({
+            employment: formData,
+            imageFiles,
+        });
     };
 
     return (
