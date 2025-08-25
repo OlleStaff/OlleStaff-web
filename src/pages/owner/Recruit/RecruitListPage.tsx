@@ -142,7 +142,7 @@ export default function RecruitListPage() {
                 </>
             )}
 
-            <Wrapper.FlexBox direction="column" gap="20px">
+            <Wrapper.FlexBox direction="column" gap="16px">
                 {isLoading ? (
                     <SkeletonList variant="guesthouse" count={12} />
                 ) : filteredRecruits.length > 0 ? (

@@ -114,9 +114,15 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                         modalPurpose === "deleteReview" ? "등록된 후기를 삭제하시겠습니까?" : "답글을 삭제하시겠습니까?"
                     }
                     message={
-                        modalPurpose === "deleteReview"
-                            ? "삭제 버튼 클릭 시 등록된 후기가 영구히 삭제됩니다."
-                            : "삭제 버튼 클릭 시 답글이 영구히 삭제됩니다."
+                        modalPurpose === "deleteReview" ? (
+                            <>
+                                삭제 버튼 클릭 시
+                                <br />
+                                등록된 후기가 영구히 삭제됩니다.
+                            </>
+                        ) : (
+                            "삭제 버튼 클릭 시 답글이 영구히 삭제됩니다."
+                        )
                     }
                     cancelText="취소"
                     confirmText="삭제"
@@ -155,7 +161,8 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                     <Text.Body1_1>{title}</Text.Body1_1>
                     <OptionButton
-                        items={[{ label: "후기 삭제", onClick: () => openModal("confirm", "deleteReview") }]}
+                        placement="bottom"
+                        menus={[{ label: "후기 삭제", onClick: () => openModal("confirm", "deleteReview") }]}
                     />
                 </Wrapper.FlexBox>
 
@@ -231,7 +238,8 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                         <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
                             <Text.Body1_1>{hostNickName}</Text.Body1_1>
                             <OptionButton
-                                items={[{ label: "답글 삭제", onClick: () => openModal("confirm", "deleteComment") }]}
+                                placement="bottom"
+                                menus={[{ label: "답글 삭제", onClick: () => openModal("confirm", "deleteComment") }]}
                             />
                         </Wrapper.FlexBox>
                         <Text.Body2_1>

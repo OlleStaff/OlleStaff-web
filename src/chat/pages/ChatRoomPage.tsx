@@ -1,136 +1,187 @@
+import { useUserStore } from "@/store/useUserStore";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import styled from "@emotion/styled";
-import Header from "@/components/Header";
-import Input from "@/components/Input";
-import { useEffect, useMemo, useRef, useState } from "react";
-import theme from "@/styles/theme";
-import { Wrapper } from "@/styles/Wrapper";
-import PageWrapper from "@/components/PageWrapper";
-import { Text } from "@/styles/Text";
 import { useGetChatRoomDetail } from "../hooks/useGetChatRoomDetail";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import { sendChatMessage } from "../websocket/sendChatMessage";
-import { SendMessagePayload } from "../types/websocket";
 import { useGetChatMessages } from "../hooks/useGetChatMessages";
-import { useQueryClient } from "@tanstack/react-query";
+import { useChatMessenger } from "../hooks/useChatMessenger";
+import { useChatPickAndSend } from "../hooks/useChatPickAndSend";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import Header from "@/components/Header";
+import PageWrapper from "@/components/PageWrapper";
+import { Wrapper } from "@/styles/Wrapper";
+import { Text } from "@/styles/Text";
+import { dateKey, formatDateHeader, formatTimestamp } from "@/utils/date";
+import Input from "@/components/Input";
+import OptionButton from "@/components/OptionButton";
+import theme from "@/styles/theme";
+import styled from "@emotion/styled";
 import MessageItem from "./components/MessageItem";
-import { v4 as uuidv4 } from "uuid";
+import { useMarkLatestMessageRead } from "../hooks/useMarkLatestMessageRead";
+import { usePostAcceptApplicant } from "../hooks/usePostAcceptApplicant";
 
 export default function ChatRoomPage() {
+    const userId = useUserStore(u => u.id);
+    const userType = useUserStore(u => u.type);
     const { chatRoomId } = useParams();
     const roomId = Number(chatRoomId);
-    const queryClient = useQueryClient();
+
     const [message, setMessage] = useState("");
     const isInputActive = message.trim().length > 0;
 
-    const { data: chat, isLoading } = useGetChatRoomDetail(roomId);
+    const { data: chat } = useGetChatRoomDetail(roomId);
+    const myId = userType === "GUESTHOUSE" ? Number(chat?.userId) : Number(userId);
+
     const { data: chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useGetChatMessages(roomId);
+    console.log("테슽테슽 ::: ", chatMessages);
+
+    const { sendText } = useChatMessenger(roomId, chat?.userId);
+    const { pickAndSend } = useChatPickAndSend(roomId);
 
     const messages = useMemo(() => {
-        const flat = (chatMessages?.pages ?? []).flatMap(p => p.messages); // 평탄화해서 배열처럼 쓰기
+        const flat = (chatMessages?.pages ?? []).flatMap(p => p.messages);
         return flat.sort((a, b) => a.timestamp - b.timestamp);
     }, [chatMessages]);
 
-    const myid = 10; // 임시
+    const listRef = useRef<HTMLDivElement | null>(null);
+    const topRef = useRef<HTMLDivElement | null>(null);
+    const bottomRef = useRef<HTMLDivElement | null>(null);
 
-    const handleSendMessage = async () => {
-        const text = message.trim();
-        if (!text) return;
+    const jumpToBottom = useCallback((opts?: { smooth?: boolean }) => {
+        const el = listRef.current;
+        if (!el) return;
 
-        const optimisticMessage = {
-            id: uuidv4(),
-            chatRoomId: roomId,
-            senderId: myid, // 임시
-            messageType: "TEXT",
-            content: { text },
-            timestamp: Date.now(),
-        };
+        const prev = el.style.scrollBehavior;
+        el.style.scrollBehavior = "auto";
 
-        queryClient.setQueryData<any>(["chatMessages", roomId], (curr: any) => {
-            if (!curr) {
-                return {
-                    pageParams: [undefined],
-                    pages: [{ messages: [optimisticMessage], cursor: null, hasNext: true }],
-                };
-            }
-            const pages = [...curr.pages];
-            const last = pages[pages.length - 1];
-            pages[pages.length - 1] = {
-                ...last,
-                messages: [...(last?.messages ?? []), optimisticMessage],
-            };
-            return { ...curr, pages };
+        bottomRef.current?.scrollIntoView({
+            block: "end",
+            inline: "nearest",
+            behavior: opts?.smooth ? "smooth" : "auto",
         });
 
-        const payload: SendMessagePayload = {
-            chatRoomId: roomId,
-            messageType: "TEXT",
-            content: { text },
-        };
+        el.style.scrollBehavior = prev || "";
+    }, []);
+    const handleSendMessage = useCallback(async () => {
+        const text = message.trim();
+        if (!text) return;
+        await sendText(text);
+        setMessage("");
+        requestAnimationFrame(() => {
+            jumpToBottom({ smooth: true });
+        });
+    }, [message, sendText, jumpToBottom]);
 
-        try {
-            await sendChatMessage(payload);
-            setMessage("");
-        } catch (e) {
-            console.error("메시지 전송 실패,, 롤백", e);
+    const optionMenus = [
+        { label: "사진 업로드", onClick: () => pickAndSend("image") },
+        { label: "파일 업로드", onClick: () => pickAndSend("file") },
+    ];
+    const { mutate: acceptApplicant } = usePostAcceptApplicant();
 
-            queryClient.setQueryData<any[]>(["chatMessages", roomId], (curr = []) =>
-                curr.filter(message => message.id !== optimisticMessage.id)
-            );
+    const handleAccept = () => {
+        const applicantId = chat?.userId; //  지원자 ID
+        const employmentId = 72; // 임시 공고 ID (지원자가 지원한 나의 공고 목록 중에서 어떤 글에 합격 시킬건지 처리한 뒤에 acceptApplicant에 공고 아이디 전달해줘야함)
+
+        if (!Number.isFinite(applicantId) || !Number.isFinite(employmentId)) {
+            console.error("합격 불가: 파라미터 누락/무효", { applicantId, employmentId });
+            return;
         }
-    };
-    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        handleSendMessage();
-    };
-    const listRef = useRef<HTMLDivElement | null>(null);
-    const topRef = useRef<HTMLDivElement | null>(null); // 화면 상단 감지해서 이전 페이지 로드하도록
-    const prevRef = useRef<number | null>(null); // 직전 높이 기억
 
-    const scrollToBottom = () => {
-        if (listRef.current) {
-            listRef.current.scrollTo({
-                top: listRef.current.scrollHeight,
-            });
-        }
+        acceptApplicant({ applicantId: applicantId!, employmentId: employmentId! });
     };
 
-    useEffect(() => {
-        if (isFetchingNextPage) return; // 위로 로딩 중에 아래로 튕기는 현상 막기
-        scrollToBottom();
-    }, [messages.length, isFetchingNextPage]);
+    //  채팅 페이지 진입 시 애니메이션 없이 바닥 고정
+    const didInit = useRef(false);
+    useLayoutEffect(() => {
+        if (didInit.current) return;
+        if (status !== "success") return;
+        jumpToBottom({ smooth: false });
+        didInit.current = true;
+    }, [status, messages.length, jumpToBottom]);
 
+    // 위로 무한스크롤 ( + 스크롤 이어서)
     useEffect(() => {
         const root = listRef.current;
         const target = topRef.current;
         if (!root || !target) return;
 
-        const onIntersect: IntersectionObserverCallback = async entries => {
-            const [entry] = entries;
-            if (!entry.isIntersecting) return;
-            if (!hasNextPage || isFetchingNextPage) return;
+        let locked = false;
+        const io = new IntersectionObserver(
+            async ([entry]) => {
+                if (!entry.isIntersecting || locked) return;
+                if (!hasNextPage || isFetchingNextPage) return;
 
-            prevRef.current = root.scrollHeight;
-            await fetchNextPage();
+                locked = true;
+                const prevHeight = root.scrollHeight;
+                const prevTop = root.scrollTop;
 
-            requestAnimationFrame(() => {
-                if (!root || prevRef.current == null) return;
-                const delta = root.scrollHeight - prevRef.current;
-                root.scrollTop = root.scrollTop + delta;
-                prevRef.current = null;
-            });
-        };
+                await fetchNextPage();
 
-        const io = new IntersectionObserver(onIntersect, {
-            root,
-            rootMargin: "150px 0px 0px 0px", // 미리 로드
-            threshold: 0,
-        });
+                requestAnimationFrame(() => {
+                    const nextHeight = root.scrollHeight;
+                    const delta = nextHeight - prevHeight;
+                    root.scrollTop = prevTop + delta;
+                    locked = false;
+                });
+            },
+            { root, rootMargin: "150px 0px 0px 0px", threshold: 0 }
+        );
+
         io.observe(target);
         return () => io.disconnect();
-    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+    }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-    if (isLoading || status === "pending") return <LoadingSpinner />;
+    // 새 메시지 도착 시 바닥으로
+    useEffect(() => {
+        const el = listRef.current;
+        if (!el || messages.length === 0) return;
+
+        const last = messages[messages.length - 1];
+        const nearBottom = el.scrollHeight - el.clientHeight - el.scrollTop < 16;
+
+        if (Number(last.senderId) === myId || nearBottom) {
+            requestAnimationFrame(() => {
+                jumpToBottom({ smooth: true });
+            });
+        }
+    }, [messages.length, myId, jumpToBottom]);
+
+    const { markLatestMessageRead } = useMarkLatestMessageRead();
+    const lastReadMessageRef = useRef<string | null>(null);
+
+    useEffect(() => {
+        lastReadMessageRef.current = null;
+    }, [roomId]);
+
+    useEffect(() => {
+        if (status !== "success" || messages.length === 0) return;
+
+        const lastFromOther = [...messages].reverse().find(m => Number(m.senderId) !== myId);
+        if (!lastFromOther) return; // 내 메세지면 요청 X
+
+        if (lastReadMessageRef.current === lastFromOther.id) return; // 같은 메시지 중복 전송 방지
+
+        markLatestMessageRead(roomId, {
+            id: lastFromOther.id,
+            chatRoomId: lastFromOther.chatRoomId,
+            senderId: lastFromOther.senderId,
+            timestamp: lastFromOther.timestamp,
+            messageType: lastFromOther.messageType,
+            content: lastFromOther.content,
+        });
+
+        lastReadMessageRef.current = lastFromOther.id;
+    }, [status, messages, roomId, myId, markLatestMessageRead]);
+
+    if (userType === "GUESTHOUSE")
+        optionMenus.unshift({
+            label: "스탭 합격",
+            onClick: handleAccept,
+        });
+
+    if (status === "pending" || !chat) {
+        return <LoadingSpinner />;
+    }
+
     return (
         <>
             <Header showBackButton title="채팅" />
@@ -138,7 +189,10 @@ export default function ChatRoomPage() {
                 <ChatLayout>
                     <ProfileSection>
                         <Wrapper.FlexBox gap="8px">
-                            <ProfileImage src={chat.image} />
+                            <ProfileImage
+                                src={chat.image?.trim() ? chat.image : "/icons/defaultUser.svg"}
+                                alt="프로필"
+                            />
                             <Wrapper.FlexBox direction="column" gap="4px">
                                 <Text.Body2_1>{chat.title}</Text.Body2_1>
                                 <Text.Body2_1 color="Gray4">{chat.detail}</Text.Body2_1>
@@ -148,19 +202,47 @@ export default function ChatRoomPage() {
 
                     <ChatScrollArea ref={listRef}>
                         <div ref={topRef} />
-                        {messages?.map(m => (
-                            <MessageItem key={m.id} message={m} isMine={Number(m.senderId) === Number(myid)} />
-                        ))}
+                        {messages.map((m, i) => {
+                            const isMine = Number(m.senderId) !== myId;
+                            const isFirst = i === 0;
+                            const showDateHeader =
+                                isFirst || dateKey(messages[i - 1].timestamp) !== dateKey(m.timestamp);
+                            return (
+                                <div key={m.id}>
+                                    {showDateHeader && (
+                                        <DateDivider isFirst={isFirst}>{formatDateHeader(m.timestamp)}</DateDivider>
+                                    )}
+                                    <MessageLine isMine={isMine}>
+                                        <MessageSendTime>{formatTimestamp(m.timestamp)}</MessageSendTime>
+                                        <MessageItem message={m} isMine={isMine} />
+                                    </MessageLine>
+                                </div>
+                            );
+                        })}
+                        <div ref={bottomRef} />
                     </ChatScrollArea>
 
                     <InputWrapper>
-                        <form onSubmit={handleFormSubmit}>
+                        <form
+                            onSubmit={e => {
+                                e.preventDefault();
+                                handleSendMessage();
+                            }}
+                        >
                             <Input
                                 value={message}
                                 onChange={e => setMessage(e.target.value)}
                                 placeholder="채팅을 입력하세요."
                                 variant="message"
-                                leftIcon={<PlusButton src="/icons/plusCircle.svg" />}
+                                leftIcon={
+                                    <OptionButton
+                                        buttonIcon={<PlusButton src="/icons/plusCircle.svg" alt="추가" />}
+                                        buttonActiveIcon={<PlusButton src="/icons/plusCircleActive.svg" alt="추가" />}
+                                        placement="top"
+                                        align="left"
+                                        menus={optionMenus}
+                                    />
+                                }
                                 rightIcon={
                                     <SendButton
                                         src={isInputActive ? "/icons/sendMain.svg" : "/icons/send.svg"}
@@ -168,7 +250,6 @@ export default function ChatRoomPage() {
                                         alt="send"
                                     />
                                 }
-                                onLeftIconClick={() => {}}
                                 onRightIconClick={isInputActive ? handleSendMessage : undefined}
                             />
                         </form>
@@ -194,10 +275,9 @@ const ProfileSection = styled.div`
 
 const ChatScrollArea = styled.div`
     min-height: 0;
-    padding: 10px 0;
+    padding: 10px 0 0 0;
     overflow-y: auto;
     scrollbar-width: none;
-    scroll-behavior: smooth;
 `;
 
 const InputWrapper = styled.div`
@@ -226,4 +306,41 @@ const SendButton = styled.img<{ $active?: boolean }>`
     padding: 5px;
     cursor: ${p => (p.$active ? "pointer" : "default")};
     opacity: ${p => (p.$active ? 1 : 0.5)};
+`;
+
+const MessageLine = styled.div<{ isMine: boolean }>`
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    flex-direction: ${p => (p.isMine ? "row" : "row-reverse")};
+    margin: 12px 0;
+`;
+const MessageSendTime = styled(Text.Body3_1)`
+    color: ${theme.color.Gray3};
+    margin: 0 8px;
+`;
+
+const DateDivider = styled.div<{ isFirst?: boolean }>`
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: ${({ isFirst }) => (isFirst ? "0" : "20px 0")};
+    color: #cbd0d4;
+    font-size: 12px;
+    justify-content: center;
+
+    &::before,
+    &::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #e8ecef;
+    }
+
+    ${({ isFirst }) =>
+        isFirst &&
+        `
+    &::before,
+    &::after { content: none; }
+  `}
 `;

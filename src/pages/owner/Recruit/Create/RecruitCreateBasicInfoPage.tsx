@@ -27,14 +27,17 @@ export default function RecruitCreateBasicInfoPage({
     setImageFiles,
     onNext,
 }: RecruitBasicInfoPageCreateProps) {
+    const hasBenefits = formData.benefitsContent.some(b => b.trim().length > 0);
+    const url = formData.instarUrl.trim();
+    const hasValidUrl = url.length >= 10 && url.length <= 100;
     const isFormValid = Boolean(
         formData.title.trim() &&
-            formData.instarUrl.trim() &&
+            hasValidUrl &&
             formData.startedAt.trim() &&
             formData.endedAt.trim() &&
             formData.recruitmentEnd.trim() &&
             formData.content.trim() &&
-            formData.benefitsContent.length > 0 &&
+            hasBenefits &&
             formData.locationName.trim() &&
             formData.category.trim() &&
             formData.personNum > 0 &&

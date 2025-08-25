@@ -34,21 +34,25 @@ export default function RecruitEditBasicInfoPage({
     setImageNames,
     onNext,
 }: Props) {
-    const isFormValid =
-        formData.title.trim().length > 0 &&
-        formData.instarUrl.trim().length > 0 &&
-        formData.startedAt.trim().length > 0 &&
-        formData.endedAt.trim().length > 0 &&
-        formData.recruitmentEnd.trim().length > 0 &&
-        formData.content.trim().length > 0 &&
-        formData.benefitsContent.length > 0 &&
-        formData.locationName.trim().length > 0 &&
-        formData.category.trim().length > 0 &&
-        formData.personNum > 0 &&
-        formData.sex !== undefined &&
-        formData.latitude !== 0 &&
-        formData.longitude !== 0 &&
-        formData.precautions.length > 0;
+    const hasBenefits = formData.benefitsContent.some(b => b.trim().length > 0);
+    const url = formData.instarUrl.trim();
+    const hasValidUrl = url.length >= 10 && url.length <= 100;
+    const isFormValid = Boolean(
+        formData.title.trim() &&
+            hasValidUrl &&
+            formData.startedAt.trim() &&
+            formData.endedAt.trim() &&
+            formData.recruitmentEnd.trim() &&
+            formData.content.trim() &&
+            hasBenefits &&
+            formData.locationName.trim() &&
+            formData.category.trim() &&
+            formData.personNum > 0 &&
+            formData.sex &&
+            formData.latitude !== 0 &&
+            formData.longitude !== 0 &&
+            formData.precautions.length > 0
+    );
 
     const { employmentId } = useParams<{ employmentId: string }>();
     const { data: employment } = useGetEmploymentDetail(Number(employmentId));

@@ -24,6 +24,7 @@ export default function StaffApplicationViewPage() {
         state?: { fromRecruit?: boolean; employmentId?: string; targetUserId?: number; fromChat?: boolean };
     };
     const fromRecruit = !!state?.fromRecruit;
+    const fromChat = !!state?.fromChat;
     const employmentId = state?.employmentId;
     const [tab, setTab] = useState<StaffTabTypes["MY_APPLICATION"]>("자기소개");
     const { copy } = useClipboard();
@@ -74,8 +75,8 @@ export default function StaffApplicationViewPage() {
             <Header
                 showBackButton
                 title="나의 지원서"
-                rightIconSrc={fromRecruit ? undefined : "/icons/pencil.svg"}
-                onRightClick={fromRecruit ? undefined : onEditClick}
+                rightIconSrc={fromRecruit || fromChat ? undefined : "/icons/pencil.svg"}
+                onRightClick={fromRecruit || fromChat ? undefined : onEditClick}
             />
 
             <Wrapper.FlexBox direction="column" margin="42px 0 0 0">

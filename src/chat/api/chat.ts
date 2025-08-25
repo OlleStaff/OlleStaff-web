@@ -37,4 +37,19 @@ export const ChatApi = {
             throw error;
         }
     },
+
+    // POST: 채팅 내 합격 처리
+    postAcceptApplicant: async (applicantId: number, employmentId: number) => {
+        try {
+            const res = await api.post(`/apply/accept`, null, {
+                params: { applicantId, employmentId },
+            });
+
+            console.log(applicantId, "님 합격 처리 :: ", res);
+            return res.data;
+        } catch (error) {
+            console.error("합격 처리 실패", error);
+            throw error;
+        }
+    },
 };
