@@ -7,8 +7,7 @@ import Modal from "@/components/Modal";
 import PrecautionListItem from "../../components/PrecautionListItem";
 import { EmploymentPutProps } from "@/types/employment";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useGetEmploymentDetail } from "@/hooks/owner/employment";
+import { useNavigate } from "react-router-dom";
 
 interface RecruitEditPrecautionPageProps {
     formData: EmploymentPutProps;
@@ -27,24 +26,18 @@ export default function RecruitEditPrecautionPage({
             item => item.precautionsTitle.trim() !== "" && item.precautionsContent.trim() !== ""
         );
 
-    const { employmentId } = useParams<{ employmentId: string }>();
-    const { data: employment } = useGetEmploymentDetail(Number(employmentId));
-
-    const isModified = employment?.data
-        ? JSON.stringify(formData.precautions) !== JSON.stringify(employment.data.precautions)
-        : false;
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
     const navigate = useNavigate();
 
     const handleOpenModal = () => {
-        if (isFormValid && isModified) setIsModalOpen(true);
+        if (isFormValid) setIsConfirmModalOpen(true);
     };
 
     const handleConfirm = () => {
         handleSubmit();
         navigate("/owner");
-        setIsModalOpen(false);
+        setIsConfirmModalOpen(false);
     };
 
     return (
@@ -66,15 +59,15 @@ export default function RecruitEditPrecautionPage({
                         label="수정 완료"
                         width="large"
                         onClick={handleOpenModal}
-                        disabled={!isFormValid || !isModified}
-                        isActive={isFormValid && isModified}
+                        disabled={!isFormValid}
+                        isActive={isFormValid}
                     >
                         수정 완료
                     </Button>
                 </Wrapper.FlexBox>
             </PageWrapper>
 
-            {isModalOpen && (
+            {isConfirmModalOpen && (
                 <Modal
                     variant="confirm"
                     title="게시글 수정을 완료하시겠습니까?"
@@ -87,7 +80,23 @@ export default function RecruitEditPrecautionPage({
                     }
                     cancelText="취소"
                     confirmText="수정"
-                    handleModalClose={() => setIsModalOpen(false)}
+                    handleModalClose={() => setIsConfirmModalOpen(false)}
+                    onConfirm={() => {
+                        setIsConfirmModalOpen(false);
+                        setIsCompleteModalOpen(true);
+                    }}
+                />
+            )}
+
+            {isCompleteModalOpen && (
+                <Modal
+                    variant="default"
+                    title="게시글 수정 완료"
+                    confirmText="확인"
+                    handleModalClose={() => {
+                        setIsCompleteModalOpen(false);
+                        navigate("/owner");
+                    }}
                     onConfirm={handleConfirm}
                 />
             )}
