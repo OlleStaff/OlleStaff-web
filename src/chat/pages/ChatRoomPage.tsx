@@ -239,8 +239,8 @@ export default function ChatRoomPage() {
                         {messages.map((m, i) => {
                             const isMine =
                                 userType === "GUESTHOUSE"
-                                    ? Number(m.senderId) !== Number(userId)
-                                    : Number(m.senderId) === Number(userId);
+                                    ? Number(m.senderId) !== Number(myId)
+                                    : Number(m.senderId) === Number(myId);
                             const isFirst = i === 0;
                             const showDateHeader =
                                 isFirst || dateKey(messages[i - 1].timestamp) !== dateKey(m.timestamp);
