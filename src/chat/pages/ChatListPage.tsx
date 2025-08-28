@@ -84,7 +84,9 @@ export default function ChatListPage() {
         <>
             <Header
                 title="채팅 리스트"
-                rightText={<Text.Body1 color={onEditMode ? "Black" : "Gray3"}>편집</Text.Body1>}
+                rightText={
+                    chatList?.length !== 0 && <Text.Body1 color={onEditMode ? "Black" : "Gray3"}>편집</Text.Body1>
+                }
                 onRightClick={() => {
                     setOnEditMode(prev => !prev);
                     setSelectedIds([]);
