@@ -45,18 +45,16 @@ export default function HomePage() {
     }, []);
 
     useEffect(() => {
-        if (!isEmploymentLoading && (!employmentData || employmentData.length === 0)) navigate("/404");
-    }, [isEmploymentLoading, employmentData]);
+        if (isEmploymentLoading) return;
+        if (!employmentData) navigate("/404", { replace: true });
+    }, [isEmploymentLoading, employmentData, navigate]);
 
     return (
         <Wrapper.FlexBox direction="column" gap="32px">
             {isEmploymentLoading ? (
                 <SkeletonBox width="100%" height="185px" />
             ) : (
-                employmentData &&
-                employmentData.length > 0 && (
-                    <PartnerRecruitmentCard data={employmentData.filter(item => !item.closed)} />
-                )
+                employmentData && <PartnerRecruitmentCard data={employmentData.filter(item => !item.closed)} />
             )}
             <Wrapper.FlexBox direction="column" gap="16px">
                 <SectionTitle
