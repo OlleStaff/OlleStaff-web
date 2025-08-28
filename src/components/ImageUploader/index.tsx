@@ -114,6 +114,8 @@ const Grid = styled.div<{ maxCount: number }>`
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
+    /* border: 1px solid red; */
+    width: 98%;
 `;
 
 const ImageItem = styled.div`
