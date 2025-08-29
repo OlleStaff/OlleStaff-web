@@ -37,7 +37,7 @@ export default function Header({
                         </BackButton>
                     )}
                 </Side>
-                <Text.Title3_2 className="header-title">{title}</Text.Title3_2>
+                <Text.Title3_1 className="header-title">{title}</Text.Title3_1>
                 <Side>
                     {rightIconSrc ? (
                         <IconButton onClick={onRightClick} aria-label="오른쪽 아이콘">
