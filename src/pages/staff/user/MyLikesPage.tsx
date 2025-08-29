@@ -1,6 +1,7 @@
 import { AccompanyList } from "@/components/AccompanyList";
 import { GuesthouseList } from "@/components/GuesthouseList";
 import Header from "@/components/Header";
+import Oops from "@/components/Oops";
 import PageWrapper from "@/components/PageWrapper";
 import { SkeletonList } from "@/components/Skeleton/SkeletonList";
 import TabSelector from "@/components/TabSelector";
@@ -61,7 +62,7 @@ export default function MyLikesPage() {
 
     return (
         <>
-            <Header showBackButton title="저장한 글" />
+            <Header showBackButton title="내가 좋아요 누른 글" />
             <PageWrapper hasHeader>
                 <Wrapper.FlexBox margin="0 0 24px">
                     <TabSelector
@@ -88,7 +89,7 @@ export default function MyLikesPage() {
                     (accompanyLoading ? (
                         <SkeletonList variant="accompany" count={5} />
                     ) : accompanyItems.length === 0 ? (
-                        <EmptyState message="저장한 동행이 없습니다." />
+                        <Oops message="저장한 동행글이 없습니다." />
                     ) : (
                         <AccompanyList
                             data={accompanyItems}
@@ -104,7 +105,7 @@ export default function MyLikesPage() {
                         openLoading ? (
                             <SkeletonList variant="guesthouse" count={5} />
                         ) : openItems.length === 0 ? (
-                            <EmptyState message="저장한 진행중인 공고가 없습니다." />
+                            <Oops message="저장한 공고가 없습니다." />
                         ) : (
                             <GuesthouseList
                                 data={openItems}
@@ -116,7 +117,7 @@ export default function MyLikesPage() {
                     ) : closedLoading ? (
                         <SkeletonList variant="guesthouse" count={5} />
                     ) : closedItems.length === 0 ? (
-                        <EmptyState message="저장한 마감된 공고가 없습니다." />
+                        <Oops message="저장한 공고가 없습니다." />
                     ) : (
                         <GuesthouseList
                             data={closedItems}
@@ -128,9 +129,4 @@ export default function MyLikesPage() {
             </PageWrapper>
         </>
     );
-}
-
-// 비어있을 때 임시 메시지
-function EmptyState({ message }: { message: string }) {
-    return <Wrapper.FlexBox>{message}</Wrapper.FlexBox>;
 }

@@ -12,7 +12,7 @@ import { useState } from "react";
 import ImageViewer from "@/components/ImageViewer";
 import MapComponent from "../components/Map";
 import ImageCarousel from "@/components/ImageCarousel";
-import { useGetEmploymentDetail } from "@/hooks/owner/employment";
+import { useDeleteLikeRecruit, useGetEmploymentDetail, usePostLikeRecruit } from "@/hooks/owner/employment";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Modal from "@/components/Modal";
 
@@ -26,6 +26,27 @@ export default function RecruitDetailPage() {
         setCurrentImageIndex(idx);
         setViewerOpen(true);
     };
+
+    const [isLikeRecruitButtonClicked, setIsLikeRecruitButtonClicked] = useState(false);
+    const { mutate: likeRecruit, isPending: isLikePending } = usePostLikeRecruit();
+    const { mutate: unlikeRecruit, isPending: isUnlikePending } = useDeleteLikeRecruit();
+    const isMutating = isLikePending || isUnlikePending;
+    const handleToggleLikeRecruit = () => {
+        if (!employmentId || isMutating) return;
+
+        if (!isLikeRecruitButtonClicked) {
+            likeRecruit(Number(employmentId), {
+                onSuccess: () => setIsLikeRecruitButtonClicked(true),
+                onError: e => console.error(e),
+            });
+        } else {
+            unlikeRecruit(Number(employmentId), {
+                onSuccess: () => setIsLikeRecruitButtonClicked(false),
+                onError: e => console.error(e),
+            });
+        }
+    };
+
     const userType = useUserStore(state => state.type);
     const { employmentId } = useParams<{ employmentId: string }>();
     const { data: detail, isLoading, error } = useGetEmploymentDetail(Number(employmentId));
@@ -92,9 +113,21 @@ export default function RecruitDetailPage() {
             />
 
             <Wrapper.FlexBox direction="column" margin="43px 0 20px 0" gap="20px">
-                {Array.isArray(images) && images.length > 0 && (
-                    <ImageCarousel images={images} onImageClick={handleImageClick} />
-                )}
+                <Wrapper.RelativeBox>
+                    {Array.isArray(images) && images.length > 0 && (
+                        <ImageCarousel images={images} onImageClick={handleImageClick} />
+                    )}
+
+                    {userType === "STAFF" && (
+                        <LikeRecruitButton onClick={handleToggleLikeRecruit} aria-disabled={isMutating}>
+                            {isLikeRecruitButtonClicked ? (
+                                <img src="/icons/blueHeart.svg" alt="좋아요" />
+                            ) : (
+                                <img src="/icons/emptyHeart.svg" alt="좋아요" />
+                            )}
+                        </LikeRecruitButton>
+                    )}
+                </Wrapper.RelativeBox>
 
                 {isViewerOpen && (
                     <ImageViewer images={images} startIndex={currentImageIndex} onClose={() => setViewerOpen(false)} />
@@ -289,4 +322,13 @@ const Icon = styled.img`
 const Label = styled(Text.Body1_1)<{ $variant: "call" | "apply" }>`
     color: ${({ $variant, theme }) => ($variant === "call" ? theme.color.Black : theme.color.White)};
     line-height: 20px;
+`;
+
+const LikeRecruitButton = styled.div`
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 22px 20px;
+    cursor: pointer;
+    z-index: 99;
 `;

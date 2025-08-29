@@ -32,16 +32,16 @@ export default function Header({
             <Wrapper>
                 <Side>
                     {showBackButton && (
-                        <BackButton onClick={handleBackClick}>
-                            <img src="/icons/backButton.svg" alt="뒤로가기" />
+                        <BackButton onClick={handleBackClick} aria-label="뒤로가기">
+                            <img src="/icons/backButton.svg" />
                         </BackButton>
                     )}
                 </Side>
-                <Text.Title3_2>{title}</Text.Title3_2>
+                <Text.Title3_1 className="header-title">{title}</Text.Title3_1>
                 <Side>
                     {rightIconSrc ? (
-                        <IconButton onClick={onRightClick}>
-                            <img src={rightIconSrc} alt="오른쪽 아이콘" />
+                        <IconButton onClick={onRightClick} aria-label="오른쪽 아이콘">
+                            <img src={rightIconSrc} alt="" />
                         </IconButton>
                     ) : rightText ? (
                         <TextButton onClick={onRightClick}>{rightText}</TextButton>
@@ -51,6 +51,7 @@ export default function Header({
         </HeaderWrapper>
     );
 }
+const SIDE_WIDTH = 35;
 
 const HeaderWrapper = styled.div`
     position: absolute;
@@ -63,15 +64,22 @@ const HeaderWrapper = styled.div`
 `;
 
 const Wrapper = styled.header`
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
     height: 72px;
+    .header-title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: calc(100% - ${SIDE_WIDTH * 2}px - 16px);
+    }
 `;
 
 const Side = styled.div`
-    min-width: 24px;
+    width: ${SIDE_WIDTH}px;
     display: flex;
     align-items: center;
     justify-content: center;

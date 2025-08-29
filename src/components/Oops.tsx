@@ -3,7 +3,7 @@ import { Wrapper } from "@/styles/Wrapper";
 
 type OopsProps = {
     message: string;
-    description: string;
+    description?: string;
 };
 
 export default function Oops({ message, description }: OopsProps) {

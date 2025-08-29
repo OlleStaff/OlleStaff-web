@@ -5,7 +5,7 @@ import RecruitListPage from "@/pages/owner/Recruit/RecruitListPage";
 
 const OwnerRoutes: RouteObject[] = [
     {
-        path: "/owner/",
+        path: "/owner",
         element: <OwnerLayout />,
         children: [
             {
