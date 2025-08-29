@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { AccompanyListItemProps } from "@/types/accompany";
 import { timeAgo } from "@/utils/date";
 import { Wrapper } from "@/styles/Wrapper";
+import { useUserStore } from "@/store/useUserStore";
+import OptionButton from "../OptionButton";
 
 export const AccompanyListItem = ({
     id,
@@ -18,6 +20,9 @@ export const AccompanyListItem = ({
     userImage,
 }: AccompanyListItemProps) => {
     const navigate = useNavigate();
+    const myNickname = useUserStore(s => s.nickname);
+    const isOwner = myNickname && userNickname && myNickname === userNickname;
+
     const handleClick = () => {
         navigate(`/staff/accompany/${id}`, {
             state: {
@@ -37,10 +42,25 @@ export const AccompanyListItem = ({
         });
     };
 
+    const onDelete = () => {
+        console.log("삭제 클릭:", id);
+    };
+
     const thumbnail = images?.[0];
 
     return (
         <Card onClick={handleClick}>
+            {isOwner && (
+            <TopRight onClick={e => e.stopPropagation()}>
+                <OptionButton
+                    placement="bottom"
+                    align="right"
+                    menus={[
+                        { label: "삭제", onClick: onDelete },
+                    ]}
+                />
+            </TopRight>
+            )}
             {thumbnail && (
                 <ImageWrapper>
                     <StyledImage src={thumbnail} alt="thumbnail" />
@@ -86,6 +106,7 @@ export const AccompanyListItem = ({
 };
 
 export const Card = styled.div`
+    position: relative;
     display: flex;
     gap: 12px;
     padding: 13px 16px 9px 16px;
@@ -93,6 +114,12 @@ export const Card = styled.div`
     border-radius: 8px;
     background-color: white;
     height: 112px;
+`;
+
+const TopRight = styled.div`
+    position: absolute;
+    top: 15px;
+    right: 16px;
 `;
 
 const ImageWrapper = styled.div`
