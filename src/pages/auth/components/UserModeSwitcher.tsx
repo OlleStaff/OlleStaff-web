@@ -3,32 +3,31 @@ import theme from "@/styles/theme";
 import { Wrapper } from "@/styles/Wrapper";
 import styled from "@emotion/styled";
 import { useUserStore } from "@/store/useUserStore";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 export default function UserModeSwitcher() {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const userType = useUserStore(state => state.type);
-    const nickname = useUserStore(state => state.nickname);
-    const profileImage = useUserStore(state => state.profileImage);
-    const setUser = useUserStore(state => state.setUser);
+    // const nickname = useUserStore(state => state.nickname);
+    // const profileImage = useUserStore(state => state.profileImage);
+    // const setUser = useUserStore(state => state.setUser);
 
     const modeLabel = userType === "STAFF" ? "게스트하우스" : "스텝";
 
     const handleToggleMode = () => {
-        const nextType = userType === "STAFF" ? "GUESTHOUSE" : "STAFF";
-        setUser({ nickname, type: nextType, profileImage });
-
-        if (nextType === "STAFF") {
-            navigate("/staff");
-        } else {
-            navigate("/owner");
-        }
+        // const nextType = userType === "STAFF" ? "GUESTHOUSE" : "STAFF";
+        // setUser({ nickname, type: nextType, profileImage });
+        // if (nextType === "STAFF") {
+        //     navigate("/staff");
+        // } else {
+        //     navigate("/owner");
+        // }
     };
 
     return (
         <Wrapper.FlexBox direction="column" gap="16px">
-            <Style.ModeChangeButton onClick={handleToggleMode}>
+            <Style.ModeChangeButton onClick={handleToggleMode} aria-disabled="true">
                 <Text.Body1_1 color="Main">{modeLabel} 모드로 전환</Text.Body1_1>
             </Style.ModeChangeButton>
             <Wrapper.FlexBox justifyContent="center" gap="8px">
