@@ -27,6 +27,7 @@ import { truncateText } from "@/utils/truncateText";
 import { useQueryClient } from "@tanstack/react-query";
 import { receiveChatMessage } from "../websocket/receiveChatMessage";
 import Oops from "@/components/Oops";
+import { useInView } from "react-intersection-observer";
 
 export default function ChatRoomPage() {
     const userId = useUserStore(u => u.id);
@@ -60,7 +61,11 @@ export default function ChatRoomPage() {
     }, [chatMessages]);
 
     const listRef = useRef<HTMLDivElement | null>(null);
-    const topRef = useRef<HTMLDivElement | null>(null);
+    const { ref: topRef, inView: isTopInView } = useInView({
+        root: listRef.current ?? undefined,
+        rootMargin: "150px 0px 0px 0px",
+        threshold: 0,
+    });
     const bottomRef = useRef<HTMLDivElement | null>(null);
 
     const jumpToBottom = useCallback((opts?: { smooth?: boolean }) => {
@@ -156,37 +161,29 @@ export default function ChatRoomPage() {
         didInit.current = true;
     }, [status, messages.length, jumpToBottom]);
 
-    // 위로 무한스크롤 ( + 스크롤 이어서)
+    const lockedRef = useRef(false);
+
     useEffect(() => {
         const root = listRef.current;
-        const target = topRef.current;
-        if (!root || !target) return;
+        if (!root) return;
+        if (!isTopInView) return;
+        if (!hasNextPage || isFetchingNextPage) return;
+        if (lockedRef.current) return;
 
-        let locked = false;
-        const io = new IntersectionObserver(
-            async ([entry]) => {
-                if (!entry.isIntersecting || locked) return;
-                if (!hasNextPage || isFetchingNextPage) return;
+        lockedRef.current = true;
 
-                locked = true;
-                const prevHeight = root.scrollHeight;
-                const prevTop = root.scrollTop;
+        const prevHeight = root.scrollHeight;
+        const prevTop = root.scrollTop;
 
-                await fetchNextPage();
-
-                requestAnimationFrame(() => {
-                    const nextHeight = root.scrollHeight;
-                    const delta = nextHeight - prevHeight;
-                    root.scrollTop = prevTop + delta;
-                    locked = false;
-                });
-            },
-            { root, rootMargin: "150px 0px 0px 0px", threshold: 0 }
-        );
-
-        io.observe(target);
-        return () => io.disconnect();
-    }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+        (async () => {
+            await fetchNextPage(); // 과거 페이지 프리팬드
+            requestAnimationFrame(() => {
+                const nextHeight = root.scrollHeight; // 높이 차이만큼 보정 → 화면 튐 방지
+                root.scrollTop = prevTop + (nextHeight - prevHeight);
+                lockedRef.current = false;
+            });
+        })();
+    }, [isTopInView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     // 새 메시지 도착 시 바닥으로
     useEffect(() => {
