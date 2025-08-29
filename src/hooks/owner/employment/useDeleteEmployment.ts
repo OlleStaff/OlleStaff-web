@@ -14,3 +14,19 @@ export const useDeleteEmployment = () => {
         },
     });
 };
+
+export const useDeleteLikeRecruit = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (employmentId: number) => EmploymentApi.deleteLikeRecruit(employmentId),
+        onSuccess: (_data, employmentId) => {
+            queryClient.invalidateQueries({ queryKey: ["employmentList"] });
+            queryClient.invalidateQueries({ queryKey: ["employmentDetail", employmentId] });
+            queryClient.invalidateQueries({ queryKey: ["myLikeRecruit"] });
+        },
+        onError: err => {
+            console.error("좋아요 취소 실패", err);
+        },
+    });
+};

@@ -50,10 +50,27 @@ export const EmploymentApi = {
             },
         }),
 
+    // DELETE: 나의 공고 삭제
     deleteEmployment: async (employmentIds: number[]) =>
         await api
             .delete(`/employments`, {
                 data: employmentIds,
             })
             .then(res => res.data),
+
+    // POST: 게스트하우스 공고에 좋아요 누르기
+    postLikeRecruit: async (employmentId: number) => {
+        try {
+            const res = await api.post(`/employments/post-heart`, null, { params: { employmentId } });
+            console.log("좋아요 등록 완료", res.data);
+            return res.data;
+        } catch (error) {
+            console.error("좋아요 등록 실패", error);
+            throw error;
+        }
+    },
+
+    // DELETE:  게스트하우스 공고에 누른 좋아요 취소
+    deleteLikeRecruit: async (employmentId: number) =>
+        await api.delete(`/employments/delete-heart`, { params: { employmentId } }).then(res => res.data),
 };
