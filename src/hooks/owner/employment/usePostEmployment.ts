@@ -16,3 +16,21 @@ export const usePostEmployment = () => {
         },
     });
 };
+
+export const usePostLikeRecruit = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (employmentId: number) => EmploymentApi.postLikeRecruit(employmentId),
+
+        onSuccess: employmentId => {
+            queryClient.invalidateQueries({ queryKey: ["employmentList"] });
+            queryClient.invalidateQueries({ queryKey: ["employmentDetail", employmentId] });
+            queryClient.invalidateQueries({ queryKey: ["myLikeRecruit"] });
+        },
+
+        onError: err => {
+            console.error("좋아요 등록 실패", err);
+        },
+    });
+};

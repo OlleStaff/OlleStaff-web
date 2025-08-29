@@ -22,7 +22,6 @@ export default function useBusinessVerification(): UseBusinessVerification {
                 const parsed: BusinessVerificationStorage = JSON.parse(saved);
 
                 if (parsed.businessName) setBusinessName(parsed.businessName);
-                if (typeof parsed.isAgreed === "boolean") setIsAgreed(parsed.isAgreed);
 
                 const fileInfo = parsed.selectedFile;
                 if (fileInfo?.base64 && fileInfo.name) {

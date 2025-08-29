@@ -14,6 +14,7 @@ import { useDeleteChatRooms } from "../hooks/useDeleteChatRooms";
 import Modal from "@/components/Modal";
 import { connectStomp } from "../websocket/connectStomp";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import styled from "@emotion/styled";
 
 const STAFF_TABS = TAB_LABELS.STAFF.CHAT_LIST;
 const OWNER_TABS = TAB_LABELS.OWNER.CHAT_LIST;
@@ -48,6 +49,9 @@ export default function ChatListPage() {
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
     const allSelected = selectedIds.length === chatList?.length;
+    const canDelete = selectedIds.length > 0;
+    const total = chatList?.length ?? 0;
+    const hasItems = total > 0;
 
     const toggleSelect = (id: number) => {
         setSelectedIds(prev => (prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]));
@@ -64,7 +68,7 @@ export default function ChatListPage() {
     const { mutate: deleteChatRooms } = useDeleteChatRooms();
 
     const handleDeleteChatRooms = () => {
-        if (selectedIds.length === 0) return;
+        if (!canDelete) return;
         deleteChatRooms(selectedIds, {
             onSuccess: () => {
                 setSelectedIds([]);
@@ -84,7 +88,9 @@ export default function ChatListPage() {
         <>
             <Header
                 title="채팅 리스트"
-                rightText={<Text.Body1 color={onEditMode ? "Black" : "Gray3"}>편집</Text.Body1>}
+                rightText={
+                    chatList?.length !== 0 && <Text.Body1 color={onEditMode ? "Black" : "Gray3"}>편집</Text.Body1>
+                }
                 onRightClick={() => {
                     setOnEditMode(prev => !prev);
                     setSelectedIds([]);
@@ -98,14 +104,23 @@ export default function ChatListPage() {
                     variant="underline"
                 />
 
-                {onEditMode && (
+                {onEditMode && hasItems && (
                     <Wrapper.FlexBox justifyContent="space-between" padding="18px 0px 6px 0px" pointer>
                         <Text.Body1_1 color={allSelected ? "Main" : "Gray4"} onClick={handleToggleAll}>
                             전체선택
                         </Text.Body1_1>
-                        <Text.Body1_1 color="Gray4" onClick={() => setIsConfirmOpen(true)}>
-                            삭제
-                        </Text.Body1_1>
+                        <DeleteButton
+                            type="button"
+                            disabled={!canDelete}
+                            onClick={() => {
+                                if (!canDelete) return;
+                                setIsConfirmOpen(true);
+                            }}
+                        >
+                            <Text.Body1_1 color="Gray4" onClick={() => setIsConfirmOpen(true)}>
+                                삭제
+                            </Text.Body1_1>
+                        </DeleteButton>
                     </Wrapper.FlexBox>
                 )}
 
@@ -182,3 +197,12 @@ export default function ChatListPage() {
         </>
     );
 }
+
+const DeleteButton = styled.button`
+    all: unset;
+    cursor: pointer;
+    &:disabled {
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+`;
