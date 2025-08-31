@@ -37,12 +37,12 @@ export default function useValidation() {
             newErrors.phone = "올바른 전화번호 형식이 아닙니다.";
         }
 
-        // 전화번호가 바뀐 경우에만 인증번호 체크
-        if (userInfo.phone !== options?.originalPhone) {
-            if (userInfo.verificationCode !== "000000") {
-                newErrors.verificationCode = "인증번호가 틀렸습니다.";
-            }
-        }
+        // // 전화번호가 바뀐 경우에만 인증번호 체크
+        // if (userInfo.phone !== options?.originalPhone) {
+        //     if (userInfo.verificationCode !== "000000") {
+        //         newErrors.verificationCode = "인증번호가 틀렸습니다.";
+        //     }
+        // }
 
         if (!options?.skipBirthDateCheck && !/^\d{8}$/.test(userInfo.birthDate)) {
             newErrors.birthDate = "생년월일은 8자리 숫자 (YYYYMMDD)로 입력해 주세요.";
