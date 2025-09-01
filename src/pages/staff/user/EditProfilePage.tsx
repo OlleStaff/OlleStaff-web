@@ -83,7 +83,7 @@ export default function EditProfilePage() {
                         setIsCompleteModalOpen(true);
                         setTimeout(() => {
                             setIsCompleteModalOpen(false);
-                            navigate("/staff/userinfo");
+                            navigate("/userinfo");
                         }, 1500);
                     },
                 }
