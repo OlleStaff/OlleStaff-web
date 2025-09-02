@@ -13,10 +13,13 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
 export default function AccompanyDetailPage() {
-    const { state } = useLocation();
+    const { state } = useLocation() as { state?: { accompany: AccompanyListItemProps } };
+    const accompany = state!.accompany;
 
-    const { accompany } = state as { accompany: AccompanyListItemProps };
-    const { title, content, images, createdAt, userNickname, likeCount, commentCount, userImage, like } = accompany;
+    const [count, setCount] = useState(accompany.commentCount);
+    const handleCountDelta = (d: 1 | -1) => setCount(c => Math.max(0, c + d));
+
+    const { title, content, images, createdAt, userNickname, likeCount, userImage, like } = accompany;
 
     const [isViewerOpen, setViewerOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -52,13 +55,13 @@ export default function AccompanyDetailPage() {
                     <LikeButton accompanyId={accompany.id} initialLiked={like} initialCount={likeCount} />
                     <IconWrapper>
                         <Icon src="/icons/comment_black.svg" />
-                        <Text.Body1 style={{ marginTop: "4px" }}>{commentCount}</Text.Body1>
+                        <Text.Body1 style={{ marginTop: "4px" }}>{count}</Text.Body1>
                     </IconWrapper>
                 </ReactionBar>
             </PageWrapper>
             <Divider />
             <PageWrapper>
-                <CommentBox accompanyId={accompany.id} commentCount={commentCount} />
+                <CommentBox accompanyId={accompany.id} commentCount={count} onCountDelta={handleCountDelta} />
             </PageWrapper>
         </>
     );

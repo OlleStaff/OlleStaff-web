@@ -16,6 +16,7 @@ interface CommentItemProps {
     areRepliesOpen?: boolean;
     accompanyId: number;
     parentCommentId?: number;
+    onDeleted?: () => void;
 }
 
 export default function CommentItem({
@@ -26,6 +27,7 @@ export default function CommentItem({
     areRepliesOpen,
     accompanyId,
     parentCommentId,
+    onDeleted,
 }: CommentItemProps) {
     const { userNickname, userImage, createdAt, content, id, replyCount } = comment;
     const { mutate: deleteComment } = useDeleteComment();
@@ -42,6 +44,7 @@ export default function CommentItem({
             deleteReply({ accompanyId, commentId: parentCommentId, replyId: id });
         } else {
             deleteComment({ accompanyId, commentId: id });
+            onDeleted?.();
         }
     };
 
@@ -51,7 +54,7 @@ export default function CommentItem({
     return (
         <>
             <Wrapper isReply={isReply}>
-                <ProfileImage src={userImage} alt="profile" />
+                <ProfileImage src={userImage || "/icons/defaultUser.svg"} alt="profile" />
                 <ContentBox>
                     <Text.Body2_1 style={{ marginBottom: "2px" }}>{userNickname}</Text.Body2_1>
                     <Text.Body2 style={{ whiteSpace: "pre-wrap" }}>{content}</Text.Body2>
