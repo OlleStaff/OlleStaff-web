@@ -219,6 +219,7 @@ export default function RecruitDetailPage() {
                             })
                         }
                         variant="apply"
+                        disabled={calculateDDay(recruitmentEnd) === "마감됨"}
                     >
                         <ContentWrapper>
                             <Icon src="/icons/envelope.svg" aria-hidden />
@@ -320,6 +321,10 @@ const ActionButton = styled.button<{ variant?: "call" | "apply" }>`
     justify-content: center;
     cursor: pointer;
     margin-bottom: 16px;
+    &:disabled {
+        background-color: #e4e4e4;
+        cursor: not-allowed;
+    }
 `;
 
 const ContentWrapper = styled.div`
