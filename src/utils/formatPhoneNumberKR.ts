@@ -6,14 +6,16 @@ export function formatPhoneNumberKR(input: string | number): string {
     if (d.startsWith("02")) {
         if (d.length <= 2) return d;
         if (d.length <= 5) return `${d.slice(0, 2)}-${d.slice(2)}`;
-        const midEnd = d.length - 4 > 2 ? d.length - 4 : 3; // 최소 구분
-        return `${d.slice(0, 2)}-${d.slice(2, midEnd)}-${d.slice(midEnd)}`;
+        const midEnd = d.length - 4; // 최소 구분
+        return `${d.slice(0, 2)}-${d.slice(2, midEnd)}-${d.slice(midEnd, 11)}`;
     }
 
     // 휴대폰 010
     if (d.startsWith("010")) {
         const s = d.slice(0, 11);
-        return `${s.slice(0, 3)}-${s.slice(3, 7)}-${s.slice(7)}`; // 010-0000-0000
+        if (s.length <= 3) return s; // "010"
+        if (s.length <= 7) return `${s.slice(0, 3)}-${s.slice(3)}`; // "010-1234"
+        return `${s.slice(0, 3)}-${s.slice(3, 7)}-${s.slice(7)}`; // "010-1234-5678"
     }
 
     // 그 외 (예: 031, 051 등)
@@ -23,5 +25,5 @@ export function formatPhoneNumberKR(input: string | number): string {
     const isTen = d.length === 10;
     const midEnd = isTen ? 6 : 7;
 
-    return `${d.slice(0, 3)}-${d.slice(3, midEnd)}-${d.slice(midEnd, isTen ? 10 : 11)}`;
+    return `${d.slice(0, 3)}-${d.slice(3, midEnd)}-${d.slice(midEnd, 11)}`;
 }

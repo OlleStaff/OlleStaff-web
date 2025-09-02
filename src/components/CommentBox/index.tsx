@@ -7,7 +7,13 @@ import { Text } from "@/styles/Text";
 import { useCommentList } from "./useCommentQuery";
 import { SkeletonList } from "../Skeleton/SkeletonList";
 
-export const CommentBox = ({ accompanyId, commentCount }: { accompanyId: number; commentCount: number }) => {
+type Props = {
+    accompanyId: number;
+    commentCount: number;
+    onCountDelta?: (d: 1 | -1) => void;
+};
+
+export const CommentBox = ({ accompanyId, commentCount, onCountDelta }: Props) => {
     const { openReplies, toggleReplies, startReplyTo, activeReply, cancelReply } = useCommentState();
     const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useCommentList(accompanyId);
 
@@ -29,13 +35,19 @@ export const CommentBox = ({ accompanyId, commentCount }: { accompanyId: number;
                         fetchNextPage={fetchNextPage}
                         hasNextPage={hasNextPage}
                         isFetchingNextPage={isFetchingNextPage}
+                        onDeleted={() => onCountDelta?.(-1)}
                     />
                 )}
             </ScrollableArea>
             <FixedInputArea>
                 {activeReply && <ReplyingNotice nickname={activeReply.nickname} onCancel={cancelReply} />}
                 <InputWrapper>
-                    <CommentInput accompanyId={accompanyId} activeReply={activeReply} cancelReply={cancelReply} />
+                    <CommentInput
+                        accompanyId={accompanyId}
+                        activeReply={activeReply}
+                        cancelReply={cancelReply}
+                        onCreated={() => onCountDelta?.(+1)}
+                    />
                 </InputWrapper>
             </FixedInputArea>
         </>

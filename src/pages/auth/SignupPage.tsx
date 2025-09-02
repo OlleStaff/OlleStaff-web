@@ -111,14 +111,9 @@ export default function SignupPage() {
                                 value={formatPhoneNumberKR(userInfo.phone)}
                                 onChange={e => {
                                     const onlyDigits = e.target.value.replace(/\D/g, "").slice(0, 11);
-                                    const formattedEvent = {
-                                        ...e,
-                                        target: {
-                                            ...e.target,
-                                            value: onlyDigits,
-                                        },
-                                    };
-                                    handleInputChange("phone")(formattedEvent as React.ChangeEvent<HTMLInputElement>);
+                                    handleInputChange("phone")({
+                                        target: { value: onlyDigits },
+                                    } as React.ChangeEvent<HTMLInputElement>);
                                 }}
                                 placeholder="전화번호를 입력하세요."
                                 bottomMessage={errors.phone || verificationMessage}
