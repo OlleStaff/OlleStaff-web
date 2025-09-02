@@ -33,8 +33,8 @@ export default function RecruitCreateContainer() {
         navigate("/owner/recruit/write/step2");
     };
 
-    const handleSubmit = async () => {
-        createMutation.mutate({
+    const handleSubmit = () => {
+        return createMutation.mutateAsync({
             employment: formData,
             imageFiles,
         });

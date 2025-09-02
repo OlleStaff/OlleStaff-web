@@ -3,7 +3,7 @@ import ModalWrapper from "./ModalWrapper";
 import { Text } from "@/styles/Text";
 import theme from "@/styles/theme";
 
-type ModalVariant = "default" | "confirm" | "page";
+type ModalVariant = "default" | "confirm" | "page" | "error";
 
 interface ModalProps {
     variant: ModalVariant;
@@ -29,6 +29,7 @@ export default function Modal({
     if (variant === "page") {
         return <ModalWrapper handleModalClose={handleModalClose}>{children}</ModalWrapper>;
     }
+
     return (
         <ModalWrapper handleModalClose={handleModalClose}>
             {variant === "default" && (
@@ -38,6 +39,7 @@ export default function Modal({
                 </>
             )}
             {variant === "confirm" && title && <Text.Title3_1>{title}</Text.Title3_1>}
+            {variant === "error" && <>{title && <Text.Title3_1>{title}</Text.Title3_1>}</>}
 
             {message && (
                 <MessageWrapper>
@@ -51,7 +53,8 @@ export default function Modal({
                         <Text.Title3_1>{cancelText}</Text.Title3_1>
                     </Button>
                 )}
-                <Button onClick={onConfirm}>
+
+                <Button onClick={onConfirm ?? handleModalClose}>
                     <Text.Title3_1 color="White">{confirmText}</Text.Title3_1>
                 </Button>
             </ButtonWrapper>
