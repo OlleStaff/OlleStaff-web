@@ -28,16 +28,22 @@ export default function RecruitEditPrecautionPage({
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+    const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
     const navigate = useNavigate();
 
     const handleOpenModal = () => {
         if (isFormValid) setIsConfirmModalOpen(true);
     };
 
-    const handleConfirm = () => {
-        handleSubmit();
-        navigate("/owner");
-        setIsConfirmModalOpen(false);
+    const handleConfirm = async () => {
+        try {
+            await handleSubmit();
+            navigate("/owner");
+            setIsConfirmModalOpen(false);
+        } catch (e) {
+            setIsErrorModalOpen(true);
+            console.log(e);
+        }
     };
 
     return (
@@ -98,6 +104,17 @@ export default function RecruitEditPrecautionPage({
                         navigate("/owner");
                     }}
                     onConfirm={handleConfirm}
+                />
+            )}
+
+            {isErrorModalOpen && (
+                <Modal
+                    variant="error"
+                    title="요청 실패"
+                    confirmText="확인"
+                    handleModalClose={() => {
+                        setIsErrorModalOpen(false);
+                    }}
                 />
             )}
         </>

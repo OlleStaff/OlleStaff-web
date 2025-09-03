@@ -20,8 +20,6 @@ export const EmploymentApi = {
                 imageFiles.forEach(file => {
                     formData.append("images", file); // 동일 key로 여러 개 전송
                 });
-            } else {
-                formData.append("images", new Blob([]), "empty.jpg");
             }
 
             // 디버깅용 코드

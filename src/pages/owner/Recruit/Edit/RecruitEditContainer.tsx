@@ -16,7 +16,7 @@ export default function RecruitEditContainer() {
     const [_imageNames, setImageNames] = useState<string[]>([]);
 
     const { data: employment } = useGetEmploymentDetail(Number(employmentId));
-    const { mutate: editEmployment } = usePutEmployment();
+    const { mutateAsync: editEmployment } = usePutEmployment();
 
     useEffect(() => {
         if (employment?.data) {
@@ -68,7 +68,7 @@ export default function RecruitEditContainer() {
         }
     }, [employment]);
 
-    const handleEditEmployment = () => {
+    const handleEditEmployment = async () => {
         if (!formData) return;
 
         const { newImages, imageUrls, ...employmentPayload } = formData;
@@ -85,29 +85,15 @@ export default function RecruitEditContainer() {
             fd.append("images", file);
         });
 
-        editEmployment(fd, {
-            onSuccess: res => {
-                const uploadedImageUrls: string[] = res?.data?.images ?? [];
-                const mergedImages = [...imageUrls, ...uploadedImageUrls];
+        const res = await editEmployment(fd);
 
-                setImageUrls(mergedImages);
-                setImageFiles([]);
-                setImageNames(mergedImages);
-                setFormData(prev =>
-                    prev
-                        ? {
-                              ...prev,
-                              imageUrls: mergedImages,
-                              newImages: [],
-                          }
-                        : prev
-                );
-            },
-            onError: err => {
-                console.error("\u274C 수정 실패", err);
-                alert("수정에 실패했습니다.");
-            },
-        });
+        const uploadedImageUrls: string[] = res?.data?.images ?? [];
+        const mergedImages = [...(imageUrls ?? []), ...uploadedImageUrls];
+
+        setImageUrls(mergedImages);
+        setImageFiles([]);
+        setImageNames(mergedImages);
+        setFormData(prev => (prev ? { ...prev, imageUrls: mergedImages, newImages: [] } : prev));
     };
 
     if (!formData) return null;

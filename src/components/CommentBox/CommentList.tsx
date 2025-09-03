@@ -13,6 +13,7 @@ interface CommentListProps {
     fetchNextPage?: () => void;
     hasNextPage?: boolean;
     isFetchingNextPage?: boolean;
+    onDeleted?: () => void;
 }
 
 export default function CommentList({
@@ -24,6 +25,7 @@ export default function CommentList({
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    onDeleted,
 }: CommentListProps) {
     const { ref, inView } = useInView();
 
@@ -43,6 +45,7 @@ export default function CommentList({
                     onToggleReplies={onToggleReplies}
                     areRepliesOpen={!!openReplies[comment.id]}
                     accompanyId={accompanyId}
+                    onDeleted={onDeleted}
                 />
             ))}
             {hasNextPage && <div ref={ref} style={{ height: 1 }} />}

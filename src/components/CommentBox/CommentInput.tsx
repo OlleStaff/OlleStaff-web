@@ -9,6 +9,7 @@ interface CommentInputProps {
     accompanyId: number;
     activeReply: { commentId: number; nickname: string } | null;
     cancelReply: () => void;
+    onCreated?: () => void;
 }
 
 export default function CommentInput({
@@ -17,6 +18,7 @@ export default function CommentInput({
     accompanyId,
     activeReply,
     cancelReply,
+    onCreated,
 }: CommentInputProps) {
     const [text, setText] = useState("");
     const { mutate: createComment } = useCreateComment();
@@ -45,6 +47,7 @@ export default function CommentInput({
                 {
                     onSuccess: () => {
                         setText("");
+                        onCreated?.();
                     },
                 }
             );

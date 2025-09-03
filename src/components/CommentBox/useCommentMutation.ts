@@ -1,5 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, InfiniteData } from "@tanstack/react-query";
 import api from "@/apis/axios";
+import { AccompanyListItemProps } from "@/types/accompany";
 
 interface CreateCommentParams {
     accompanyId: number;
@@ -23,6 +24,13 @@ interface DeleteReplyParams {
     replyId: number;
 }
 
+// 페이지 래퍼 타입만 여기서 최소 정의
+type AccompanyListPage = {
+    accompanies: AccompanyListItemProps[];
+    cursor: number | null;
+    hasNext: boolean;
+};
+
 export const useCreateComment = () => {
     const queryClient = useQueryClient();
 
@@ -31,16 +39,31 @@ export const useCreateComment = () => {
             const res = await api.post(
                 `/accompanies/${accompanyId}/comments`,
                 { content },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
+                { headers: { "Content-Type": "application/json" } }
             );
             return res.data;
         },
         onSuccess: (_, { accompanyId }) => {
+            // 기존 댓글 리스트 invalidate로 다시 불러옴
             queryClient.invalidateQueries({ queryKey: ["comments", accompanyId] });
+
+            // accompanies 캐시 낙관적 업데이트
+            const lists = queryClient.getQueriesData<InfiniteData<AccompanyListPage>>({
+                queryKey: ["accompanyList"],
+            });
+
+            for (const [key, data] of lists) {
+                if (!data) continue;
+                queryClient.setQueryData<InfiniteData<AccompanyListPage>>(key, {
+                    ...data,
+                    pages: data.pages.map(p => ({
+                        ...p,
+                        accompanies: p.accompanies.map(a =>
+                            a.id === accompanyId ? { ...a, commentCount: a.commentCount + 1 } : a
+                        ),
+                    })),
+                });
+            }
         },
     });
 };
@@ -55,6 +78,24 @@ export const useDeleteComment = () => {
         },
         onSuccess: (_, { accompanyId }) => {
             queryClient.invalidateQueries({ queryKey: ["comments", accompanyId] });
+
+            // accompanies 캐시 낙관적 업데이트
+            const lists = queryClient.getQueriesData<InfiniteData<AccompanyListPage>>({
+                queryKey: ["accompanyList"],
+            });
+
+            for (const [key, data] of lists) {
+                if (!data) continue;
+                queryClient.setQueryData<InfiniteData<AccompanyListPage>>(key, {
+                    ...data,
+                    pages: data.pages.map(p => ({
+                        ...p,
+                        accompanies: p.accompanies.map(a =>
+                            a.id === accompanyId ? { ...a, commentCount: Math.max(0, a.commentCount - 1) } : a
+                        ),
+                    })),
+                });
+            }
         },
         onError: err => {
             console.error("댓글 삭제 실패", err);
@@ -70,11 +111,7 @@ export const useCreateReply = () => {
             const res = await api.post(
                 `/accompanies/${accompanyId}/comments/${commentId}/replies`,
                 { content },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
+                { headers: { "Content-Type": "application/json" } }
             );
             return res.data;
         },

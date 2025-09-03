@@ -168,13 +168,15 @@ export default function RecruitDetailPage() {
                     </Wrapper.FlexBox>
                 </Wrapper.FlexBox>
 
-                <Wrapper.FlexBox bgColor="#F8F8F8" borderRadius="4px" padding="14px 19px">
-                    <Text.Body1>
-                        <ExpandableText text={content} maxWidth={1200} />
-                    </Text.Body1>
+                <Wrapper.FlexBox>
+                    <ContentBox>
+                        <Text.Body1>
+                            <ExpandableText text={content} maxWidth={900} />
+                        </Text.Body1>
+                    </ContentBox>
                 </Wrapper.FlexBox>
 
-                <Text.Body1_1 style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Text.Body1_1>
                     복리후생
                     {benefitsContent.length > 3 && (
                         <ArrowIcon
@@ -188,9 +190,9 @@ export default function RecruitDetailPage() {
                 <BenefitListWrapper>
                     {(showAllBenefits ? benefitsContent : benefitsContent.slice(0, 3)).map(
                         (benefit: string, idx: number) => (
-                            <BenefitItemBox key={idx}>
+                            <BenefitBox key={idx}>
                                 <ExpandableText text={benefit} maxWidth={140} />
-                            </BenefitItemBox>
+                            </BenefitBox>
                         )
                     )}
                 </BenefitListWrapper>
@@ -217,6 +219,7 @@ export default function RecruitDetailPage() {
                             })
                         }
                         variant="apply"
+                        disabled={calculateDDay(recruitmentEnd) === "마감됨"}
                     >
                         <ContentWrapper>
                             <Icon src="/icons/envelope.svg" aria-hidden />
@@ -272,7 +275,20 @@ const DDayWrapper = styled.div`
     border-radius: 52px;
 `;
 
-const BenefitItemBox = styled.div`
+const ContentBox = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    word-break: break-word;
+    white-space: normal;
+    padding: 10px 20px;
+    background-color: ${theme.color.Gray0};
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+    max-height: 284px;
+    min-height: 164px;
+`;
+const BenefitBox = styled.div`
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -281,6 +297,7 @@ const BenefitItemBox = styled.div`
     padding: 10px 20px;
     background-color: ${theme.color.Gray0};
     border-radius: 8px;
+    width: 100%;
 `;
 const ArrowIcon = styled.img`
     cursor: pointer;
@@ -304,6 +321,10 @@ const ActionButton = styled.button<{ variant?: "call" | "apply" }>`
     justify-content: center;
     cursor: pointer;
     margin-bottom: 16px;
+    &:disabled {
+        background-color: #e4e4e4;
+        cursor: not-allowed;
+    }
 `;
 
 const ContentWrapper = styled.div`

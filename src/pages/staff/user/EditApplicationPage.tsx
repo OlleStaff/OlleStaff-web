@@ -74,7 +74,7 @@ export default function EditApplicationPage() {
                 setIsCompleteModalOpen(true);
                 setTimeout(() => {
                     setIsCompleteModalOpen(false);
-                    navigate("/staff/userinfo");
+                    navigate("/userinfo");
                 }, 1500);
             },
             onError: err => {
