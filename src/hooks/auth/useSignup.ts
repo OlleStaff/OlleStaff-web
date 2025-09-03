@@ -1,7 +1,6 @@
 import { Gender } from "@/types/user";
 import { useMutation } from "@tanstack/react-query";
 import api from "@/apis/axios";
-import { useNavigate } from "react-router-dom";
 
 export interface SignupRequest {
     nickname: string;
@@ -14,8 +13,6 @@ export interface SignupRequest {
 }
 
 export const useSignup = () => {
-    const navigate = useNavigate();
-
     return useMutation({
         mutationFn: async (data: SignupRequest) => {
             const formData = new FormData();
@@ -40,15 +37,6 @@ export const useSignup = () => {
             });
 
             return res.data;
-        },
-
-        onSuccess: () => {
-            console.log("✅ 회원가입 성공");
-            navigate("/type-select");
-        },
-
-        onError: err => {
-            console.error("❌ 회원가입 실패", err);
         },
     });
 };

@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAccompanyList } from "@/hooks/staff/useAccompanyList";
 import { StaffTabTypes, TAB_LABELS } from "@/constants/tabs";
 import { SkeletonList } from "@/components/Skeleton/SkeletonList";
+import Oops from "@/components/Oops";
 
 type CompanionTab = StaffTabTypes["COMPANION"]; // "전체", "인기순"
 
@@ -34,6 +35,8 @@ export default function AccompanyPage() {
                 />
                 {isLoading ? (
                     <SkeletonList variant="accompany" count={5} />
+                ) : items.length === 0 ? (
+                    <Oops message="작성된 글이 없어요." description="글이 올라올 때까지 기다려주세요!" />
                 ) : (
                     <AccompanyList
                         data={items}

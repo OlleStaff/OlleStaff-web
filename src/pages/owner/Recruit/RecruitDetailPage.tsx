@@ -115,17 +115,18 @@ export default function RecruitDetailPage() {
             <Wrapper.FlexBox direction="column" margin="43px 0 20px 0" gap="20px">
                 <Wrapper.RelativeBox>
                     {Array.isArray(images) && images.length > 0 && (
-                        <ImageCarousel images={images} onImageClick={handleImageClick} />
-                    )}
-
-                    {userType === "STAFF" && (
-                        <LikeRecruitButton onClick={handleToggleLikeRecruit} aria-disabled={isMutating}>
-                            {isLikeRecruitButtonClicked ? (
-                                <img src="/icons/blueHeart.svg" alt="좋아요" />
-                            ) : (
-                                <img src="/icons/emptyHeart.svg" alt="좋아요" />
+                        <>
+                            <ImageCarousel images={images} onImageClick={handleImageClick} />
+                            {userType === "STAFF" && (
+                                <LikeRecruitButton onClick={handleToggleLikeRecruit} aria-disabled={isMutating}>
+                                    {isLikeRecruitButtonClicked ? (
+                                        <img src="/icons/blueHeart.svg" alt="좋아요" />
+                                    ) : (
+                                        <img src="/icons/emptyHeart.svg" alt="좋아요" />
+                                    )}
+                                </LikeRecruitButton>
                             )}
-                        </LikeRecruitButton>
+                        </>
                     )}
                 </Wrapper.RelativeBox>
 
@@ -171,23 +172,22 @@ export default function RecruitDetailPage() {
                 <Wrapper.FlexBox>
                     <ContentBox>
                         <Text.Body1>
-                            <ExpandableText text={content} maxWidth={900} />
+                            <ExpandableText text={content} maxWidth={1100} />
                         </Text.Body1>
                     </ContentBox>
                 </Wrapper.FlexBox>
 
-                <Text.Body1_1>
-                    복리후생
-                    {benefitsContent.length > 3 && (
-                        <ArrowIcon
-                            src={showAllBenefits ? "/icons/arrow_up.svg" : "/icons/arrow_down.svg"}
-                            onClick={() => setShowAllBenefits(prev => !prev)}
-                            alt="토글"
-                        />
-                    )}
-                </Text.Body1_1>
-
                 <BenefitListWrapper>
+                    <Wrapper.FlexBox alignItems="center" justifyContent="space-between">
+                        <Text.Body1_1>복리후생</Text.Body1_1>
+                        {benefitsContent.length > 3 && (
+                            <ArrowIcon
+                                src={showAllBenefits ? "/icons/arrow_up.svg" : "/icons/arrow_down.svg"}
+                                onClick={() => setShowAllBenefits(prev => !prev)}
+                                alt="토글"
+                            />
+                        )}
+                    </Wrapper.FlexBox>
                     {(showAllBenefits ? benefitsContent : benefitsContent.slice(0, 3)).map(
                         (benefit: string, idx: number) => (
                             <BenefitBox key={idx}>
@@ -287,6 +287,8 @@ const ContentBox = styled.div`
     height: 100%;
     max-height: 284px;
     min-height: 164px;
+    overflow-y: scroll;
+    scrollbar-width: none;
 `;
 const BenefitBox = styled.div`
     display: flex;
@@ -299,14 +301,15 @@ const BenefitBox = styled.div`
     border-radius: 8px;
     width: 100%;
 `;
+
 const ArrowIcon = styled.img`
     cursor: pointer;
-    margin-left: 8px;
 `;
 
 const BenefitListWrapper = styled.ul`
     display: flex;
     flex-direction: column;
+
     gap: 8px;
 `;
 
@@ -351,5 +354,5 @@ const LikeRecruitButton = styled.div`
     right: 0;
     margin: 22px 20px;
     cursor: pointer;
-    z-index: 99;
+    z-index: 1;
 `;
