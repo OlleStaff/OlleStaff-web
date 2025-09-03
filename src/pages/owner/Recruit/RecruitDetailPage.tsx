@@ -171,7 +171,7 @@ export default function RecruitDetailPage() {
                 <Wrapper.FlexBox>
                     <ContentBox>
                         <Text.Body1>
-                            <ExpandableText text={content} maxWidth={900} />
+                            <ExpandableText text={content} maxWidth={1100} />
                         </Text.Body1>
                     </ContentBox>
                 </Wrapper.FlexBox>
@@ -287,6 +287,8 @@ const ContentBox = styled.div`
     height: 100%;
     max-height: 284px;
     min-height: 164px;
+    overflow-y: scroll;
+    scrollbar-width: none;
 `;
 const BenefitBox = styled.div`
     display: flex;
