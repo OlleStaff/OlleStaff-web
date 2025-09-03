@@ -176,18 +176,17 @@ export default function RecruitDetailPage() {
                     </ContentBox>
                 </Wrapper.FlexBox>
 
-                <Text.Body1_1>
-                    복리후생
-                    {benefitsContent.length > 3 && (
-                        <ArrowIcon
-                            src={showAllBenefits ? "/icons/arrow_up.svg" : "/icons/arrow_down.svg"}
-                            onClick={() => setShowAllBenefits(prev => !prev)}
-                            alt="토글"
-                        />
-                    )}
-                </Text.Body1_1>
-
                 <BenefitListWrapper>
+                    <Wrapper.FlexBox alignItems="center" justifyContent="space-between">
+                        <Text.Body1_1>복리후생</Text.Body1_1>
+                        {benefitsContent.length > 3 && (
+                            <ArrowIcon
+                                src={showAllBenefits ? "/icons/arrow_up.svg" : "/icons/arrow_down.svg"}
+                                onClick={() => setShowAllBenefits(prev => !prev)}
+                                alt="토글"
+                            />
+                        )}
+                    </Wrapper.FlexBox>
                     {(showAllBenefits ? benefitsContent : benefitsContent.slice(0, 3)).map(
                         (benefit: string, idx: number) => (
                             <BenefitBox key={idx}>
@@ -301,14 +300,15 @@ const BenefitBox = styled.div`
     border-radius: 8px;
     width: 100%;
 `;
+
 const ArrowIcon = styled.img`
     cursor: pointer;
-    margin-left: 8px;
 `;
 
 const BenefitListWrapper = styled.ul`
     display: flex;
     flex-direction: column;
+
     gap: 8px;
 `;
 
