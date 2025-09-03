@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { UserInfo, ErrorState } from "@/types/user";
+import { validateBirthDate } from "@/utils/date";
 
 export default function useValidation() {
     const [userInfo, setUserInfo] = useState<UserInfo>({
@@ -37,8 +38,11 @@ export default function useValidation() {
             newErrors.phone = "올바른 전화번호 형식이 아닙니다.";
         }
 
-        if (!options?.skipBirthDateCheck && !/^\d{8}$/.test(userInfo.birthDate)) {
-            newErrors.birthDate = "생년월일은 8자리 숫자 (YYYYMMDD)로 입력해 주세요.";
+        if (!options?.skipBirthDateCheck) {
+            const birthError = validateBirthDate(userInfo.birthDate);
+            if (birthError) {
+                newErrors.birthDate = birthError;
+            }
         }
 
         setErrors(newErrors);
