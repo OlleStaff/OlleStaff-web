@@ -30,7 +30,7 @@ export default function Header({
     return (
         <HeaderWrapper>
             <Wrapper>
-                <Side>
+                <Side style={{ justifyContent: "flex-start" }}>
                     {showBackButton && (
                         <BackButton onClick={handleBackClick} aria-label="뒤로가기">
                             <img src="/icons/backButton.svg" />
@@ -38,7 +38,7 @@ export default function Header({
                     )}
                 </Side>
                 <Text.Title3_1 className="header-title">{title}</Text.Title3_1>
-                <Side>
+                <Side style={{ justifyContent: "flex-end" }}>
                     {rightIconSrc ? (
                         <IconButton onClick={onRightClick} aria-label="오른쪽 아이콘">
                             <img src={rightIconSrc} alt="" />
@@ -75,15 +75,17 @@ const Wrapper = styled.header`
         left: 50%;
         transform: translateX(-50%);
         max-width: calc(100% - ${SIDE_WIDTH * 2}px - 16px);
+        width: 70%;
+        display: flex;
+        justify-content: center;
     }
 `;
 
 const Side = styled.div`
-    width: ${SIDE_WIDTH}px;
     display: flex;
     align-items: center;
-    justify-content: center;
     cursor: pointer;
+    width: 55px;
 `;
 
 const BackButton = styled.button`

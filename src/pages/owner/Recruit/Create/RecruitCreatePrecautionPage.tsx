@@ -28,6 +28,8 @@ export default function RecruitCreatePrecautionPage({
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+    const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+
     const navigate = useNavigate();
 
     const handleOpenModal = () => {
@@ -41,6 +43,7 @@ export default function RecruitCreatePrecautionPage({
             setIsCompleteModalOpen(true);
         } catch (e) {
             console.error(e);
+            setIsErrorModalOpen(true);
             setIsConfirmModalOpen(false);
         }
     };
@@ -96,6 +99,17 @@ export default function RecruitCreatePrecautionPage({
                     onConfirm={() => {
                         setIsCompleteModalOpen(false);
                         navigate("/owner");
+                    }}
+                />
+            )}
+
+            {isErrorModalOpen && (
+                <Modal
+                    variant="error"
+                    title="요청 실패"
+                    confirmText="확인"
+                    handleModalClose={() => {
+                        setIsErrorModalOpen(false);
                     }}
                 />
             )}
