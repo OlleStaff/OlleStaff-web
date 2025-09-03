@@ -71,6 +71,7 @@ export default function ChatListPage() {
         if (!canDelete) return;
         deleteChatRooms(selectedIds, {
             onSuccess: () => {
+                setIsConfirmOpen(false);
                 setSelectedIds([]);
                 setOnEditMode(false);
                 setIsCompleteOpen(true);
@@ -117,9 +118,7 @@ export default function ChatListPage() {
                                 setIsConfirmOpen(true);
                             }}
                         >
-                            <Text.Body1_1 color="Gray4" onClick={() => setIsConfirmOpen(true)}>
-                                삭제
-                            </Text.Body1_1>
+                            <Text.Body1_1 color="Gray4">삭제</Text.Body1_1>
                         </DeleteButton>
                     </Wrapper.FlexBox>
                 )}
