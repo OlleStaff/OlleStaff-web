@@ -33,7 +33,6 @@ const Wrapper = styled.button<{ $isActive: boolean }>`
     color: ${({ $isActive }) => ($isActive ? "white" : "black")};
     border: ${({ $isActive, theme }) => ($isActive ? `2px solid ${theme.color.Main}` : "1px solid #D9D9D9")};
     cursor: pointer;
-    transition: all 0.2s ease;
 `;
 
 const IconImage = styled.img`

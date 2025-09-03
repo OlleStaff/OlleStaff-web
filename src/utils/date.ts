@@ -122,3 +122,29 @@ export function formatDateHeader(ts: number | string | Date): string {
     if (diff === -1) return `어제 (${day})`;
     return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")} `;
 }
+
+// 생년월일 유효성 검사
+export function validateBirthDate(birth: string): string | null {
+    if (!/^\d{8}$/.test(birth)) {
+        return "생년월일은 8자리 숫자 (YYYYMMDD)로 입력해 주세요.";
+    }
+
+    const year = parseInt(birth.substring(0, 4), 10);
+    const month = parseInt(birth.substring(4, 6), 10);
+    const day = parseInt(birth.substring(6, 8), 10);
+
+    const date = new Date(year, month - 1, day);
+
+    // 실제 날짜가 맞는지 판별
+    if (date.getFullYear() !== year || date.getMonth() + 1 !== month || date.getDate() !== day) {
+        return "올바른 생년월일을 입력해 주세요.";
+    }
+
+    // 연도 범위 검증
+    const currentYear = new Date().getFullYear();
+    if (year < 1900 || year > currentYear) {
+        return "올바른 연도를 입력해 주세요.";
+    }
+
+    return null;
+}

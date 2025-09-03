@@ -13,6 +13,8 @@ import PageWrapper from "@/components/PageWrapper";
 import styled from "@emotion/styled";
 import { UserInfo } from "@/types/user";
 import { formatPhoneNumberKR } from "@/utils/formatPhoneNumberKR";
+import { isAxiosError } from "axios";
+import Modal from "@/components/Modal";
 
 export default function SignupPage() {
     const { userInfo, errors, handleInputChange, validate } = useValidation();
@@ -47,18 +49,35 @@ export default function SignupPage() {
 
     const signupMutation = useSignup();
 
+    type ModalType = "success" | "invalid_code" | "failure" | null;
+    const [modal, setModal] = useState<ModalType>(null);
+
     const handleSubmit = () => {
         if (!validate()) return;
 
-        signupMutation.mutate({
-            nickname: userInfo.nickname,
-            phone: userInfo.phone,
-            phoneVerificationCode: userInfo.verificationCode,
-            birthDate: parseInt(userInfo.birthDate),
-            gender: userInfo.gender as "남자" | "여자",
-            image: selectedImage,
-            agreements: passedAgreements,
-        });
+        signupMutation.mutate(
+            {
+                nickname: userInfo.nickname,
+                phone: userInfo.phone,
+                phoneVerificationCode: userInfo.verificationCode,
+                birthDate: parseInt(userInfo.birthDate),
+                gender: userInfo.gender as "남자" | "여자",
+                image: selectedImage,
+                agreements: passedAgreements,
+            },
+            {
+                onSuccess: () => {
+                    setModal("success");
+                },
+                onError: err => {
+                    if (isAxiosError(err) && err.response?.status === 422) {
+                        setModal("invalid_code"); // 인증번호 오류
+                    } else {
+                        setModal("failure"); // 기타 오류
+                    }
+                },
+            }
+        );
     };
 
     useEffect(() => {
@@ -160,6 +179,42 @@ export default function SignupPage() {
                     </ButtonWrapper>
                 </div>
             </PageWrapper>
+
+            {modal === "success" && (
+                <Modal
+                    variant="default"
+                    title="회원가입 완료"
+                    message="가입이 완료되었습니다."
+                    confirmText="확인"
+                    handleModalClose={() => setModal(null)}
+                    onConfirm={() => {
+                        setModal(null);
+                        navigate("/type-select");
+                    }}
+                />
+            )}
+
+            {modal === "invalid_code" && (
+                <Modal
+                    variant="error"
+                    title="인증번호가 올바르지 않아요"
+                    message={"입력한 인증번호를 확인해 주세요."}
+                    confirmText="확인"
+                    handleModalClose={() => setModal(null)}
+                    onConfirm={() => setModal(null)}
+                />
+            )}
+
+            {modal === "failure" && (
+                <Modal
+                    variant="error"
+                    title="회원가입에 실패했어요"
+                    message="잠시 후 다시 시도해 주세요."
+                    confirmText="확인"
+                    handleModalClose={() => setModal(null)}
+                    onConfirm={() => setModal(null)}
+                />
+            )}
         </>
     );
 }
