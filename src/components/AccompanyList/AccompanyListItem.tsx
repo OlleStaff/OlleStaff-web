@@ -115,8 +115,8 @@ export const AccompanyListItem = ({
                         <StyledImage src={thumbnail} alt="thumbnail" />
                     </ImageWrapper>
                 )}
-                <Wrapper.FlexBox direction="column" justifyContent="space-between">
-                    <Text.Title3_1>{title}</Text.Title3_1>
+                <ContentCol direction="column" justifyContent="space-between">
+                    <Title>{title}</Title>
                     <Text.Body3_1
                         color="Gray4"
                         style={{
@@ -149,7 +149,7 @@ export const AccompanyListItem = ({
                             {timeAgo(createdAt)}
                         </Text.Body3>
                     </Wrapper.FlexBox>
-                </Wrapper.FlexBox>
+                </ContentCol>
             </Card>
         </>
     );
@@ -185,6 +185,18 @@ const StyledImage = styled.img`
     height: 100%;
     object-fit: cover;
     display: block;
+`;
+
+const ContentCol = styled(Wrapper.FlexBox)`
+    flex: 1 1 auto;
+    min-width: 0;
+`;
+
+const Title = styled(Text.Title3_1)`
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 `;
 
 const Icon = styled.img`
