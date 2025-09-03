@@ -115,17 +115,18 @@ export default function RecruitDetailPage() {
             <Wrapper.FlexBox direction="column" margin="43px 0 20px 0" gap="20px">
                 <Wrapper.RelativeBox>
                     {Array.isArray(images) && images.length > 0 && (
-                        <ImageCarousel images={images} onImageClick={handleImageClick} />
-                    )}
-
-                    {userType === "STAFF" && (
-                        <LikeRecruitButton onClick={handleToggleLikeRecruit} aria-disabled={isMutating}>
-                            {isLikeRecruitButtonClicked ? (
-                                <img src="/icons/blueHeart.svg" alt="좋아요" />
-                            ) : (
-                                <img src="/icons/emptyHeart.svg" alt="좋아요" />
+                        <>
+                            <ImageCarousel images={images} onImageClick={handleImageClick} />
+                            {userType === "STAFF" && (
+                                <LikeRecruitButton onClick={handleToggleLikeRecruit} aria-disabled={isMutating}>
+                                    {isLikeRecruitButtonClicked ? (
+                                        <img src="/icons/blueHeart.svg" alt="좋아요" />
+                                    ) : (
+                                        <img src="/icons/emptyHeart.svg" alt="좋아요" />
+                                    )}
+                                </LikeRecruitButton>
                             )}
-                        </LikeRecruitButton>
+                        </>
                     )}
                 </Wrapper.RelativeBox>
 
@@ -353,5 +354,5 @@ const LikeRecruitButton = styled.div`
     right: 0;
     margin: 22px 20px;
     cursor: pointer;
-    z-index: 99;
+    z-index: 1;
 `;
