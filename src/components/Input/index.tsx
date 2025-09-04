@@ -26,6 +26,8 @@ type InputProps = {
     minLength?: number;
     options?: { label: string; value: string }[];
     onSelect?: (value: string) => void;
+    titleColor?: keyof typeof theme.color;
+    valueColor?: keyof typeof theme.color;
 };
 
 export default function Input(props: InputProps) {
@@ -47,6 +49,8 @@ export default function Input(props: InputProps) {
         required,
         maxLength,
         minLength,
+        titleColor,
+        valueColor,
     } = props;
 
     const hasBottomMessage = "bottomMessage" in props;
@@ -59,10 +63,10 @@ export default function Input(props: InputProps) {
     return (
         <InputContainer>
             {inputTitle !== "" && (
-                <Text.Body1_1>
+                <InputTitle $color={titleColor}>
                     {inputTitle}
                     {required && <RequiredStar>*</RequiredStar>}
-                </Text.Body1_1>
+                </InputTitle>
             )}
 
             <section>
@@ -100,6 +104,7 @@ export default function Input(props: InputProps) {
                             disabled={disabled}
                             readOnly={readOnly}
                             maxLength={maxLength}
+                            $color={valueColor}
                         />
                         {rightIcon && <RightIconArea onClick={onRightIconClick}>{rightIcon}</RightIconArea>}
                     </InputWrapper>
@@ -126,6 +131,10 @@ export default function Input(props: InputProps) {
     );
 }
 
+const InputTitle = styled(Text.Body1_1)<{ $color?: keyof typeof theme.color }>`
+    color: ${({ $color, theme }) => ($color ? theme.color[$color] : theme.color.Black)};
+`;
+
 const InputContainer = styled.div`
     width: 100%;
     display: flex;
@@ -144,7 +153,7 @@ const InputWrapper = styled.div<{ variant: InputVariant }>`
     background-color: ${theme.color.Gray0};
 `;
 
-const StyledInput = styled.input`
+const StyledInput = styled.input<{ $color?: keyof typeof theme.color }>`
     flex: 1;
     background: transparent;
     border: none;
@@ -153,7 +162,7 @@ const StyledInput = styled.input`
     font-weight: 500;
     line-height: 20px;
     letter-spacing: 0.32px;
-    color: ${theme.color.Black};
+    color: ${({ $color, theme }) => ($color ? theme.color[$color] : theme.color.Black)};
     width: 100%;
 
     &::placeholder {
