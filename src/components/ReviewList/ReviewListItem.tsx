@@ -158,7 +158,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
             )}
 
             <Card>
-                <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
+                <Wrapper.FlexBox justifyContent="space-between" alignItems="center" gap="20px">
                     <Text.Body1_1>{title}</Text.Body1_1>
                     <OptionButton
                         placement="bottom"
