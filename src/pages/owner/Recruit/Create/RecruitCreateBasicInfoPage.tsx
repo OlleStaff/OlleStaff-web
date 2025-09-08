@@ -17,6 +17,7 @@ import CategorySelector from "../../components/CategorySelector";
 interface RecruitBasicInfoPageCreateProps {
     formData: EmploymentPostProps;
     setFormData: React.Dispatch<React.SetStateAction<EmploymentPostProps>>;
+    imageFiles: File[];
     setImageFiles: React.Dispatch<React.SetStateAction<File[]>>;
     onNext: () => void;
 }
@@ -24,15 +25,18 @@ interface RecruitBasicInfoPageCreateProps {
 export default function RecruitCreateBasicInfoPage({
     formData,
     setFormData,
+    imageFiles,
     setImageFiles,
     onNext,
 }: RecruitBasicInfoPageCreateProps) {
     const hasBenefits = formData.benefitsContent.some(b => b.trim().length > 0);
     const url = formData.instarUrl.trim();
     const hasValidUrl = url.length >= 10 && url.length <= 100;
+    const hasImages = imageFiles.length > 0;
     const isFormValid = Boolean(
         formData.title.trim() &&
             hasValidUrl &&
+            hasImages &&
             formData.startedAt.trim() &&
             formData.endedAt.trim() &&
             formData.recruitmentEnd.trim() &&

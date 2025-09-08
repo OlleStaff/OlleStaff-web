@@ -48,6 +48,7 @@ export default function RecruitCreateContainer() {
                     <RecruitCreateBasicInfoPage
                         formData={formData}
                         setFormData={setFormData}
+                        imageFiles={imageFiles}
                         setImageFiles={setImageFiles}
                         onNext={handleNextStep}
                     />

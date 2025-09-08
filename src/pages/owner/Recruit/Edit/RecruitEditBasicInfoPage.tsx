@@ -37,9 +37,11 @@ export default function RecruitEditBasicInfoPage({
     const hasBenefits = formData.benefitsContent.some(b => b.trim().length > 0);
     const url = formData.instarUrl.trim();
     const hasValidUrl = url.length >= 10 && url.length <= 100;
+    const hasImages = (formData.imageUrls?.length ?? 0) > 0 || (formData.newImages?.length ?? 0) > 0;
     const isFormValid = Boolean(
         formData.title.trim() &&
             hasValidUrl &&
+            hasImages &&
             formData.startedAt.trim() &&
             formData.endedAt.trim() &&
             formData.recruitmentEnd.trim() &&
