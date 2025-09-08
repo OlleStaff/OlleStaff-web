@@ -8,16 +8,21 @@ import PrecautionListItem from "../../components/PrecautionListItem";
 import { EmploymentPutProps } from "@/types/employment";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 
 interface RecruitEditPrecautionPageProps {
     formData: EmploymentPutProps;
     setFormData: React.Dispatch<React.SetStateAction<EmploymentPutProps>>;
+    errorMessage: string;
+    setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
     handleSubmit: () => void;
 }
 
 export default function RecruitEditPrecautionPage({
     formData,
     setFormData,
+    errorMessage,
+    setErrorMessage,
     handleSubmit,
 }: RecruitEditPrecautionPageProps) {
     const isFormValid =
@@ -38,11 +43,23 @@ export default function RecruitEditPrecautionPage({
     const handleConfirm = async () => {
         try {
             await handleSubmit();
-            navigate("/owner");
             setIsConfirmModalOpen(false);
-        } catch (e) {
+            setIsCompleteModalOpen(true);
+        } catch (error) {
+            const e = error as AxiosError<{ message?: string }>;
+            setIsConfirmModalOpen(false);
             setIsErrorModalOpen(true);
-            console.log(e);
+            setIsCompleteModalOpen(false);
+
+            const status = e.response?.status;
+            const serverMsg = e.response?.data?.message;
+            if (status === 500) {
+                setErrorMessage("일시적인 서버 오류입니다");
+            } else if (!status) {
+                setErrorMessage("네트워크 오류가 발생했습니다");
+            } else {
+                setErrorMessage(serverMsg ?? "요청 처리에 실패했습니다");
+            }
         }
     };
 
@@ -87,10 +104,7 @@ export default function RecruitEditPrecautionPage({
                     cancelText="취소"
                     confirmText="수정"
                     handleModalClose={() => setIsConfirmModalOpen(false)}
-                    onConfirm={() => {
-                        setIsConfirmModalOpen(false);
-                        setIsCompleteModalOpen(true);
-                    }}
+                    onConfirm={handleConfirm}
                 />
             )}
 
@@ -103,17 +117,25 @@ export default function RecruitEditPrecautionPage({
                         setIsCompleteModalOpen(false);
                         navigate("/owner");
                     }}
-                    onConfirm={handleConfirm}
+                    onConfirm={() => {
+                        setIsCompleteModalOpen(false);
+                        navigate("/owner");
+                    }}
                 />
             )}
 
             {isErrorModalOpen && (
                 <Modal
                     variant="error"
-                    title="요청 실패"
+                    title={errorMessage}
                     confirmText="확인"
                     handleModalClose={() => {
                         setIsErrorModalOpen(false);
+                        setErrorMessage("");
+                    }}
+                    onConfirm={() => {
+                        setIsErrorModalOpen(false);
+                        setErrorMessage("");
                     }}
                 />
             )}

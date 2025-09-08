@@ -73,7 +73,7 @@ export default function RecruitCreateBasicInfoPage({
                         value={formData.title}
                         onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
                         required
-                        maxLength={200}
+                        maxLength={35}
                     />
                     <Input
                         inputTitle="인스타 및 링크 URL"

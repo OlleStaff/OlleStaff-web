@@ -107,7 +107,7 @@ export default function RecruitEditBasicInfoPage({
                     value={formData.title}
                     onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
                     required
-                    maxLength={200}
+                    maxLength={35}
                 />
 
                 <Input

@@ -8,16 +8,21 @@ import { EmploymentPostProps } from "@/types/employment";
 import { useState } from "react";
 import Modal from "@/components/Modal";
 import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 
 interface RecruitCreatePrecautionPageProps {
     formData: EmploymentPostProps;
     setFormData: React.Dispatch<React.SetStateAction<EmploymentPostProps>>;
+    errorMessage: string;
+    setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
     handleSubmit: () => void;
 }
 
 export default function RecruitCreatePrecautionPage({
     formData,
     setFormData,
+    errorMessage,
+    setErrorMessage,
     handleSubmit,
 }: RecruitCreatePrecautionPageProps) {
     const isFormValid =
@@ -41,8 +46,18 @@ export default function RecruitCreatePrecautionPage({
             await handleSubmit();
             setIsConfirmModalOpen(false);
             setIsCompleteModalOpen(true);
-        } catch (e) {
+        } catch (error) {
+            const e = error as AxiosError<{ message?: string }>;
             console.error(e);
+            const status = e.response?.status;
+            const serverMsg = e.response?.data?.message;
+            if (status === 500) {
+                setErrorMessage("일시적인 서버 오류입니다");
+            } else if (!status) {
+                setErrorMessage("네트워크 오류가 발생했습니다");
+            } else {
+                setErrorMessage(serverMsg ?? "요청 처리에 실패했습니다");
+            }
             setIsErrorModalOpen(true);
             setIsConfirmModalOpen(false);
         }
@@ -106,10 +121,15 @@ export default function RecruitCreatePrecautionPage({
             {isErrorModalOpen && (
                 <Modal
                     variant="error"
-                    title="요청 실패"
+                    title={errorMessage}
                     confirmText="확인"
                     handleModalClose={() => {
                         setIsErrorModalOpen(false);
+                        setErrorMessage("");
+                    }}
+                    onConfirm={() => {
+                        setIsErrorModalOpen(false);
+                        setErrorMessage("");
                     }}
                 />
             )}

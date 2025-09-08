@@ -15,6 +15,8 @@ export default function RecruitEditContainer() {
     const [imageUrls, setImageUrls] = useState<string[]>([]);
     const [_imageNames, setImageNames] = useState<string[]>([]);
 
+    const [errorMessage, setErrorMessage] = useState("");
+
     const { data: employment } = useGetEmploymentDetail(Number(employmentId));
     const { mutateAsync: editEmployment } = usePutEmployment();
 
@@ -120,6 +122,8 @@ export default function RecruitEditContainer() {
                     <RecruitEditPrecautionPage
                         formData={formData}
                         setFormData={setFormData as React.Dispatch<React.SetStateAction<EmploymentPutProps>>}
+                        errorMessage={errorMessage}
+                        setErrorMessage={setErrorMessage}
                         handleSubmit={handleEditEmployment}
                     />
                 }
