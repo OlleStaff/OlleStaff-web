@@ -13,6 +13,7 @@ import HashTagEditor from "../../components/HashTagEditor";
 import BenefitListEditor from "../../components/BenefitListEditor";
 import LocationSelector from "../../components/LocationSelector";
 import CategorySelector from "../../components/CategorySelector";
+import { useMemo } from "react";
 
 interface RecruitBasicInfoPageCreateProps {
     formData: EmploymentPostProps;
@@ -50,7 +51,7 @@ export default function RecruitCreateBasicInfoPage({
             formData.longitude !== 0 &&
             formData.precautions.length > 0
     );
-
+    const previewUrls = useMemo(() => imageFiles.map(file => URL.createObjectURL(file)), [imageFiles]);
     return (
         <>
             <Header title="게시글 작성" showBackButton />
@@ -58,6 +59,7 @@ export default function RecruitCreateBasicInfoPage({
                 <Wrapper.FlexBox direction="column" gap="20px">
                     <ImageUploader
                         maxImages={9}
+                        previewImageUrls={previewUrls}
                         onChange={({ files }) => {
                             setImageFiles(files);
                         }}
