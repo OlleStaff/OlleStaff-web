@@ -146,6 +146,7 @@ export default function EditApplicationPage() {
                             value={formData.link}
                             onChange={e => setFormData(prev => ({ ...prev, link: e.target.value }))}
                             readOnly={!isEditMode}
+                            placeholder="링크를 첨부해주세요."
                         />
                     </FieldGroup>
 

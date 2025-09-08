@@ -97,12 +97,14 @@ export default function StaffApplicationViewPage() {
                                 <Icon src="/icons/call.svg" />
                                 {formatPhoneNumberKR(profile.phone)}
                             </Text.Body2_1>
-                            <Text.Body2_1 color="Gray5">
-                                <Icon src="/icons/insta.svg" />
-                                <a href={application.link} target="_blank">
-                                    {truncateText(application.link, 45)}
-                                </a>
-                            </Text.Body2_1>
+                            {application.link && application.link.trim() !== "" && (
+                                <Text.Body2_1 color="Gray5">
+                                    <Icon src="/icons/insta.svg" />
+                                    <a href={application.link} target="_blank">
+                                        {truncateText(application.link, 45)}
+                                    </a>
+                                </Text.Body2_1>
+                            )}
                         </Wrapper.FlexBox>
                     </Wrapper.FlexBox>
 

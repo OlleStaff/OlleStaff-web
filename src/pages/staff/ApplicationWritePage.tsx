@@ -80,40 +80,42 @@ export default function ApplicationWritePage() {
                             value={formData.mbti}
                             onChange={e => setFormData(prev => ({ ...prev, mbti: e.target.value }))}
                             placeholder="MBTI를 입력하세요."
+                            variant="default"
                             required
                         />
                     </FieldGroup>
 
-                    <FieldGroup>
-                        <Input
-                            inputTitle="링크 첨부"
-                            value={formData.link}
-                            onChange={e => setFormData(prev => ({ ...prev, link: e.target.value }))}
-                            placeholder="인스타 링크 및 링크 1개를 첨부해주세요."
-                        />
-                    </FieldGroup>
-
                     <Textarea
-                        textareaTitle="자기소개 작성"
+                        textareaTitle="자기소개 및 지원 동기 작성"
                         value={formData.introduction}
                         onChange={e => setFormData(prev => ({ ...prev, introduction: e.target.value }))}
                         placeholder="나를 소개할 수 있는 자기소개를 작성하세요."
                         required
                     />
                     <Textarea
-                        textareaTitle="지원 동기 작성"
+                        textareaTitle="자기소개 및 지원 동기 작성"
                         value={formData.motivation}
                         onChange={e => setFormData(prev => ({ ...prev, motivation: e.target.value }))}
                         placeholder="지원 동기를 작성하세요."
                         required
                     />
                     <Textarea
-                        textareaTitle="어필 사항"
+                        textareaTitle="어필 및 경력사항"
                         value={formData.appeal}
                         onChange={e => setFormData(prev => ({ ...prev, appeal: e.target.value }))}
-                        placeholder="ex) 이전 스텝 경험, 언어 능력 등"
+                        placeholder="이전 스텝 경험, 언어 능력 등 나를 어필할 수 있는 어필사항이나 경력을 소개해주세요."
                         required
                     />
+
+                    <FieldGroup>
+                        <Input
+                            inputTitle="링크 첨부"
+                            value={formData.link}
+                            onChange={e => setFormData(prev => ({ ...prev, link: e.target.value }))}
+                            placeholder="링크를 첨부해주세요."
+                            variant="default"
+                        />
+                    </FieldGroup>
 
                     <FieldGroup>
                         <Text.Body1_1>사진 첨부</Text.Body1_1>

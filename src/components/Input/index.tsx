@@ -105,6 +105,7 @@ export default function Input(props: InputProps) {
                             readOnly={readOnly}
                             maxLength={maxLength}
                             $color={valueColor}
+                            variant={variant}
                         />
                         {rightIcon && <RightIconArea onClick={onRightIconClick}>{rightIcon}</RightIconArea>}
                     </InputWrapper>
@@ -153,7 +154,10 @@ const InputWrapper = styled.div<{ variant: InputVariant }>`
     background-color: ${theme.color.Gray0};
 `;
 
-const StyledInput = styled.input<{ $color?: keyof typeof theme.color }>`
+const StyledInput = styled.input<{
+    $color?: keyof typeof theme.color;
+    variant: InputVariant;
+}>`
     flex: 1;
     background: transparent;
     border: none;
@@ -166,7 +170,12 @@ const StyledInput = styled.input<{ $color?: keyof typeof theme.color }>`
     width: 100%;
 
     &::placeholder {
-        color: ${theme.color.Gray4};
+        color: ${({ variant, theme }) =>
+            variant === "comment" || variant === "message" ? theme.color.Gray4 : theme.color.Gray3};
+        font-size: 16px;
+        line-height: 20px;
+        font-weight: ${({ variant }) => (variant === "comment" || variant === "message" ? 500 : 400)};
+        letter-spacing: 0.32px;
     }
 `;
 
