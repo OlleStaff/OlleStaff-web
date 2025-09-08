@@ -35,6 +35,8 @@ export interface EmploymentGetProps extends EmploymentBase {
     employmentId: number;
     images: string[];
     phoneNum: string;
+    rating: string;
+    reviewCount: number;
 }
 
 // 게시글 목록 조회용

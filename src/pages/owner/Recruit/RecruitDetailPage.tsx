@@ -68,6 +68,8 @@ export default function RecruitDetailPage() {
         latitude,
         longitude,
         phoneNum,
+        rating,
+        reviewCount,
     } = detail.data;
 
     const handleEditClick = () => {
@@ -103,6 +105,9 @@ export default function RecruitDetailPage() {
         },
     ];
 
+    const handleClickReview = () => {
+        navigate(userType === "GUESTHOUSE" ? "/owner/userinfo/reviews" : "/staff/user/my-reviews");
+    };
     return (
         <>
             <Header
@@ -145,6 +150,16 @@ export default function RecruitDetailPage() {
                 )}
 
                 <Text.Title1_1>{title}</Text.Title1_1>
+                <Wrapper.FlexBox onClick={handleClickReview} pointer>
+                    <Wrapper.FlexBox gap="5px" width="75px" height="20px">
+                        <img src="/icons/fullStar.svg" alt="별점" />
+                        <Text.Body1_1>{Number.isNaN(Number(rating)) ? "0.0" : rating}</Text.Body1_1>
+                    </Wrapper.FlexBox>
+                    <Wrapper.FlexBox gap="8px">
+                        <Text.Body1_1 color="Gray4">{reviewCount}개의 리뷰 </Text.Body1_1>
+                        <img src="/icons/arrow.svg" alt="별점" />
+                    </Wrapper.FlexBox>
+                </Wrapper.FlexBox>
 
                 <Wrapper.FlexBox direction="column" gap="7px">
                     <Wrapper.FlexBox justifyContent="space-between">
