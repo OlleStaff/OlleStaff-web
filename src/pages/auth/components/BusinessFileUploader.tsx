@@ -4,13 +4,18 @@ import styled from "@emotion/styled";
 import theme from "@/styles/theme";
 import { useRef } from "react";
 import { Wrapper } from "@/styles/Wrapper";
+import { truncateText } from "@/utils/truncateText";
 
 interface Props {
     selectedFile: File | null;
     onFileChange: (file: File | null) => void;
+    setErrorMessgae: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function BusinessFileUploader({ selectedFile, onFileChange }: Props) {
+const BYTES_IN_MB = 1024 * 1024;
+const MAX_FILE_MB = 20;
+
+export default function BusinessFileUploader({ selectedFile, onFileChange, setErrorMessgae }: Props) {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleFileClick = () => {
@@ -19,6 +24,15 @@ export default function BusinessFileUploader({ selectedFile, onFileChange }: Pro
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
+        if (file) {
+            if (file.size > MAX_FILE_MB * BYTES_IN_MB) {
+                const msg = `단일 파일 최대 용량은 ${MAX_FILE_MB}MB 입니다.`;
+                setErrorMessgae(msg);
+                e.target.value = "";
+                return;
+            }
+            setErrorMessgae("");
+        }
         onFileChange(file);
     };
 
@@ -30,7 +44,7 @@ export default function BusinessFileUploader({ selectedFile, onFileChange }: Pro
                     <input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleChange} />
                     {selectedFile ? (
                         <FileName>
-                            <Text.Body1>{selectedFile.name}</Text.Body1>
+                            <Text.Body1>{truncateText(selectedFile.name, 25)}</Text.Body1>
                             <img
                                 src="/icons/xButton.svg"
                                 alt="X"
