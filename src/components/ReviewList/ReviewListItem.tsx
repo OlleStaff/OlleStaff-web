@@ -159,7 +159,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
 
             <Card>
                 <Wrapper.FlexBox justifyContent="space-between" alignItems="center" gap="20px">
-                    <Text.Body1_1>{title}</Text.Body1_1>
+                    <Text.Title4>{title}</Text.Title4>
                     <OptionButton
                         placement="bottom"
                         menus={[{ label: "후기 삭제", onClick: () => openModal("confirm", "deleteReview") }]}
@@ -168,7 +168,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
 
                 <ContentWrapper>
                     <UserWrapper>
-                        <ClickableNickname userId={3} nickname={nickName} />
+                        <Text.Body1_1>{nickName}님</Text.Body1_1>
                         <img src="/icons/fullStar.svg" alt="별" style={{ width: "15px" }} />
                         <Text.Body2_1>{rating}</Text.Body2_1>
                     </UserWrapper>
@@ -190,7 +190,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                         />
                     )}
 
-                    <Text.Body2_1>
+                    <Text.Body1>
                         <Wrapper.FlexBox
                             style={{
                                 overflow: "auto",
@@ -200,7 +200,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                         >
                             <ExpandableText text={review} maxWidth={500} />
                         </Wrapper.FlexBox>
-                    </Text.Body2_1>
+                    </Text.Body1>
 
                     <Wrapper.FlexBox direction="column" gap="8px">
                         <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
