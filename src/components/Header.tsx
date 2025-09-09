@@ -57,7 +57,7 @@ const HeaderWrapper = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    width: 393px;
+    width: 100%;
     z-index: 10;
     padding: 0 30px;
     background-color: white;

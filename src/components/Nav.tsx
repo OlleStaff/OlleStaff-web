@@ -65,10 +65,9 @@ export default function Nav({ version }: NavProps) {
 }
 
 const NavWrapper = styled.div`
-    position: fixed;
+    position: absolute;
     bottom: 0;
-    /* width: 100%; */
-
+    width: 100%;
     margin: 0 auto; // 가운데 정렬
     height: 78px;
     z-index: 10;

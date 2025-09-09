@@ -98,9 +98,9 @@ export const GlobalStyle = () => css`
     hgroup,
     menu,
     nav,
-    html,
-    body {
+    html {
         height: 100%;
+        height: -webkit-fill-available;
     }
     section {
         display: block;
@@ -109,25 +109,22 @@ export const GlobalStyle = () => css`
         margin: 0;
         display: flex;
         justify-content: center;
-        align-items: center;
         font-family: "Pretendard", sans-serif;
-        overflow: hidden;
         scroll-behavior: smooth;
         background-color: #efefef;
-        height: 100vh;
-        padding-top: env(safe-area-inset-top); // 상태바/노치 대응
-        padding-bottom: env(safe-area-inset-bottom); // 하단 제스처 영역 대응
+        height: 100%;
+        height: -webkit-fill-available;
     }
     #root {
-        /* display: flex; */
-        /* justify-content: center; */
-        /* align-items: center; */
-        width: 393px;
+        max-width: 375px;
         min-width: 375px;
-        height: 100vh;
-        min-height: 100dvh; // 폰으로 볼 때 아래 잘림 해결 시도
+        width: 100%;
+        min-height: 100dvh;
+        min-height: -webkit-fill-available;
+        box-sizing: border-box;
         background-color: white;
         position: relative;
+        margin: 0 auto;
     }
     ol,
     ul {
