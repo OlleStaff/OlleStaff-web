@@ -8,7 +8,7 @@ import theme from "@/styles/theme";
 import { calculateDDay, formatDateToMonthDay } from "@/utils/date";
 import { truncateText } from "@/utils/truncateText";
 import ExpandableText from "@/components/ExpandableText";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageViewer from "@/components/ImageViewer";
 import MapComponent from "../components/Map";
 import ImageCarousel from "@/components/ImageCarousel";
@@ -26,8 +26,13 @@ export default function RecruitDetailPage() {
         setCurrentImageIndex(idx);
         setViewerOpen(true);
     };
+    const { employmentId } = useParams<{ employmentId: string }>();
+    const { data: detail, isLoading, error } = useGetEmploymentDetail(Number(employmentId));
+    const [isLikeRecruitButtonClicked, setIsLikeRecruitButtonClicked] = useState<boolean>(!!detail?.data.heart);
+    useEffect(() => {
+        if (detail?.data) setIsLikeRecruitButtonClicked(!!detail.data.heart);
+    }, [detail?.data?.heart]);
 
-    const [isLikeRecruitButtonClicked, setIsLikeRecruitButtonClicked] = useState(false);
     const { mutate: likeRecruit, isPending: isLikePending } = usePostLikeRecruit();
     const { mutate: unlikeRecruit, isPending: isUnlikePending } = useDeleteLikeRecruit();
     const isMutating = isLikePending || isUnlikePending;
@@ -48,8 +53,7 @@ export default function RecruitDetailPage() {
     };
 
     const userType = useUserStore(state => state.type);
-    const { employmentId } = useParams<{ employmentId: string }>();
-    const { data: detail, isLoading, error } = useGetEmploymentDetail(Number(employmentId));
+
     if (!detail?.data || isLoading) return <LoadingSpinner />;
     if (error) navigate("/404");
     const {
