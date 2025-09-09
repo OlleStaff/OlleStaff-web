@@ -237,6 +237,7 @@ const IconText = styled.div`
     align-items: center;
     gap: 2px;
     min-width: 0;
+    width: 100%;
 `;
 
 const Icon = styled.img`
