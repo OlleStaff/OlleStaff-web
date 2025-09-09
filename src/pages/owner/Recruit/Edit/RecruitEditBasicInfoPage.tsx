@@ -14,6 +14,9 @@ import HashTagEditor from "../../components/HashTagEditor";
 import BenefitListEditor from "../../components/BenefitListEditor";
 import LocationSelector from "../../components/LocationSelector";
 import CategorySelector from "../../components/CategorySelector";
+import { useMemo } from "react";
+import { getVisibleDateErrors } from "@/utils/validateRecruitDate";
+import { Text } from "@/styles/Text";
 
 interface Props {
     formData: EmploymentPutProps;
@@ -77,6 +80,16 @@ export default function RecruitEditBasicInfoPage({
           JSON.stringify(employment.data.images) !== JSON.stringify(formData.imageUrls) ||
           formData.newImages.length !== 0
         : false;
+
+    const visibleErrors = useMemo(
+        () =>
+            getVisibleDateErrors({
+                startedAt: formData.startedAt,
+                endedAt: formData.endedAt,
+                recruitmentEnd: formData.recruitmentEnd,
+            }),
+        [formData.startedAt, formData.endedAt, formData.recruitmentEnd]
+    );
 
     return (
         <>
@@ -145,39 +158,59 @@ export default function RecruitEditBasicInfoPage({
                 </Wrapper.FlexBox>
 
                 <Wrapper.FlexBox justifyContent="space-between">
-                    <Wrapper.FlexBox width="48%">
+                    <Wrapper.FlexBox width="48%" direction="column" alignItems="flex-end">
                         <Input
                             inputTitle="시작일"
                             placeholder="예) 2025-02-08"
                             variant="default"
                             value={formData.startedAt}
                             onChange={e =>
-                                setFormData(prev => ({ ...prev, startedAt: formatDateInput(e.target.value) }))
+                                setFormData(prev => ({
+                                    ...prev,
+                                    startedAt: formatDateInput(e.target.value),
+                                }))
                             }
                             required
                         />
+                        {visibleErrors.startedAt && (
+                            <Text.Caption1 color="Red1">{visibleErrors.startedAt}</Text.Caption1>
+                        )}
                     </Wrapper.FlexBox>
-                    <Wrapper.FlexBox width="48%">
+                    <Wrapper.FlexBox width="48%" direction="column" alignItems="flex-end">
                         <Input
                             inputTitle="종료일"
                             placeholder="예) 2025-12-22"
                             variant="default"
                             value={formData.endedAt}
-                            onChange={e => setFormData(prev => ({ ...prev, endedAt: formatDateInput(e.target.value) }))}
+                            onChange={e =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    endedAt: formatDateInput(e.target.value),
+                                }))
+                            }
                             required
                         />
+                        {visibleErrors.endedAt && <Text.Caption1 color="Red1">{visibleErrors.endedAt}</Text.Caption1>}
                     </Wrapper.FlexBox>
                 </Wrapper.FlexBox>
-
-                <Input
-                    inputTitle="모집 마감일"
-                    placeholder="예) 2025-02-01"
-                    variant="default"
-                    value={formData.recruitmentEnd}
-                    onChange={e => setFormData(prev => ({ ...prev, recruitmentEnd: formatDateInput(e.target.value) }))}
-                    required
-                />
-
+                <Wrapper.FlexBox direction="column" alignItems="flex-end">
+                    <Input
+                        inputTitle="모집 마감일"
+                        placeholder="예) 2025-02-01"
+                        variant="default"
+                        value={formData.recruitmentEnd}
+                        onChange={e =>
+                            setFormData(prev => ({
+                                ...prev,
+                                recruitmentEnd: formatDateInput(e.target.value),
+                            }))
+                        }
+                        required
+                    />
+                    {visibleErrors.recruitmentEnd && visibleErrors.recruitmentEnd && (
+                        <Text.Caption1 color="Red1">{visibleErrors.recruitmentEnd}</Text.Caption1>
+                    )}
+                </Wrapper.FlexBox>
                 <Textarea
                     textareaTitle="게스트 하우스 소개글"
                     placeholder="소개글을 입력해 주세요."
