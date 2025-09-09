@@ -11,9 +11,15 @@ interface ImageUploaderProps {
         files: File[]; // 새 이미지 파일들
         names: string[]; // 전체 순서 (URL or 파일명)
     }) => void;
+    initialFiles?: File[];
 }
 
-export default function ImageUploader({ maxImages = 6, previewImageUrls = [], onChange }: ImageUploaderProps) {
+export default function ImageUploader({
+    maxImages = 6,
+    previewImageUrls = [],
+    onChange,
+    initialFiles,
+}: ImageUploaderProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [imageUrls, setImageUrls] = useState<string[]>([]);
     const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -25,6 +31,12 @@ export default function ImageUploader({ maxImages = 6, previewImageUrls = [], on
             setImageUrls(previewImageUrls);
         }
     }, [previewImageUrls]);
+
+    useEffect(() => {
+        if (initialFiles && initialFiles.length > 0) {
+            setImageFiles(initialFiles);
+        }
+    }, [initialFiles]);
 
     const triggerChange = (urls: string[], files: File[]) => {
         onChange?.({

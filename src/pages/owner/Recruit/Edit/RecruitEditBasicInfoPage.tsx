@@ -98,6 +98,7 @@ export default function RecruitEditBasicInfoPage({
             <Wrapper.FlexBox margin="43px 0 0 0" direction="column" gap="20px">
                 <ImageUploader
                     maxImages={9}
+                    initialFiles={formData.newImages}
                     previewImageUrls={imageUrls}
                     onChange={({ urls, files, names }) => {
                         const uniqueNames = [...new Set(names)];

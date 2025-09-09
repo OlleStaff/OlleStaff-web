@@ -53,7 +53,6 @@ export default function RecruitCreateBasicInfoPage({
             formData.longitude !== 0 &&
             formData.precautions.length > 0
     );
-    const previewUrls = useMemo(() => imageFiles.map(file => URL.createObjectURL(file)), [imageFiles]);
 
     const visibleErrors = useMemo(
         () =>
@@ -72,7 +71,7 @@ export default function RecruitCreateBasicInfoPage({
                 <Wrapper.FlexBox direction="column" gap="20px">
                     <ImageUploader
                         maxImages={9}
-                        previewImageUrls={previewUrls}
+                        initialFiles={imageFiles}
                         onChange={({ files }) => {
                             setImageFiles(files);
                         }}
