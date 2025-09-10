@@ -5,12 +5,16 @@ import styled from "@emotion/styled";
 import { useUserStore } from "@/store/useUserStore";
 import { useNavigate } from "react-router-dom";
 import api from "@/apis/axios";
+import { useState } from "react";
+import Modal from "@/components/Modal";
 
 export default function UserModeSwitcher() {
     const navigate = useNavigate();
 
     const userType = useUserStore(state => state.type);
     const resetUser = useUserStore(state => state.resetUser);
+
+    const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
 
     const handleLogout = async () => {
         try {
@@ -44,12 +48,24 @@ export default function UserModeSwitcher() {
                 <Text.Body1_1 color="Main">{modeLabel} 모드로 전환</Text.Body1_1>
             </Style.ModeChangeButton>
             <Wrapper.FlexBox justifyContent="center" gap="8px">
-                <Text.Body2 color="Gray2" onClick={handleLogout} style={{ cursor: "pointer" }}>
+                <Text.Body2 color="Gray2" onClick={() => setLogoutModalOpen(true)} style={{ cursor: "pointer" }}>
                     로그아웃
                 </Text.Body2>
                 <Text.Body2 color="Gray2"> | </Text.Body2>
                 <Text.Body2 color="Gray2">회원 탈퇴</Text.Body2>
             </Wrapper.FlexBox>
+
+            {isLogoutModalOpen && (
+                <Modal
+                    variant="confirm"
+                    title="로그아웃 하시겠습니까?"
+                    message="확인 버튼 클릭 시 로그아웃됩니다."
+                    cancelText="취소"
+                    confirmText="확인"
+                    handleModalClose={() => setLogoutModalOpen(false)}
+                    onConfirm={handleLogout}
+                />
+            )}
         </Wrapper.FlexBox>
     );
 }
