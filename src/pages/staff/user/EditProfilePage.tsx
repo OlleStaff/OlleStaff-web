@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { Text } from "@/styles/Text";
 import { useUserStore } from "@/store/useUserStore";
 import ProfileAdd from "@/components/ProfileAdd";
+import { formatPhoneNumberKR } from "@/utils/formatPhoneNumberKR";
 
 export default function EditProfilePage() {
     const [isEditMode, setIsEditMode] = useState(false);
@@ -97,12 +98,6 @@ export default function EditProfilePage() {
     const isPhoneChanged = userInfo.phone !== user.phone;
     const isVerificationRequired = isEditMode && isPhoneChanged;
 
-    const formatPhoneNumber = (value: string) => {
-        const digits = value.replace(/\D/g, "").slice(0, 11);
-        const matched = digits.match(/^(\d{3})(\d{0,4})(\d{0,4})$/);
-        return matched ? [matched[1], matched[2], matched[3]].filter(Boolean).join("-") : digits;
-    };
-
     const isFormModified =
         userInfo.nickname !== user.nickname || userInfo.phone !== user.phone || selectedImage !== null;
 
@@ -144,13 +139,15 @@ export default function EditProfilePage() {
                                 value={userInfo.birthDate}
                                 onChange={() => {}}
                                 bottomMessage={""}
+                                titleColor={isEditMode ? "Gray4" : undefined}
+                                valueColor={isEditMode ? "Gray4" : undefined}
                             />
 
                             <Wrapper.FlexBox gap="2px" alignItems="center">
                                 <Input
                                     readOnly={!isEditMode}
                                     inputTitle="전화번호"
-                                    value={formatPhoneNumber(userInfo.phone)}
+                                    value={formatPhoneNumberKR(userInfo.phone)}
                                     onChange={e => {
                                         const onlyDigits = e.target.value.replace(/\D/g, "").slice(0, 11);
                                         const formattedEvent = {

@@ -15,9 +15,11 @@ import { useClipboard } from "@/hooks/useClipboard";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/Button";
 import Modal from "@/components/Modal";
-import api from "@/apis/axios";
 import { formatPhoneNumberKR } from "@/utils/formatPhoneNumberKR";
 import { truncateText } from "@/utils/truncateText";
+import { AxiosError } from "axios";
+import Oops from "@/components/Oops";
+import { useApplicationApply } from "@/hooks/staff/useApplicationApply";
 
 export default function StaffApplicationViewPage() {
     const { state } = useLocation() as {
@@ -30,34 +32,39 @@ export default function StaffApplicationViewPage() {
     const { copy } = useClipboard();
     const navigate = useNavigate();
 
-    const { data: application, isLoading: isAppLoading } = useFetchMyApplication();
+    const { data: application, isError, error, isLoading: isAppLoading } = useFetchMyApplication();
     const { data: profile, isLoading: isProfileLoading } = useFetchUserProfile();
+    const { mutate: applyRecruit, isPending } = useApplicationApply();
+
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isViewerOpen, setViewerOpen] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [isCompleteOpen, setIsCompleteOpen] = useState(false);
-    const [isApplying, setIsApplying] = useState(false);
+    const [isAlreadyAppliedOpen, setIsAlreadyAppliedOpen] = useState(false);
+
+    const axiosError = error instanceof AxiosError ? error : undefined;
+    const isNotFound = isError && axiosError?.response?.status === 404;
 
     const onClickApply = () => setIsConfirmOpen(true);
 
-    const handleConfirmApply = async () => {
-        if (!employmentId || isApplying) return;
-        setIsApplying(true);
-        try {
-            await api.post(
-                `/apply`,
-                {},
-                {
-                    params: { employmentId },
+    const handleConfirmApply = () => {
+        if (!employmentId) return;
+
+        applyRecruit(employmentId, {
+            onSuccess: () => {
+                setIsConfirmOpen(false);
+                setIsCompleteOpen(true);
+            },
+            onError: err => {
+                const axiosErr = err as AxiosError;
+                if (axiosErr.response?.status === 409) {
+                    setIsConfirmOpen(false);
+                    setIsAlreadyAppliedOpen(true);
+                } else {
+                    alert("지원에 실패했습니다. 잠시 후 다시 시도해주세요.");
                 }
-            );
-            setIsCompleteOpen(true);
-        } catch (err) {
-            console.error("지원 실패", err);
-            alert("지원에 실패했습니다. 잠시 후 다시 시도해주세요.");
-        } finally {
-            setIsApplying(false);
-        }
+            },
+        });
     };
     const handleImageClick = (idx: number) => {
         setCurrentImageIndex(idx);
@@ -68,8 +75,31 @@ export default function StaffApplicationViewPage() {
         navigate("/staff/user/edit-application");
     };
 
-    if (isAppLoading || isProfileLoading || !application || !profile) return null;
+    if (isNotFound) {
+        return (
+            <>
+                <Header showBackButton title="나의 지원서" />
+                <Wrapper.FlexBox
+                    direction="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    style={{ minHeight: "calc(100vh - 56px)" }}
+                    gap="24px"
+                >
+                    <Oops
+                        message="작성된 지원서가 없어요"
+                        description="버튼을 클릭하여 지원서를 생성하세요."
+                        buttonLabel="지원서 작성하기"
+                        onButtonClick={() => navigate("/staff/application/write")}
+                    />
+                </Wrapper.FlexBox>
+            </>
+        );
+    }
 
+    if (isAppLoading || isProfileLoading) return null;
+    if (!application) return null;
+    if (!profile) return null;
     return (
         <>
             <Header
@@ -97,12 +127,16 @@ export default function StaffApplicationViewPage() {
                                 <Icon src="/icons/call.svg" alt="전화 아이콘" />
                                 {formatPhoneNumberKR(profile.phone)}
                             </Text.Body2_1>
-                            <Text.Body2_1 color="Gray5">
-                                <Icon src="/icons/insta.svg" alt="인스타 아이콘" />
-                                <a href={application.link} target="_blank">
-                                    {truncateText(application.link, 45)}
-                                </a>
-                            </Text.Body2_1>
+
+                            {application.link && application.link.trim() !== "" && (
+                                <Text.Body2_1 color="Gray5">
+                                    <Icon src="/icons/insta.svg" alt="인스타 아이콘" />
+                                    <a href={application.link} target="_blank">
+                                        {truncateText(application.link, 45)}
+                                    </a>
+                                </Text.Body2_1>
+                            )}
+                          
                         </Wrapper.FlexBox>
                     </Wrapper.FlexBox>
 
@@ -148,7 +182,13 @@ export default function StaffApplicationViewPage() {
 
                 {fromRecruit && (
                     <Wrapper.FlexBox padding="10px 0px 0px 0px" justifyContent="center">
-                        <Button label="지원 완료 버튼" width="large" isActive onClick={onClickApply}>
+                        <Button
+                            label="지원 완료 버튼"
+                            width="large"
+                            isActive
+                            onClick={onClickApply}
+                            disabled={isPending}
+                        >
                             지원 완료
                         </Button>
                     </Wrapper.FlexBox>
@@ -186,6 +226,14 @@ export default function StaffApplicationViewPage() {
                         setIsCompleteOpen(false);
                         navigate(-1);
                     }}
+                />
+            )}
+            {isAlreadyAppliedOpen && (
+                <Modal
+                    variant="default"
+                    title="이미 지원 완료된 공고입니다"
+                    confirmText="확인"
+                    handleModalClose={() => setIsAlreadyAppliedOpen(false)}
                 />
             )}
         </>

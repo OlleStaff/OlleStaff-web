@@ -14,6 +14,7 @@ import MyPostsPage from "@/pages/staff/user/MyPostsPage";
 import MyReviewsPage from "@/pages/staff/user/MyReviewsPage";
 import MyLikesPage from "@/pages/staff/user/MyLikesPage";
 import ReviewWritePage from "@/pages/staff/ReviewWritePage";
+import LatestGuesthousePage from "@/pages/staff/LatestGuesthousePage";
 
 const StaffRoutes: RouteObject[] = [
     {
@@ -35,6 +36,10 @@ const StaffRoutes: RouteObject[] = [
             {
                 path: "guesthouse/recommend",
                 element: <RecommendPage />,
+            },
+            {
+                path: "guesthouse/latest",
+                element: <LatestGuesthousePage />,
             },
         ],
     },
