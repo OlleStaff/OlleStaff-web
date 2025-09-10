@@ -3,7 +3,6 @@ import SectionTitle from "@/components/SectionTitle";
 import styled from "@emotion/styled";
 import CategoryList from "./components/CategoryList";
 import CardCarousel from "./components/CardCarousel";
-import { AccompanyList } from "@/components/AccompanyList";
 import Input from "@/components/Input";
 import { fetchMinimumUserInfo } from "@/hooks/user/useFetchMinumumUserInfo";
 import { useNavigate } from "react-router-dom";
