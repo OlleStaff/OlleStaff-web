@@ -95,7 +95,7 @@ export const GuesthouseListItem = ({
                         ) : (
                             <>
                                 <IconText>
-                                    <Icon src="/icons/locationIcon.svg" />
+                                    <Icon src="/icons/locationIcon.svg" alt="지역 아이콘" />
 
                                     <Location>
                                         <Text.Body3 color="Gray4" style={{ marginTop: "1px" }}>

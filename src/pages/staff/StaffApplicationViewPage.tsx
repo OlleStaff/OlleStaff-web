@@ -94,11 +94,11 @@ export default function StaffApplicationViewPage() {
                             margin="24px 0px 0px 0px"
                         >
                             <Text.Body2_1 color="Gray5">
-                                <Icon src="/icons/call.svg" />
+                                <Icon src="/icons/call.svg" alt="전화 아이콘" />
                                 {formatPhoneNumberKR(profile.phone)}
                             </Text.Body2_1>
                             <Text.Body2_1 color="Gray5">
-                                <Icon src="/icons/insta.svg" />
+                                <Icon src="/icons/insta.svg" alt="인스타 아이콘" />
                                 <a href={application.link} target="_blank">
                                     {truncateText(application.link, 45)}
                                 </a>

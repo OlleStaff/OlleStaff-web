@@ -226,7 +226,7 @@ export default function RecruitDetailPage() {
                 <Wrapper.FlexBox gap="8px" padding="24px 0px 0px 0px">
                     <ActionButton onClick={() => setPhoneModalOpen(true)} variant="call">
                         <ContentWrapper>
-                            <Icon src="/icons/call.svg" aria-hidden />
+                            <Icon src="/icons/call.svg" aria-hidden alt="전화 아이콘" />
                             <Label $variant="call">전화문의</Label>
                         </ContentWrapper>
                     </ActionButton>
@@ -241,7 +241,7 @@ export default function RecruitDetailPage() {
                         disabled={calculateDDay(recruitmentEnd) === "마감됨"}
                     >
                         <ContentWrapper>
-                            <Icon src="/icons/envelope.svg" aria-hidden />
+                            <Icon src="/icons/envelope.svg" aria-hidden alt="지원 아이콘" />
                             <Label $variant="apply">지원하기</Label>
                         </ContentWrapper>
                     </ActionButton>

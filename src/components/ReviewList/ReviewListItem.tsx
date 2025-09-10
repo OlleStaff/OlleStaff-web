@@ -226,7 +226,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                                 value={text}
                                 onChange={e => setText(e.target.value)}
                                 placeholder="댓글을 입력하세요."
-                                rightIcon={<img src="/icons/arrow_top.svg" />}
+                                rightIcon={<img src="/icons/arrow_top.svg" alt="화살표 아이콘" />}
                                 onRightIconClick={handleReCommentSubmit}
                             />
                         )}

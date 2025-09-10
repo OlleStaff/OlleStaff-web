@@ -66,11 +66,11 @@ export default function OwnerApplicationViewPage() {
 
                         <Wrapper.FlexBox direction="column" justifyContent="center" gap="12px" margin="24px 0 0 0">
                             <Text.Body2_1 color="Gray5">
-                                <Icon src="/icons/call.svg" />
+                                <Icon src="/icons/call.svg" alt="전화 아이콘" />
                                 {formatPhoneNumberKR(otherUserApplication.phone)}
                             </Text.Body2_1>
                             <Text.Body2_1 color="Gray5">
-                                <Icon src="/icons/insta.svg" />
+                                <Icon src="/icons/insta.svg" alt="인스타 아이콘" />
                                 <a href={otherUserApplication.link} target="_blank">
                                     {truncateText(otherUserApplication.link, 45)}
                                 </a>
