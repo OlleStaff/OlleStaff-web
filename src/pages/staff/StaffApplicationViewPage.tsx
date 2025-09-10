@@ -15,11 +15,11 @@ import { useClipboard } from "@/hooks/useClipboard";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/Button";
 import Modal from "@/components/Modal";
-import api from "@/apis/axios";
 import { formatPhoneNumberKR } from "@/utils/formatPhoneNumberKR";
 import { truncateText } from "@/utils/truncateText";
 import { AxiosError } from "axios";
 import Oops from "@/components/Oops";
+import { useApplicationApply } from "@/hooks/staff/useApplicationApply";
 
 export default function StaffApplicationViewPage() {
     const { state } = useLocation() as {
@@ -34,35 +34,37 @@ export default function StaffApplicationViewPage() {
 
     const { data: application, isError, error, isLoading: isAppLoading } = useFetchMyApplication();
     const { data: profile, isLoading: isProfileLoading } = useFetchUserProfile();
+    const { mutate: applyRecruit, isPending } = useApplicationApply();
+
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isViewerOpen, setViewerOpen] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [isCompleteOpen, setIsCompleteOpen] = useState(false);
-    const [isApplying, setIsApplying] = useState(false);
+    const [isAlreadyAppliedOpen, setIsAlreadyAppliedOpen] = useState(false);
 
     const axiosError = error instanceof AxiosError ? error : undefined;
     const isNotFound = isError && axiosError?.response?.status === 404;
 
     const onClickApply = () => setIsConfirmOpen(true);
 
-    const handleConfirmApply = async () => {
-        if (!employmentId || isApplying) return;
-        setIsApplying(true);
-        try {
-            await api.post(
-                `/apply`,
-                {},
-                {
-                    params: { employmentId },
+    const handleConfirmApply = () => {
+        if (!employmentId) return;
+
+        applyRecruit(employmentId, {
+            onSuccess: () => {
+                setIsConfirmOpen(false);
+                setIsCompleteOpen(true);
+            },
+            onError: err => {
+                const axiosErr = err as AxiosError;
+                if (axiosErr.response?.status === 409) {
+                    setIsConfirmOpen(false);
+                    setIsAlreadyAppliedOpen(true);
+                } else {
+                    alert("지원에 실패했습니다. 잠시 후 다시 시도해주세요.");
                 }
-            );
-            setIsCompleteOpen(true);
-        } catch (err) {
-            console.error("지원 실패", err);
-            alert("지원에 실패했습니다. 잠시 후 다시 시도해주세요.");
-        } finally {
-            setIsApplying(false);
-        }
+            },
+        });
     };
     const handleImageClick = (idx: number) => {
         setCurrentImageIndex(idx);
@@ -178,7 +180,13 @@ export default function StaffApplicationViewPage() {
 
                 {fromRecruit && (
                     <Wrapper.FlexBox padding="10px 0px 0px 0px" justifyContent="center">
-                        <Button label="지원 완료 버튼" width="large" isActive onClick={onClickApply}>
+                        <Button
+                            label="지원 완료 버튼"
+                            width="large"
+                            isActive
+                            onClick={onClickApply}
+                            disabled={isPending}
+                        >
                             지원 완료
                         </Button>
                     </Wrapper.FlexBox>
@@ -216,6 +224,14 @@ export default function StaffApplicationViewPage() {
                         setIsCompleteOpen(false);
                         navigate(-1);
                     }}
+                />
+            )}
+            {isAlreadyAppliedOpen && (
+                <Modal
+                    variant="default"
+                    title="이미 지원 완료된 공고입니다"
+                    confirmText="확인"
+                    handleModalClose={() => setIsAlreadyAppliedOpen(false)}
                 />
             )}
         </>
