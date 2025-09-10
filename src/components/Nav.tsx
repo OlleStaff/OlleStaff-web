@@ -52,7 +52,11 @@ export default function Nav({ version }: NavProps) {
                             pointer
                             onClick={() => handleClick(item.path)}
                         >
-                            <img src={isActive ? activeSrc : item.src} alt={item.alt} />
+                            <img
+                                src={isActive ? activeSrc : item.src}
+                                alt={item.alt}
+                                style={{ width: "19px", height: "19px" }}
+                            />
                             <Text.Body2_1 style={{ color: isActive ? theme.color.Main : theme.color.Gray3 }}>
                                 {item.label}
                             </Text.Body2_1>
@@ -65,10 +69,9 @@ export default function Nav({ version }: NavProps) {
 }
 
 const NavWrapper = styled.div`
-    position: fixed;
+    position: absolute;
     bottom: 0;
-    /* width: 100%; */
-
+    width: 100%;
     margin: 0 auto; // 가운데 정렬
     height: 78px;
     z-index: 10;

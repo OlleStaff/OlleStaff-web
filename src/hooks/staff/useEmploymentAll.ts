@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import api from "@/apis/axios";
 import { GuesthouseListItemProps } from "@/types/guesthouse";
 import { isClosed } from "@/utils/date";
@@ -54,5 +54,22 @@ export const useEmploymentAll = ({
         getNextPageParam: lastPage => (lastPage.hasNext ? lastPage.nextCursor : null),
         enabled,
         staleTime: 1000 * 60,
+    });
+};
+
+export const useEmploymentLatest = (pageSize: number = 10, enabled: boolean = true) => {
+    return useQuery<GuesthouseListItemProps[]>({
+        queryKey: ["employmentLatest", pageSize],
+        queryFn: async () => {
+            const { data } = await api.get(`/employments/all`, {
+                params: { type: "ALL", pageSize, cursorId: null },
+            });
+            return (data.data.employmentPreviewDTOS ?? []).map((item: GuesthouseListItemProps) => ({
+                ...item,
+                closed: isClosed(item.recruitmentEnd),
+            }));
+        },
+        staleTime: 1000 * 60,
+        enabled,
     });
 };

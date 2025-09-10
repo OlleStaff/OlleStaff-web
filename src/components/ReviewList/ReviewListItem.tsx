@@ -12,7 +12,6 @@ import ImageViewer from "../ImageViewer";
 import OptionButton from "../OptionButton";
 import { useDeleteReview, useDeleteReviewComment } from "@/hooks/owner/review";
 import Modal from "../Modal";
-import ClickableNickname from "../ClickableNickname";
 
 type ModalType = "confirm" | "success" | null;
 type ModalPurpose = "deleteReview" | "deleteComment" | "postRecomment" | null;
@@ -158,8 +157,8 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
             )}
 
             <Card>
-                <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
-                    <Text.Body1_1>{title}</Text.Body1_1>
+                <Wrapper.FlexBox justifyContent="space-between" alignItems="center" gap="20px">
+                    <Text.Title4>{title}</Text.Title4>
                     <OptionButton
                         placement="bottom"
                         menus={[{ label: "후기 삭제", onClick: () => openModal("confirm", "deleteReview") }]}
@@ -168,7 +167,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
 
                 <ContentWrapper>
                     <UserWrapper>
-                        <ClickableNickname userId={3} nickname={nickName} />
+                        <Text.Body1_1>{nickName}님</Text.Body1_1>
                         <img src="/icons/fullStar.svg" alt="별" style={{ width: "15px" }} />
                         <Text.Body2_1>{rating}</Text.Body2_1>
                     </UserWrapper>
@@ -190,7 +189,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                         />
                     )}
 
-                    <Text.Body2_1>
+                    <Text.Body1>
                         <Wrapper.FlexBox
                             style={{
                                 overflow: "auto",
@@ -200,7 +199,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                         >
                             <ExpandableText text={review} maxWidth={500} />
                         </Wrapper.FlexBox>
-                    </Text.Body2_1>
+                    </Text.Body1>
 
                     <Wrapper.FlexBox direction="column" gap="8px">
                         <Wrapper.FlexBox justifyContent="space-between" alignItems="center">
@@ -226,7 +225,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
                                 value={text}
                                 onChange={e => setText(e.target.value)}
                                 placeholder="댓글을 입력하세요."
-                                rightIcon={<img src="/icons/arrow_top.svg" />}
+                                rightIcon={<img src="/icons/arrow_top.svg" alt="화살표 아이콘" />}
                                 onRightIconClick={handleReCommentSubmit}
                             />
                         )}

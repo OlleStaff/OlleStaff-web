@@ -13,10 +13,14 @@ import HashTagEditor from "../../components/HashTagEditor";
 import BenefitListEditor from "../../components/BenefitListEditor";
 import LocationSelector from "../../components/LocationSelector";
 import CategorySelector from "../../components/CategorySelector";
+import { useMemo } from "react";
+import { getVisibleDateErrors } from "@/utils/validateRecruitDate";
+import { Text } from "@/styles/Text";
 
 interface RecruitBasicInfoPageCreateProps {
     formData: EmploymentPostProps;
     setFormData: React.Dispatch<React.SetStateAction<EmploymentPostProps>>;
+    imageFiles: File[];
     setImageFiles: React.Dispatch<React.SetStateAction<File[]>>;
     onNext: () => void;
 }
@@ -24,15 +28,18 @@ interface RecruitBasicInfoPageCreateProps {
 export default function RecruitCreateBasicInfoPage({
     formData,
     setFormData,
+    imageFiles,
     setImageFiles,
     onNext,
 }: RecruitBasicInfoPageCreateProps) {
     const hasBenefits = formData.benefitsContent.some(b => b.trim().length > 0);
     const url = formData.instarUrl.trim();
     const hasValidUrl = url.length >= 10 && url.length <= 100;
+    const hasImages = imageFiles.length > 0;
     const isFormValid = Boolean(
         formData.title.trim() &&
             hasValidUrl &&
+            hasImages &&
             formData.startedAt.trim() &&
             formData.endedAt.trim() &&
             formData.recruitmentEnd.trim() &&
@@ -47,6 +54,16 @@ export default function RecruitCreateBasicInfoPage({
             formData.precautions.length > 0
     );
 
+    const visibleErrors = useMemo(
+        () =>
+            getVisibleDateErrors({
+                startedAt: formData.startedAt,
+                endedAt: formData.endedAt,
+                recruitmentEnd: formData.recruitmentEnd,
+            }),
+        [formData.startedAt, formData.endedAt, formData.recruitmentEnd]
+    );
+
     return (
         <>
             <Header title="게시글 작성" showBackButton />
@@ -54,6 +71,7 @@ export default function RecruitCreateBasicInfoPage({
                 <Wrapper.FlexBox direction="column" gap="20px">
                     <ImageUploader
                         maxImages={9}
+                        initialFiles={imageFiles}
                         onChange={({ files }) => {
                             setImageFiles(files);
                         }}
@@ -69,7 +87,7 @@ export default function RecruitCreateBasicInfoPage({
                         value={formData.title}
                         onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
                         required
-                        maxLength={200}
+                        maxLength={35}
                     />
                     <Input
                         inputTitle="인스타 및 링크 URL"
@@ -103,7 +121,7 @@ export default function RecruitCreateBasicInfoPage({
                         />
                     </Wrapper.FlexBox>
                     <Wrapper.FlexBox justifyContent="space-between">
-                        <Wrapper.FlexBox width="48%">
+                        <Wrapper.FlexBox width="48%" direction="column" alignItems="flex-end">
                             <Input
                                 inputTitle="시작일"
                                 placeholder="예) 2025-02-08"
@@ -117,8 +135,11 @@ export default function RecruitCreateBasicInfoPage({
                                 }
                                 required
                             />
+                            {visibleErrors.startedAt && (
+                                <Text.Caption1 color="Red1">{visibleErrors.startedAt}</Text.Caption1>
+                            )}
                         </Wrapper.FlexBox>
-                        <Wrapper.FlexBox width="48%">
+                        <Wrapper.FlexBox width="48%" direction="column" alignItems="flex-end">
                             <Input
                                 inputTitle="종료일"
                                 placeholder="예) 2025-12-22"
@@ -132,21 +153,30 @@ export default function RecruitCreateBasicInfoPage({
                                 }
                                 required
                             />
+                            {visibleErrors.endedAt && (
+                                <Text.Caption1 color="Red1">{visibleErrors.endedAt}</Text.Caption1>
+                            )}
                         </Wrapper.FlexBox>
                     </Wrapper.FlexBox>
-                    <Input
-                        inputTitle="모집 마감일"
-                        placeholder="예) 2025-02-01"
-                        variant="default"
-                        value={formData.recruitmentEnd}
-                        onChange={e =>
-                            setFormData(prev => ({
-                                ...prev,
-                                recruitmentEnd: formatDateInput(e.target.value),
-                            }))
-                        }
-                        required
-                    />
+                    <Wrapper.FlexBox direction="column" alignItems="flex-end">
+                        <Input
+                            inputTitle="모집 마감일"
+                            placeholder="예) 2025-02-01"
+                            variant="default"
+                            value={formData.recruitmentEnd}
+                            onChange={e =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    recruitmentEnd: formatDateInput(e.target.value),
+                                }))
+                            }
+                            required
+                        />
+                        {visibleErrors.recruitmentEnd && visibleErrors.recruitmentEnd && (
+                            <Text.Caption1 color="Red1">{visibleErrors.recruitmentEnd}</Text.Caption1>
+                        )}
+                    </Wrapper.FlexBox>
+
                     <Textarea
                         textareaTitle="게스트 하우스 소개글"
                         placeholder="소개글을 입력해 주세요."

@@ -10,6 +10,7 @@ import useBusinessVerification from "@/hooks/auth/useBusinessVerification";
 import { useBusinessVerificationSubmit } from "@/hooks/auth/useBusinessVerificationSubmit";
 import theme from "@/styles/theme";
 import { useNavigate } from "react-router-dom";
+import { Text } from "@/styles/Text";
 
 export default function BusinessVerificationPage() {
     const { businessName, setBusinessName, selectedFile, setSelectedFile, isAgreed, setIsAgreed, clearDraft } =
@@ -44,6 +45,8 @@ export default function BusinessVerificationPage() {
         );
     };
 
+    const [errorMessgae, setErrorMessgae] = useState("");
+
     useEffect(() => {
         setIsComplete(businessName !== "" && selectedFile !== null && isAgreed);
     }, [businessName, selectedFile, isAgreed]);
@@ -65,10 +68,19 @@ export default function BusinessVerificationPage() {
                             value={businessName}
                             variant="default"
                         />
-                        <BusinessFileUploader selectedFile={selectedFile} onFileChange={setSelectedFile} />
+                        <BusinessFileUploader
+                            selectedFile={selectedFile}
+                            onFileChange={setSelectedFile}
+                            setErrorMessgae={setErrorMessgae}
+                        />
                     </Wrapper.FlexBox>
 
-                    <Wrapper.FlexBox height="auto" direction="column">
+                    <Wrapper.FlexBox height="auto" direction="column" alignItems="center">
+                        {errorMessgae && (
+                            <>
+                                <Text.Body2_1 color="Red1">{errorMessgae}</Text.Body2_1>
+                            </>
+                        )}
                         <AgreementCheck
                             isChecked={isAgreed}
                             onToggle={() => setIsAgreed(!isAgreed)}

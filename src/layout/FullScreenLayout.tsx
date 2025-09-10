@@ -3,16 +3,20 @@ import styled from "@emotion/styled";
 import PageWrapper from "@/components/PageWrapper";
 import { useRef } from "react";
 import { useScrollToTopOnPathChange } from "@/hooks/useScrollToTopOnPathChange";
+import SessionWatcher from "@/components/SessionWatcher";
 
 export default function FullscreenLayout() {
     const contentRef = useRef<HTMLDivElement>(null);
     useScrollToTopOnPathChange(contentRef);
     return (
-        <PageWrapper isRoot>
-            <FullHeightContent ref={contentRef}>
-                <Outlet />
-            </FullHeightContent>
-        </PageWrapper>
+        <>
+            <SessionWatcher />
+            <PageWrapper isRoot>
+                <FullHeightContent ref={contentRef}>
+                    <Outlet />
+                </FullHeightContent>
+            </PageWrapper>
+        </>
     );
 }
 

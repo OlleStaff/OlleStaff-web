@@ -54,7 +54,7 @@ export default function AccompanyDetailPage() {
                 <ReactionBar>
                     <LikeButton accompanyId={accompany.id} initialLiked={like} initialCount={likeCount} />
                     <IconWrapper>
-                        <Icon src="/icons/comment_black.svg" />
+                        <Icon src="/icons/comment_black.svg" alt="댓글 아이콘" />
                         <Text.Body1 style={{ marginTop: "4px" }}>{count}</Text.Body1>
                     </IconWrapper>
                 </ReactionBar>

@@ -26,7 +26,7 @@ const initialFormData: EmploymentPostProps = {
 export default function RecruitCreateContainer() {
     const [formData, setFormData] = useState<EmploymentPostProps>(initialFormData);
     const [imageFiles, setImageFiles] = useState<File[]>([]);
-
+    const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
     const createMutation = usePostEmployment();
     const handleNextStep = () => {
@@ -48,6 +48,7 @@ export default function RecruitCreateContainer() {
                     <RecruitCreateBasicInfoPage
                         formData={formData}
                         setFormData={setFormData}
+                        imageFiles={imageFiles}
                         setImageFiles={setImageFiles}
                         onNext={handleNextStep}
                     />
@@ -60,6 +61,8 @@ export default function RecruitCreateContainer() {
                         formData={formData}
                         setFormData={setFormData}
                         handleSubmit={handleSubmit}
+                        errorMessage={errorMessage}
+                        setErrorMessage={setErrorMessage}
                     />
                 }
             />

@@ -33,7 +33,7 @@ export default function Header({
                 <Side style={{ justifyContent: "flex-start" }}>
                     {showBackButton && (
                         <BackButton onClick={handleBackClick} aria-label="뒤로가기">
-                            <img src="/icons/backButton.svg" />
+                            <img src="/icons/backButton.svg" alt="뒤로가기 아이콘" />
                         </BackButton>
                     )}
                 </Side>
@@ -41,7 +41,7 @@ export default function Header({
                 <Side style={{ justifyContent: "flex-end" }}>
                     {rightIconSrc ? (
                         <IconButton onClick={onRightClick} aria-label="오른쪽 아이콘">
-                            <img src={rightIconSrc} alt="" />
+                            <img src={rightIconSrc} alt="오른쪽 아이콘" />
                         </IconButton>
                     ) : rightText ? (
                         <TextButton onClick={onRightClick}>{rightText}</TextButton>
@@ -57,7 +57,7 @@ const HeaderWrapper = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    width: 393px;
+    width: 100%;
     z-index: 10;
     padding: 0 30px;
     background-color: white;
