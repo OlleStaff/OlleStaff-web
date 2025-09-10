@@ -19,5 +19,11 @@ export const useFetchMyApplication = () => {
             const { data } = await api.get(`/applicants/my`);
             return data.data;
         },
+        retry: (failureCount, error: any) => {
+            // 404시에는 재호출 x
+            if (error?.response?.status === 404) return false;
+            // 나머지는 최대 3번까지만 재시도
+            return failureCount < 3;
+        },
     });
 };

@@ -18,6 +18,9 @@ import Modal from "@/components/Modal";
 import api from "@/apis/axios";
 import { formatPhoneNumberKR } from "@/utils/formatPhoneNumberKR";
 import { truncateText } from "@/utils/truncateText";
+import { AxiosError } from "axios";
+import Oops from "@/components/Oops";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function StaffApplicationViewPage() {
     const { state } = useLocation() as {
@@ -30,13 +33,16 @@ export default function StaffApplicationViewPage() {
     const { copy } = useClipboard();
     const navigate = useNavigate();
 
-    const { data: application, isLoading: isAppLoading } = useFetchMyApplication();
+    const { data: application, isError, error, isLoading: isAppLoading } = useFetchMyApplication();
     const { data: profile, isLoading: isProfileLoading } = useFetchUserProfile();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isViewerOpen, setViewerOpen] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [isCompleteOpen, setIsCompleteOpen] = useState(false);
     const [isApplying, setIsApplying] = useState(false);
+
+    const axiosError = error instanceof AxiosError ? error : undefined;
+    const isNotFound = isError && axiosError?.response?.status === 404;
 
     const onClickApply = () => setIsConfirmOpen(true);
 
@@ -68,8 +74,31 @@ export default function StaffApplicationViewPage() {
         navigate("/staff/user/edit-application");
     };
 
-    if (isAppLoading || isProfileLoading || !application || !profile) return null;
+    if (isNotFound) {
+        return (
+            <>
+                <Header showBackButton title="나의 지원서" />
+                <Wrapper.FlexBox
+                    direction="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    style={{ minHeight: "calc(100vh - 56px)" }}
+                    gap="24px"
+                >
+                    <Oops
+                        message="작성된 지원서가 없어요"
+                        description="버튼을 클릭하여 지원서를 생성하세요."
+                        buttonLabel="지원서 작성하기"
+                        onButtonClick={() => navigate("/staff/application/write")}
+                    />
+                </Wrapper.FlexBox>
+            </>
+        );
+    }
 
+    if (isAppLoading || isProfileLoading) return null;
+    if (!application) return null;
+    if (!profile) return null;
     return (
         <>
             <Header
