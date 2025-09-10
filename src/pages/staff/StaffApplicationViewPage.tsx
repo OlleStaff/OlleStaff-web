@@ -20,7 +20,6 @@ import { formatPhoneNumberKR } from "@/utils/formatPhoneNumberKR";
 import { truncateText } from "@/utils/truncateText";
 import { AxiosError } from "axios";
 import Oops from "@/components/Oops";
-import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function StaffApplicationViewPage() {
     const { state } = useLocation() as {
