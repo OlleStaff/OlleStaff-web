@@ -60,7 +60,7 @@ export default function CommentInput({
             value={text}
             onChange={e => setText(e.target.value)}
             placeholder={placeholder}
-            rightIcon={<SendImage src="/icons/arrow_top.svg" />}
+            rightIcon={<SendImage src="/icons/arrow_top.svg" alt="화살표 아이콘" />}
             onRightIconClick={handleSubmit}
             disabled={disabled}
         />

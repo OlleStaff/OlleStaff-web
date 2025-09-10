@@ -8,7 +8,7 @@ import theme from "@/styles/theme";
 import { calculateDDay, formatDateToMonthDay } from "@/utils/date";
 import { truncateText } from "@/utils/truncateText";
 import ExpandableText from "@/components/ExpandableText";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageViewer from "@/components/ImageViewer";
 import MapComponent from "../components/Map";
 import ImageCarousel from "@/components/ImageCarousel";
@@ -26,8 +26,13 @@ export default function RecruitDetailPage() {
         setCurrentImageIndex(idx);
         setViewerOpen(true);
     };
+    const { employmentId } = useParams<{ employmentId: string }>();
+    const { data: detail, isLoading, error } = useGetEmploymentDetail(Number(employmentId));
+    const [isLikeRecruitButtonClicked, setIsLikeRecruitButtonClicked] = useState<boolean>(!!detail?.data.heart);
+    useEffect(() => {
+        if (detail?.data) setIsLikeRecruitButtonClicked(!!detail.data.heart);
+    }, [detail?.data?.heart]);
 
-    const [isLikeRecruitButtonClicked, setIsLikeRecruitButtonClicked] = useState(false);
     const { mutate: likeRecruit, isPending: isLikePending } = usePostLikeRecruit();
     const { mutate: unlikeRecruit, isPending: isUnlikePending } = useDeleteLikeRecruit();
     const isMutating = isLikePending || isUnlikePending;
@@ -48,8 +53,7 @@ export default function RecruitDetailPage() {
     };
 
     const userType = useUserStore(state => state.type);
-    const { employmentId } = useParams<{ employmentId: string }>();
-    const { data: detail, isLoading, error } = useGetEmploymentDetail(Number(employmentId));
+
     if (!detail?.data || isLoading) return <LoadingSpinner />;
     if (error) navigate("/404");
     const {
@@ -68,6 +72,8 @@ export default function RecruitDetailPage() {
         latitude,
         longitude,
         phoneNum,
+        rating,
+        reviewCount,
     } = detail.data;
 
     const handleEditClick = () => {
@@ -103,6 +109,9 @@ export default function RecruitDetailPage() {
         },
     ];
 
+    const handleClickReview = () => {
+        navigate(userType === "GUESTHOUSE" ? "/owner/userinfo/reviews" : "/staff/user/my-reviews");
+    };
     return (
         <>
             <Header
@@ -145,6 +154,16 @@ export default function RecruitDetailPage() {
                 )}
 
                 <Text.Title1_1>{title}</Text.Title1_1>
+                <Wrapper.FlexBox onClick={handleClickReview} pointer>
+                    <Wrapper.FlexBox gap="5px" width="75px" height="20px">
+                        <img src="/icons/fullStar.svg" alt="별점" />
+                        <Text.Body1_1>{Number.isNaN(Number(rating)) ? "0.0" : rating}</Text.Body1_1>
+                    </Wrapper.FlexBox>
+                    <Wrapper.FlexBox gap="8px">
+                        <Text.Body1_1 color="Gray4">{reviewCount}개의 리뷰 </Text.Body1_1>
+                        <img src="/icons/arrow.svg" alt="별점" />
+                    </Wrapper.FlexBox>
+                </Wrapper.FlexBox>
 
                 <Wrapper.FlexBox direction="column" gap="7px">
                     <Wrapper.FlexBox justifyContent="space-between">
@@ -207,7 +226,7 @@ export default function RecruitDetailPage() {
                 <Wrapper.FlexBox gap="8px" padding="24px 0px 0px 0px">
                     <ActionButton onClick={() => setPhoneModalOpen(true)} variant="call">
                         <ContentWrapper>
-                            <Icon src="/icons/call.svg" aria-hidden />
+                            <Icon src="/icons/call.svg" aria-hidden alt="전화 아이콘" />
                             <Label $variant="call">전화문의</Label>
                         </ContentWrapper>
                     </ActionButton>
@@ -222,7 +241,7 @@ export default function RecruitDetailPage() {
                         disabled={calculateDDay(recruitmentEnd) === "마감됨"}
                     >
                         <ContentWrapper>
-                            <Icon src="/icons/envelope.svg" aria-hidden />
+                            <Icon src="/icons/envelope.svg" aria-hidden alt="지원 아이콘" />
                             <Label $variant="apply">지원하기</Label>
                         </ContentWrapper>
                     </ActionButton>

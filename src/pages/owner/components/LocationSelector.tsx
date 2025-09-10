@@ -88,7 +88,7 @@ export default function LocationSelector({ locationName, onChange, required }: L
 const Style = {
     AddressSelectorWrapper: styled.button`
         display: flex;
-        width: 333px;
+        width: 100%;
         height: 40px;
         border-radius: 8px;
         padding: 10px 17px;
