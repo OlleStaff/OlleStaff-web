@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import PageWrapper from "@/components/PageWrapper";
 import Nav from "@/components/Nav";
 import { useUserStore } from "@/store/useUserStore";
+import SessionWatcher from "@/components/SessionWatcher";
 
 const mapUserType = (type: "STAFF" | "GUESTHOUSE" | null): "staff" | "owner" => {
     if (type === "GUESTHOUSE") return "owner";
@@ -14,12 +15,15 @@ export default function CommonLayout() {
     const version = mapUserType(type);
 
     return (
-        <PageWrapper hasNav>
-            <ContentWrapper>
-                <Outlet />
-            </ContentWrapper>
-            <Nav version={version} />
-        </PageWrapper>
+        <>
+            <SessionWatcher />
+            <PageWrapper hasNav>
+                <ContentWrapper>
+                    <Outlet />
+                </ContentWrapper>
+                <Nav version={version} />
+            </PageWrapper>
+        </>
     );
 }
 

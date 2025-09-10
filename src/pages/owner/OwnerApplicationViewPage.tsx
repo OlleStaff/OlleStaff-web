@@ -69,12 +69,14 @@ export default function OwnerApplicationViewPage() {
                                 <Icon src="/icons/call.svg" />
                                 {formatPhoneNumberKR(otherUserApplication.phone)}
                             </Text.Body2_1>
-                            <Text.Body2_1 color="Gray5">
-                                <Icon src="/icons/insta.svg" />
-                                <a href={otherUserApplication.link} target="_blank">
-                                    {truncateText(otherUserApplication.link, 45)}
-                                </a>
-                            </Text.Body2_1>
+                            {otherUserApplication.link && otherUserApplication.link.trim() !== "" && (
+                                <Text.Body2_1 color="Gray5">
+                                    <Icon src="/icons/insta.svg" />
+                                    <a href={otherUserApplication.link} target="_blank">
+                                        {truncateText(otherUserApplication.link, 45)}
+                                    </a>
+                                </Text.Body2_1>
+                            )}
                         </Wrapper.FlexBox>
                     </Wrapper.FlexBox>
 

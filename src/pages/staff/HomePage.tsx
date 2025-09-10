@@ -3,11 +3,10 @@ import SectionTitle from "@/components/SectionTitle";
 import styled from "@emotion/styled";
 import CategoryList from "./components/CategoryList";
 import CardCarousel from "./components/CardCarousel";
-import { AccompanyList } from "@/components/AccompanyList";
 import Input from "@/components/Input";
 import { fetchMinimumUserInfo } from "@/hooks/user/useFetchMinumumUserInfo";
 import { useNavigate } from "react-router-dom";
-import { useEmploymentAll } from "@/hooks/staff/useEmploymentAll";
+import { useEmploymentAll, useEmploymentLatest } from "@/hooks/staff/useEmploymentAll";
 import Oops from "@/components/Oops";
 import { GuesthouseList } from "@/components/GuesthouseList";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -18,35 +17,6 @@ import { useUserStore } from "@/store/useUserStore";
 import { useShallow } from "zustand/react/shallow";
 import { Wrapper } from "@/styles/Wrapper";
 import { Text } from "@/styles/Text";
-
-const mockAccompanyData = [
-    {
-        id: 1,
-        title: "제주 서쪽 동행 분 구해요",
-        content: "저는 인싸는 아니지만 이야기 듣는 걸 아주 좋아하는 인프피 남성입니다 퇴사 후에 어떤걸 해야할지...",
-        createdAt: 1747837887,
-        updatedAt: 1747837887,
-        images: ["/images/guesthouse3.png"],
-        userId: 101,
-        userNickname: "훈식",
-        like: false,
-        likeCount: 0,
-        commentCount: 0,
-    },
-    {
-        id: 2,
-        title: "한라산 같이 가실 분!",
-        content: "등산 좋아하시는 분이라면 누구든 환영입니다!",
-        createdAt: 1747837887,
-        updatedAt: 1747837887,
-        images: [],
-        userId: 102,
-        userNickname: "산사람",
-        like: false,
-        likeCount: 0,
-        commentCount: 0,
-    },
-];
 
 type SearchTab = StaffTabTypes["SEARCH"];
 
@@ -62,6 +32,7 @@ export default function HomePage() {
         pageSize: 6,
         enabled: !!debouncedSearch,
     });
+    const { data: latest, isLoading: isLatestLoading, isError: isLatestError } = useEmploymentLatest(10);
 
     const setUser = useUserStore(s => s.setUser);
     const current = useUserStore(
@@ -186,8 +157,21 @@ export default function HomePage() {
                         <CardCarousel />
                     </Section>
                     <Section>
-                        <SectionTitle title="새롭게 올라온 게스트하우스 🏡" link="accompany" />
-                        <AccompanyList data={mockAccompanyData} />
+                        <SectionTitle title="새롭게 올라온 게스트하우스 🏡" link="/staff/guesthouse/latest" />
+                        {isLatestLoading ? (
+                            <SkeletonList variant="guesthouse" count={2} />
+                        ) : isLatestError ? (
+                            <Oops message="최신 공고를 불러오지 못했어요" description="잠시 후 다시 시도해주세요." />
+                        ) : !latest || latest.length === 0 ? (
+                            <Oops message="작성된 공고가 없어요" description="공고가 올라올 때까지 기다려주세요!" />
+                        ) : (
+                            <GuesthouseList
+                                data={latest.slice(0, 2)}
+                                fetchNextPage={undefined}
+                                hasNextPage={false}
+                                isFetchingNextPage={false}
+                            />
+                        )}
                     </Section>
                 </>
             )}
