@@ -12,7 +12,6 @@ import ImageViewer from "../ImageViewer";
 import OptionButton from "../OptionButton";
 import { useDeleteReview, useDeleteReviewComment } from "@/hooks/owner/review";
 import Modal from "../Modal";
-import ClickableNickname from "../ClickableNickname";
 
 type ModalType = "confirm" | "success" | null;
 type ModalPurpose = "deleteReview" | "deleteComment" | "postRecomment" | null;
