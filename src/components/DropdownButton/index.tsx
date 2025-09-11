@@ -76,6 +76,11 @@ const Style = {
         &:hover {
             background-color: #f7f7f7;
         }
+        outline: 0;
+        &:focus-within {
+            box-shadow: inset 0 0 0 1px ${theme.color.Main};
+            transition: 0.3s;
+        }
     `,
     DropdownMenu: styled.div`
         position: absolute;

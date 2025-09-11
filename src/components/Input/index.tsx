@@ -141,7 +141,6 @@ const InputContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 12px;
-    /* max-width: 333px; */
 `;
 
 const InputWrapper = styled.div<{ variant: InputVariant }>`
@@ -152,6 +151,59 @@ const InputWrapper = styled.div<{ variant: InputVariant }>`
     height: 40px;
     width: 100%;
     background-color: ${theme.color.Gray0};
+
+    &:focus-within {
+        box-shadow: inset 0 0 0 1px ${theme.color.Main};
+        transition: 0.3s;
+    }
+`;
+
+const RightIconArea = styled.div`
+    display: flex;
+    align-items: center;
+    height: 100%;
+`;
+
+const LeftIconArea = styled.div`
+    padding-right: 8px;
+    display: flex;
+    align-items: center;
+`;
+
+export const RequiredStar = styled.span`
+    margin-left: 4px;
+    color: ${theme.color.Main};
+`;
+
+const RadioRow = styled.div`
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    min-height: 40px;
+    align-items: stretch;
+`;
+
+const RadioBtn = styled.button<{ $active: boolean }>`
+    flex: 1 0 0;
+    border-radius: 8px;
+    white-space: nowrap;
+    border: ${({ $active, theme }) => ($active ? `1px solid ${theme.color.Main}` : "1px solid transparent")};
+    background: ${({ $active, theme }) => ($active ? theme.color.Sub2 : theme.color.Gray0)};
+    cursor: pointer;
+    transition: all 0.2s ease;
+`;
+
+const BottomMessage = styled(Text.Body3_1)<{
+    color: keyof typeof theme.color;
+    visible: boolean;
+}>`
+    margin-top: 6px;
+    padding-left: 4px;
+    min-height: 18px;
+    white-space: pre-wrap;
+    color: ${({ visible, color, theme }) => (visible ? theme.color[color] : "transparent")};
+    visibility: ${({ visible }) => (visible ? "visible" : "hidden")};
+    display: ${({ visible }) => (visible ? "block" : "none")};
 `;
 
 const StyledInput = styled.input<{
@@ -177,51 +229,4 @@ const StyledInput = styled.input<{
         font-weight: ${({ variant }) => (variant === "comment" || variant === "message" ? 500 : 400)};
         letter-spacing: 0.32px;
     }
-`;
-
-const RightIconArea = styled.div`
-    display: flex;
-    align-items: center;
-    height: 100%;
-`;
-
-const LeftIconArea = styled.div`
-    padding-right: 8px;
-    display: flex;
-    align-items: center;
-`;
-
-export const RequiredStar = styled.span`
-    margin-left: 4px;
-    color: ${theme.color.Main};
-`;
-
-const BottomMessage = styled(Text.Body3_1)<{
-    color: keyof typeof theme.color;
-    visible: boolean;
-}>`
-    margin-top: 6px;
-    padding-left: 4px;
-    min-height: 18px;
-    white-space: pre-wrap;
-    color: ${({ visible, color, theme }) => (visible ? theme.color[color] : "transparent")};
-    visibility: ${({ visible }) => (visible ? "visible" : "hidden")};
-`;
-
-const RadioRow = styled.div`
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    min-height: 40px;
-    align-items: stretch;
-`;
-
-const RadioBtn = styled.button<{ $active: boolean }>`
-    flex: 1 0 0;
-    border-radius: 8px;
-    white-space: nowrap;
-    border: ${({ $active, theme }) => ($active ? `1px solid ${theme.color.Main}` : "1px solid transparent")};
-    background: ${({ $active, theme }) => ($active ? theme.color.Sub2 : theme.color.Gray0)};
-    cursor: pointer;
-    transition: all 0.2s ease;
 `;

@@ -15,7 +15,6 @@ import LocationSelector from "../../components/LocationSelector";
 import CategorySelector from "../../components/CategorySelector";
 import { useMemo } from "react";
 import { getVisibleDateErrors } from "@/utils/validateRecruitDate";
-import { Text } from "@/styles/Text";
 
 interface RecruitBasicInfoPageCreateProps {
     formData: EmploymentPostProps;
@@ -134,10 +133,8 @@ export default function RecruitCreateBasicInfoPage({
                                     }))
                                 }
                                 required
+                                bottomMessage={visibleErrors.startedAt}
                             />
-                            {visibleErrors.startedAt && (
-                                <Text.Caption1 color="Red1">{visibleErrors.startedAt}</Text.Caption1>
-                            )}
                         </Wrapper.FlexBox>
                         <Wrapper.FlexBox width="48%" direction="column" alignItems="flex-end">
                             <Input
@@ -152,10 +149,8 @@ export default function RecruitCreateBasicInfoPage({
                                     }))
                                 }
                                 required
+                                bottomMessage={visibleErrors.endedAt}
                             />
-                            {visibleErrors.endedAt && (
-                                <Text.Caption1 color="Red1">{visibleErrors.endedAt}</Text.Caption1>
-                            )}
                         </Wrapper.FlexBox>
                     </Wrapper.FlexBox>
                     <Wrapper.FlexBox direction="column" alignItems="flex-end">
@@ -171,10 +166,8 @@ export default function RecruitCreateBasicInfoPage({
                                 }))
                             }
                             required
+                            bottomMessage={visibleErrors.recruitmentEnd}
                         />
-                        {visibleErrors.recruitmentEnd && visibleErrors.recruitmentEnd && (
-                            <Text.Caption1 color="Red1">{visibleErrors.recruitmentEnd}</Text.Caption1>
-                        )}
                     </Wrapper.FlexBox>
 
                     <Textarea
