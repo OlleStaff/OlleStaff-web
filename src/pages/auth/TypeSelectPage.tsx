@@ -27,9 +27,9 @@ export default function TypeSelectPage() {
             });
 
             if (userInfo.userType === "STAFF") {
-                navigate("/staff");
+                navigate("/staff", { replace: true });
             } else if (userInfo.userType === "GUESTHOUSE") {
-                navigate("/owner");
+                navigate("/owner", { replace: true });
             } else {
                 console.warn("알 수 없는 사용자 유형입니다.");
                 navigate("/");

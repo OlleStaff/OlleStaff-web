@@ -200,6 +200,7 @@ const BottomMessage = styled(Text.Body3_1)<{
     margin-top: 6px;
     padding-left: 4px;
     min-height: 18px;
+    width: 100%;
     white-space: pre-wrap;
     color: ${({ visible, color, theme }) => (visible ? theme.color[color] : "transparent")};
     visibility: ${({ visible }) => (visible ? "visible" : "hidden")};

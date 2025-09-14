@@ -189,7 +189,7 @@ export default function SignupPage() {
                     handleModalClose={() => setModal(null)}
                     onConfirm={() => {
                         setModal(null);
-                        navigate("/type-select");
+                        navigate("/type-select", { replace: true });
                     }}
                 />
             )}
