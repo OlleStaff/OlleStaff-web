@@ -25,9 +25,8 @@ type ChatListTab = StaffTab | OwnerTab;
 type ServerFilter = "ALL" | "APPLIED" | "ACCEPTED";
 
 export default function ChatListPage() {
-    const userType = useUserStore(s => s.type);
-
-    const isStaff = userType === "STAFF";
+    const mode = useUserStore(s => s.mode ?? s.type);
+    const isStaff = mode === "STAFF";
 
     const labels = (isStaff ? STAFF_TABS : OWNER_TABS) as readonly ChatListTab[];
     const [selectedTab, setSelectedTab] = useState<ChatListTab>(labels[0]);

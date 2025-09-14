@@ -3,10 +3,7 @@ import { Wrapper } from "@/styles/Wrapper";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "@emotion/styled";
 import theme from "@/styles/theme";
-
-type NavProps = {
-    version: "owner" | "staff";
-};
+import { useUserStore } from "@/store/useUserStore";
 
 const items = {
     owner: [
@@ -23,10 +20,11 @@ const items = {
     ],
 };
 
-export default function Nav({ version }: NavProps) {
+export default function Nav() {
     const navigate = useNavigate();
     const location = useLocation();
-    const navMenu = items[version];
+    const mode = useUserStore(s => s.mode ?? s.type);
+    const navMenu = mode === "GUESTHOUSE" ? items.owner : items.staff;
 
     const handleClick = (path: string) => {
         navigate(path);
