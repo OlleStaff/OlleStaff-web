@@ -116,8 +116,8 @@ export const GlobalStyle = () => css`
         height: -webkit-fill-available;
     }
     #root {
-        max-width: 375px;
-        min-width: 375px;
+        max-width: 393px;
+        min-width: 393px;
         width: 100%;
         min-height: 100dvh;
         min-height: -webkit-fill-available;

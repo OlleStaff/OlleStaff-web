@@ -68,14 +68,18 @@ export const useSocialLogin = (provider: "kakao" | "naver" | "dev") => {
                 navigate("/agreements");
                 return;
             }
-            useUserStore.getState().setUser({
+            const store = useUserStore.getState();
+            store.setUser({
                 nickname: res.nickname,
                 type: res.userType,
                 profileImage: res.profileImage,
             });
+            if (store.mode == null) {
+                store.setMode(res.userType);
+            }
             if (res.userType === "UNDECIDED") navigate("/type-select");
-            else if (res.userType === "STAFF") navigate("/staff/");
-            else if (res.userType === "GUESTHOUSE") navigate("/owner/");
+            else if (store.mode === "STAFF") navigate("/staff");
+            else if (store.mode === "GUESTHOUSE") navigate("/owner");
             else navigate("/");
         },
 

@@ -47,9 +47,9 @@ const OWNER_MENU: MenuSection[] = [
 export default function UserInfoPage() {
     const nickname = useUserStore(s => s.nickname);
     const profileImage = useUserStore(s => s.profileImage);
-    const type = useUserStore(s => s.type as "STAFF" | "GUESTHOUSE");
+    const mode = useUserStore(s => (s.mode ?? s.type) as "STAFF" | "GUESTHOUSE");
+    const menu = mode === "GUESTHOUSE" ? OWNER_MENU : STAFF_MENU;
 
-    const menu = type === "GUESTHOUSE" ? OWNER_MENU : STAFF_MENU;
     const fallbackImg = profileImage || "/icons/defaultUser.svg";
 
     return (

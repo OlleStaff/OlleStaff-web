@@ -94,6 +94,10 @@ const Wrapper = styled.div<{ variant: TextareaVariant; hasCharCount?: boolean }>
     border: "none";
     border-radius: 8px;
     width: 100%;
+    &:focus-within {
+        box-shadow: inset 0 0 0 1px ${theme.color.Main};
+        transition: 0.3s;
+    }
 `;
 
 const StyledTextarea = styled.textarea<{ variant: TextareaVariant }>`

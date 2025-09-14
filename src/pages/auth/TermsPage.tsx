@@ -41,7 +41,7 @@ export default function TermsPage() {
             agreed.push(`${marketingTerm.title}_${marketingTerm.date}_${marketingTerm.version}`);
         }
 
-        navigate("/signup", { state: { agreements: agreed } });
+        navigate("/signup", { state: { agreements: agreed }, replace: true });
     };
 
     return (
