@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import theme from "@/styles/theme";
 import { Text } from "@/styles/Text";
 import { Wrapper } from "@/styles/Wrapper";
+import { css } from "@emotion/react";
 
 type InputVariant = "default" | "message" | "comment" | "radio";
 
@@ -92,7 +93,7 @@ export default function Input(props: InputProps) {
                         })}
                     </RadioRow>
                 ) : (
-                    <InputWrapper variant={variant}>
+                    <InputWrapper variant={variant} readOnly={!!readOnly}>
                         {variant === "message" && leftIcon && (
                             <LeftIconArea onClick={onLeftIconClick}>{leftIcon}</LeftIconArea>
                         )}
@@ -103,6 +104,7 @@ export default function Input(props: InputProps) {
                             placeholder={placeholder}
                             disabled={disabled}
                             readOnly={readOnly}
+                            aria-readonly={readOnly}
                             maxLength={maxLength}
                             $color={valueColor}
                             variant={variant}
@@ -143,7 +145,7 @@ const InputContainer = styled.div`
     gap: 12px;
 `;
 
-const InputWrapper = styled.div<{ variant: InputVariant }>`
+const InputWrapper = styled.div<{ variant: InputVariant; readOnly?: boolean }>`
     display: flex;
     align-items: center;
     padding: 0 12px;
@@ -152,10 +154,14 @@ const InputWrapper = styled.div<{ variant: InputVariant }>`
     width: 100%;
     background-color: ${theme.color.Gray0};
 
-    &:focus-within {
-        box-shadow: inset 0 0 0 1px ${theme.color.Main};
-        transition: 0.3s;
-    }
+    ${({ readOnly }) =>
+        !readOnly &&
+        css`
+            &:focus-within {
+                box-shadow: inset 0 0 0 1px ${theme.color.Main};
+                transition: 0.3s;
+            }
+        `}
 `;
 
 const RightIconArea = styled.div`
