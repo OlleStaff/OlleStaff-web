@@ -136,7 +136,6 @@ export default function StaffApplicationViewPage() {
                                     </a>
                                 </Text.Body2_1>
                             )}
-                          
                         </Wrapper.FlexBox>
                     </Wrapper.FlexBox>
 
