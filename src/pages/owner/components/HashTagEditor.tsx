@@ -104,6 +104,10 @@ const Style = {
         display: flex;
         align-items: center;
         width: fit-content;
+        &:focus-within {
+            box-shadow: inset 0 0 0 1px ${theme.color.Main};
+            transition: 0.3s;
+        }
     `,
     Input: styled.input<{ valueLength: number }>`
         border: none;

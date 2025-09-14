@@ -11,10 +11,12 @@ import { useBusinessVerificationSubmit } from "@/hooks/auth/useBusinessVerificat
 import theme from "@/styles/theme";
 import { useNavigate } from "react-router-dom";
 import { Text } from "@/styles/Text";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function BusinessVerificationPage() {
+    const userId = useUserStore(s => s.id);
     const { businessName, setBusinessName, selectedFile, setSelectedFile, isAgreed, setIsAgreed, clearDraft } =
-        useBusinessVerification();
+        useBusinessVerification(`businessVerification:${userId}`);
 
     const [isComplete, setIsComplete] = useState(false);
     const { mutate: submitVerification } = useBusinessVerificationSubmit();
@@ -34,9 +36,9 @@ export default function BusinessVerificationPage() {
             },
             {
                 onSuccess: () => {
-                    alert("사업자 인증이 완료되었습니다.");
-                    navigate("/owner");
                     clearDraft();
+                    alert("사업자 인증이 완료되었습니다.");
+                    navigate("/owner", { replace: true });
                 },
                 onError: () => {
                     alert("사업자 인증 중 오류가 발생했습니다.");

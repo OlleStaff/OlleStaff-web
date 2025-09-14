@@ -16,7 +16,7 @@ export default function StaffLayout() {
                 <ContentWrapper ref={contentRef}>
                     <Outlet />
                 </ContentWrapper>
-                <Nav version="staff" />
+                <Nav />
             </PageWrapper>
         </>
     );

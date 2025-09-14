@@ -16,7 +16,7 @@ export default function OwnerLayout() {
                 <ContentWrapper ref={contentRef}>
                     <Outlet />
                 </ContentWrapper>
-                <Nav version="owner" />
+                <Nav />
             </PageWrapper>
         </>
     );

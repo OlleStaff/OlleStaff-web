@@ -11,7 +11,6 @@ import Modal from "@/components/Modal";
 export default function UserModeSwitcher() {
     const navigate = useNavigate();
 
-    const userType = useUserStore(state => state.type);
     const resetUser = useUserStore(state => state.resetUser);
 
     const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
@@ -26,22 +25,19 @@ export default function UserModeSwitcher() {
             navigate("/");
         }
     };
-    // const nickname = useUserStore(state => state.nickname);
-    // const profileImage = useUserStore(state => state.profileImage);
-    // const setUser = useUserStore(state => state.setUser);
 
-    const modeLabel = userType === "STAFF" ? "게스트하우스" : "스텝";
-
+    const mode = useUserStore(s => s.mode);
+    const modeLabel = mode === "STAFF" ? "게스트하우스" : "스텝";
+    const setMode = useUserStore(s => s.setMode);
     const handleToggleMode = () => {
-        // const nextType = userType === "STAFF" ? "GUESTHOUSE" : "STAFF";
-        // setUser({ nickname, type: nextType, profileImage });
-        // if (nextType === "STAFF") {
-        //     navigate("/staff");
-        // } else {
-        //     navigate("/owner");
-        // }
+        if (mode === "GUESTHOUSE") {
+            setMode("STAFF");
+            navigate("/staff", { replace: true });
+        } else {
+            setMode("GUESTHOUSE");
+            navigate("/owner", { replace: true });
+        }
     };
-
     return (
         <Wrapper.FlexBox direction="column" gap="16px">
             <Style.ModeChangeButton onClick={handleToggleMode} aria-disabled="true">

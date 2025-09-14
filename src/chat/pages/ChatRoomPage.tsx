@@ -31,7 +31,7 @@ import { useInView } from "react-intersection-observer";
 
 export default function ChatRoomPage() {
     const userId = useUserStore(u => u.id);
-    const userType = useUserStore(u => u.type);
+    const mode = useUserStore(s => s.mode ?? s.type);
     const { chatRoomId } = useParams();
     const roomId = Number(chatRoomId);
     const navigate = useNavigate();
@@ -41,7 +41,7 @@ export default function ChatRoomPage() {
     const isInputActive = message.trim().length > 0;
 
     const { data: chat, isLoading: isChatLoading } = useGetChatRoomDetail(roomId);
-    const myId = userType === "GUESTHOUSE" ? Number(chat?.userId) : Number(userId);
+    const myId = mode === "GUESTHOUSE" ? Number(chat?.userId) : Number(userId);
 
     const {
         data: chatMessages,
@@ -88,8 +88,8 @@ export default function ChatRoomPage() {
 
     const isMine = useCallback(
         (m: { senderId: number | string }) =>
-            userType === "GUESTHOUSE" ? Number(m.senderId) !== Number(myId) : Number(m.senderId) === Number(myId),
-        [userType, myId]
+            mode === "GUESTHOUSE" ? Number(m.senderId) !== Number(myId) : Number(m.senderId) === Number(myId),
+        [mode, myId]
     );
 
     const handleSendMessage = useCallback(async () => {
@@ -238,7 +238,7 @@ export default function ChatRoomPage() {
 
         const lastFromOther = [...messages]
             .reverse()
-            .find(m => (userType === "STAFF" ? Number(m.senderId) !== myId : Number(m.senderId) === myId));
+            .find(m => (mode === "STAFF" ? Number(m.senderId) !== myId : Number(m.senderId) === myId));
         if (!lastFromOther) return; // 내 메세지면 요청 X
 
         if (lastReadMessageRef.current === lastFromOther.id) return; // 같은 메시지 중복 전송 방지
@@ -253,9 +253,9 @@ export default function ChatRoomPage() {
         });
 
         lastReadMessageRef.current = lastFromOther.id;
-    }, [status, messages, roomId, myId, markLatestMessageRead, userType]);
+    }, [status, messages, roomId, myId, markLatestMessageRead, mode]);
 
-    if (userType === "GUESTHOUSE")
+    if (mode === "GUESTHOUSE")
         optionMenus.unshift({
             label: "스탭 합격",
             onClick: handleAcceptModalOpen,
@@ -287,7 +287,7 @@ export default function ChatRoomPage() {
                         <div ref={topRef} />
                         {messages.map((m, i) => {
                             const isMine =
-                                userType === "GUESTHOUSE"
+                                mode === "GUESTHOUSE"
                                     ? Number(m.senderId) !== Number(myId)
                                     : Number(m.senderId) === Number(myId);
                             const isFirst = i === 0;

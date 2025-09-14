@@ -72,13 +72,12 @@ export default function OwnerApplicationViewPage() {
 
                             {otherUserApplication.link && otherUserApplication.link.trim() !== "" && (
                                 <Text.Body2_1 color="Gray5">
-                                    <Icon src="/icons/insta.svg"  alt="인스타 아이콘" />
+                                    <Icon src="/icons/insta.svg" alt="인스타 아이콘" />
                                     <a href={otherUserApplication.link} target="_blank">
                                         {truncateText(otherUserApplication.link, 45)}
                                     </a>
                                 </Text.Body2_1>
                             )}
-
                         </Wrapper.FlexBox>
                     </Wrapper.FlexBox>
 

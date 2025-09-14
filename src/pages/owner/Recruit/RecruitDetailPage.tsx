@@ -52,7 +52,7 @@ export default function RecruitDetailPage() {
         }
     };
 
-    const userType = useUserStore(state => state.type);
+    const mode = useUserStore(s => s.mode);
 
     if (!detail?.data || isLoading) return <LoadingSpinner />;
     if (error) navigate("/404");
@@ -110,15 +110,15 @@ export default function RecruitDetailPage() {
     ];
 
     const handleClickReview = () => {
-        navigate(userType === "GUESTHOUSE" ? "/owner/userinfo/reviews" : "/staff/user/my-reviews");
+        navigate(mode === "GUESTHOUSE" ? "/owner/userinfo/reviews" : "/staff/user/my-reviews");
     };
     return (
         <>
             <Header
                 title="숙소 상세 정보"
                 showBackButton
-                rightIconSrc={userType === "GUESTHOUSE" ? "/icons/pencil.svg" : ""}
-                onRightClick={userType === "GUESTHOUSE" ? handleEditClick : undefined}
+                rightIconSrc={mode === "GUESTHOUSE" ? "/icons/pencil.svg" : ""}
+                onRightClick={mode === "GUESTHOUSE" ? handleEditClick : undefined}
             />
 
             <Wrapper.FlexBox direction="column" margin="43px 0 20px 0" gap="20px">
@@ -126,7 +126,7 @@ export default function RecruitDetailPage() {
                     {Array.isArray(images) && images.length > 0 && (
                         <>
                             <ImageCarousel images={images} onImageClick={handleImageClick} />
-                            {userType === "STAFF" && (
+                            {mode === "STAFF" && (
                                 <LikeRecruitButton onClick={handleToggleLikeRecruit} aria-disabled={isMutating}>
                                     {isLikeRecruitButtonClicked ? (
                                         <img src="/icons/blueHeart.svg" alt="좋아요" />
@@ -222,7 +222,7 @@ export default function RecruitDetailPage() {
                 </Wrapper.FlexBox>
                 <MapComponent latitude={latitude} longitude={longitude} />
             </Wrapper.FlexBox>
-            {userType === "STAFF" && (
+            {mode === "STAFF" && (
                 <Wrapper.FlexBox gap="8px" padding="24px 0px 0px 0px">
                     <ActionButton onClick={() => setPhoneModalOpen(true)} variant="call">
                         <ContentWrapper>
