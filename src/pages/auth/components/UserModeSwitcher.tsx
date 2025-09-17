@@ -19,7 +19,8 @@ export default function UserModeSwitcher() {
         try {
             await api.post("/logout", {}, { withCredentials: true });
         } catch (err) {
-            console.error("로그아웃 요청 실패", err);
+            // showToast("로그아웃에 실패했습니다."),
+            navigate("/");
         } finally {
             resetUser();
             navigate("/");

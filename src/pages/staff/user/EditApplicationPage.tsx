@@ -77,10 +77,7 @@ export default function EditApplicationPage() {
                     navigate("/userinfo");
                 }, 1500);
             },
-            onError: err => {
-                console.error(err);
-                alert("수정에 실패했습니다.");
-            },
+            // onError: () => showToast("수정을 실패했습니다. 다시 시도해주세요."),
         });
 
         setIsCompleteModalOpen(true);

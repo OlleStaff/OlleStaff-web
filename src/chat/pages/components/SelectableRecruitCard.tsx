@@ -11,7 +11,6 @@ interface Props {
 export default function SelectableRecruitCard({ item, selected = false, onSelect }: Props) {
     const handleClick = () => {
         onSelect(item.employmentId);
-        console.log(item.employmentId);
     };
 
     return (

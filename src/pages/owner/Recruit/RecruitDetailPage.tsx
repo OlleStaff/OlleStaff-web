@@ -42,12 +42,12 @@ export default function RecruitDetailPage() {
         if (!isLikeRecruitButtonClicked) {
             likeRecruit(Number(employmentId), {
                 onSuccess: () => setIsLikeRecruitButtonClicked(true),
-                onError: e => console.error(e),
+                // onError: () => showToast("실패했습니다. 다시 시도해주세요."),
             });
         } else {
             unlikeRecruit(Number(employmentId), {
                 onSuccess: () => setIsLikeRecruitButtonClicked(false),
-                onError: e => console.error(e),
+                // onError: () => showToast("실패했습니다. 다시 시도해주세요."),
             });
         }
     };

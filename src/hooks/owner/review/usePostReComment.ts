@@ -9,13 +9,9 @@ export const usePostReComment = () => {
             ReviewApi.postReCommentForGuesthouseReview(reviewId, reviewComment),
 
         onSuccess: () => {
-            // alert("댓글이 등록되었습니다!");
             queryClient.invalidateQueries({ queryKey: ["guesthouseReviews"], exact: false });
         },
 
-        onError: (error: unknown) => {
-            console.error("댓글 등록 실패:", error);
-            alert("댓글 등록에 실패했습니다.");
-        },
+        // onError: () => showToast("댓글 작성을 실패했습니다. 다시 시도해주세요."),
     });
 };

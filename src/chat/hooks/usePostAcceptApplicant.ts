@@ -10,13 +10,6 @@ export const usePostAcceptApplicant = () => {
     return useMutation({
         mutationFn: ({ applicantUserId, employmentId }: AcceptProps) =>
             ChatApi.postAcceptApplicant(applicantUserId, employmentId),
-
-        onSuccess: (_data, { applicantUserId, employmentId }) => {
-            console.log(`${applicantUserId} 공고 ${employmentId}에 합격`);
-        },
-
-        onError: (error, { applicantUserId, employmentId }) => {
-            console.error(`${applicantUserId} 공고 ${employmentId}에 합격 처리 실패`, error);
-        },
+        // onError: () => showToast("합격 처리에 실패했습니다. 다시 시도해주세요."),
     });
 };

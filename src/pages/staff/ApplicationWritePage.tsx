@@ -63,10 +63,7 @@ export default function ApplicationWritePage() {
                 setIsConfirmOpen(false);
                 setIsCompleteOpen(true);
             },
-            onError: err => {
-                console.error("지원서 제출 실패", err);
-                alert("제출에 실패했습니다.");
-            },
+            // onError: () => showToast("제출을 실패했습니다. 다시 시도해주세요."),
         });
     };
 

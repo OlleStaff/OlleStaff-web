@@ -97,9 +97,7 @@ export const useDeleteComment = () => {
                 });
             }
         },
-        onError: err => {
-            console.error("댓글 삭제 실패", err);
-        },
+        // onError: () => showToast("댓글 삭제를 실패했습니다. 다시 시도해주세요."),
     });
 };
 
@@ -119,9 +117,7 @@ export const useCreateReply = () => {
             queryClient.invalidateQueries({ queryKey: ["replies", accompanyId, commentId] });
             queryClient.invalidateQueries({ queryKey: ["comments", accompanyId] });
         },
-        onError: err => {
-            console.error("답글 작성 실패", err);
-        },
+        // onError: () => showToast("답글 작성을 실패했습니다. 다시 시도해주세요."),
     });
 };
 
@@ -137,8 +133,6 @@ export const useDeleteReply = () => {
             queryClient.invalidateQueries({ queryKey: ["replies", accompanyId, commentId] });
             queryClient.invalidateQueries({ queryKey: ["comments", accompanyId] });
         },
-        onError: err => {
-            console.error("답글 삭제 실패", err);
-        },
+        // onError: () => showToast("답글 삭제를 실패했습니다. 다시 시도해주세요."),
     });
 };

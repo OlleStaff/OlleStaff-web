@@ -9,8 +9,6 @@ export const useDeleteReview = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["guesthouseReviews"], exact: false });
         },
-        onError: error => {
-            console.error("후기 삭제 실패", error);
-        },
+        // onError: () => showToast("후기 삭제를 실패했습니다. 다시 시도해주세요."),
     });
 };

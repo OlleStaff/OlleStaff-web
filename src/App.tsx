@@ -7,7 +7,6 @@ function App() {
     useEffect(() => {
         if ("Notification" in window) {
             Notification.requestPermission().then(perm => {
-                console.log("알림 권한 상태:", perm);
                 setPermission(perm);
             });
         }
@@ -19,19 +18,12 @@ function App() {
 
         if ("serviceWorker" in navigator && "PushManager" in window) {
             navigator.serviceWorker.ready.then(registration => {
-                registration.pushManager
-                    .subscribe({
-                        userVisibleOnly: true,
-                        applicationServerKey: urlBase64ToUint8Array(
-                            "BPLuUCuJZ3O0Kxrg2VD7Mk80a_xxsdKByb68ceH-p3JZZ5xHGKjlyAyKz09xGoB-vnIXG8ddGJfAcxkQo3j8VGw"
-                        ),
-                    })
-                    .then(subscription => {
-                        console.log("✅ Push 구독 성공:", subscription);
-                    })
-                    .catch(err => {
-                        console.warn("❌ Push 구독 실패:", err);
-                    });
+                registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(
+                        "BPLuUCuJZ3O0Kxrg2VD7Mk80a_xxsdKByb68ceH-p3JZZ5xHGKjlyAyKz09xGoB-vnIXG8ddGJfAcxkQo3j8VGw"
+                    ),
+                });
             });
         }
     }, [permission]);

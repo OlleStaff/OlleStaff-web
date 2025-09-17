@@ -48,7 +48,6 @@ export default function RecruitCreatePrecautionPage({
             setIsCompleteModalOpen(true);
         } catch (error) {
             const e = error as AxiosError<{ message?: string }>;
-            console.error(e);
             const status = e.response?.status;
             const serverMsg = e.response?.data?.message;
             if (status === 500) {

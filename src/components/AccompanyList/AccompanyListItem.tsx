@@ -60,10 +60,7 @@ export const AccompanyListItem = ({
         if (isPending) return;
         deleteAccompany(id, {
             onSuccess: () => openSuccess(),
-            onError: e => {
-                console.error("동행글 삭제 실패", e);
-                alert("삭제 중 오류가 발생했습니다.");
-            },
+            // onError: () => showToast("동행글 삭제를 실패했습니다. 다시 시도해주세요."),
         });
     };
 
