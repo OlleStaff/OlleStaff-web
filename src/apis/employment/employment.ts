@@ -22,21 +22,14 @@ export const EmploymentApi = {
                 });
             }
 
-            // 디버깅용 코드
-            for (const pair of formData.entries()) {
-                console.log(pair[0], pair[1]);
-            }
-
             const res = await api.post(`/employments`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
 
-            console.log("등록 완료", res.data);
             return res.data;
         } catch (error) {
-            console.error("공고 등록 실패", error);
             throw error; // 필요 시 상위 컴포넌트에서 에러 처리 가능하도록
         }
     },
@@ -60,10 +53,8 @@ export const EmploymentApi = {
     postLikeRecruit: async (employmentId: number) => {
         try {
             const res = await api.post(`/employments/post-heart`, null, { params: { employmentId } });
-            console.log("좋아요 등록 완료", res.data);
             return res.data;
         } catch (error) {
-            console.error("좋아요 등록 실패", error);
             throw error;
         }
     },

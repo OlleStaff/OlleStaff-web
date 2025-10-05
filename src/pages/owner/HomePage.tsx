@@ -36,7 +36,7 @@ export default function HomePage() {
                     navigate("/business-verification");
                 }
             } catch (err) {
-                console.error("사용자 정보 확인 실패", err);
+                // showToast(" 오류가 발생했습니다. 다시 로그인해주세요."),
                 navigate("/");
             }
         };

@@ -75,7 +75,8 @@ export default function HomePage() {
                     navigate("/staff/application/write");
                 }
             } catch (err) {
-                console.error("사용자 정보 확인 실패", err);
+                // showToast("다시 로그인해주세요."),
+                navigate("/");
             }
         };
 

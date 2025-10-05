@@ -48,8 +48,7 @@ export default function AccompanyWritePage() {
                 navigate("/staff/accompany");
             }, 1500);
         } catch (err) {
-            console.error("작성 실패", err);
-            alert("작성에 실패했습니다.");
+            // showToast("작성을 실패했습니다. 다시 시도해주세요."),
         }
     };
 

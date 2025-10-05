@@ -50,10 +50,7 @@ export default function RecruitListPage() {
                 setIsEditTextClicked(false);
                 navigate("/owner/recruitments-ongoing");
             },
-            onError: error => {
-                console.error("삭제 실패", error);
-                alert("삭제 중 오류가 발생했습니다.");
-            },
+            // onError: () => showToast("삭제에 실패했습니다. 다시 시도해주세요."),
         });
     };
 
