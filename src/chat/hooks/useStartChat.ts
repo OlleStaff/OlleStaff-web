@@ -18,7 +18,7 @@ export function useStartOrGetChat() {
                     return;
                 }
             } catch (e) {
-                console.error(e);
+                // showToast("다시 시도해주세요."),
             }
 
             const createdRoomId = await ChatRoomApi.postCreateChatRoom(targetUserId);
@@ -27,7 +27,7 @@ export function useStartOrGetChat() {
             await refetch();
             navigate(`/chat/${createdRoomId}`);
         } catch (e) {
-            console.error("채팅 시작 실패", e);
+            // showToast("다시 시도해주세요."),
         } finally {
             setIsLoading(false);
         }

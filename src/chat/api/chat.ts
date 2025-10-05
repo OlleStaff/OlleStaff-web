@@ -16,10 +16,8 @@ export const ChatApi = {
                 headers: { "Content-Type": "multipart/form-data" },
             });
 
-            console.log("채팅 내 images 업로드 성공", res.data.data.images);
             return res.data.data.images;
         } catch (error) {
-            console.error("채팅 내 images 업로드 실패", error);
             throw error;
         }
     },
@@ -30,10 +28,8 @@ export const ChatApi = {
             const res = await api.post(`/chat/files`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-            console.log("채팅 내 files 업로드 성공", res.data);
             return res.data.data;
         } catch (error) {
-            console.error("채팅 내 files 업로드 실패", error);
             throw error;
         }
     },
@@ -45,10 +41,8 @@ export const ChatApi = {
                 params: { applicantUserId, employmentId },
             });
 
-            console.log(applicantUserId, "님 합격 처리 :: ", res);
             return res.data;
         } catch (error) {
-            console.error("합격 처리 실패", error);
             throw error;
         }
     },

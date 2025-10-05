@@ -9,9 +9,7 @@ export const useDeleteEmployment = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["employmentList"] });
         },
-        onError: error => {
-            console.error("공고 삭제 실패", error);
-        },
+        // onError: () => showToast("공고 삭제를 실패했습니다. 다시 시도해주세요."),
     });
 };
 
@@ -25,8 +23,6 @@ export const useDeleteLikeRecruit = () => {
             queryClient.invalidateQueries({ queryKey: ["employmentDetail", employmentId] });
             queryClient.invalidateQueries({ queryKey: ["myLikeRecruit"] });
         },
-        onError: err => {
-            console.error("좋아요 취소 실패", err);
-        },
+        // onError: () => showToast("좋아요 취소를 실패했습니다. 다시 시도해주세요."),
     });
 };

@@ -21,10 +21,8 @@ export const sendChatMessage = async (payload: SendMessagePayload) => {
                 destination: "/app/chat/send",
                 body: JSON.stringify(payload),
             });
-        } else {
-            console.warn("websocket 메세지 전송 실패");
         }
     } catch (error) {
-        console.error("메세지 전송 중 에러 발생", error);
+        // showToast("메시지 전송을 실패했습니다. 다시 시도해주세요."),
     }
 };

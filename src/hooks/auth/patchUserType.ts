@@ -10,7 +10,6 @@ export const patchUserType = async (type: "STAFF" | "GUESTHOUSE") => {
             throw new Error("타입 업데이트 실패");
         }
     } catch (error) {
-        console.error("patchUserType 에러:", error);
         throw error;
     }
 };

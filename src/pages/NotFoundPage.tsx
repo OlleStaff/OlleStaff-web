@@ -15,7 +15,7 @@ export default function NotFoundPage() {
         } else if (userType === "GUESTHOUSE") {
             navigate("/owner");
         } else {
-            console.warn("알 수 없는 사용자 유형입니다.");
+            // showToast("알수없는 사용자 유형입니다. 다시 로그인해주세요."),
             navigate("/");
         }
     };

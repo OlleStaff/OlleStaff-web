@@ -76,10 +76,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
             onSuccess: () => {
                 openModal("success", "deleteReview");
             },
-            onError: error => {
-                console.error("후기 삭제 실패", error);
-                alert("후기 삭제 중 오류가 발생했습니다.");
-            },
+            // onError: () => showToast("후기 삭제를 실패했습니다. 다시 시도해주세요."),
         });
     };
 
@@ -88,10 +85,7 @@ export default function ReviewListItem({ data, openedReviewId, setOpenedReviewId
             onSuccess: () => {
                 openModal("success", "deleteComment");
             },
-            onError: error => {
-                console.error("후기 답 댓글 삭제 실패", error);
-                alert("후기 답 댓글 삭제 중 오류가 발생했습니다.");
-            },
+            // onError: () => showToast("후기 답글 삭제를 실패했습니다. 다시 시도해주세요."),
         });
     };
 

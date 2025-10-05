@@ -31,11 +31,12 @@ export default function TypeSelectPage() {
             } else if (userInfo.userType === "GUESTHOUSE") {
                 navigate("/owner", { replace: true });
             } else {
-                console.warn("알 수 없는 사용자 유형입니다.");
+                // showToast("알수없는 사용자 유형입니다. 다시 로그인해주세요."),
                 navigate("/");
             }
         } catch (error) {
-            console.error("타입 선택 후 이동 실패", error);
+            // showToast("이동에 실패했습니다. 다시 로그인해주세요."),
+            navigate("/");
         }
     };
 

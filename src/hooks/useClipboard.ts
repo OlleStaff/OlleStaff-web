@@ -5,9 +5,9 @@ export const useClipboard = () => {
         try {
             await navigator.clipboard.writeText(text);
             // TODO: 복사됨 토스트 메시지
-            console.log("복사 완료");
+            //  showToast("복사 성공!"),
         } catch (err) {
-            console.error("클립보드 복사 실패", err);
+            // showToast("복사를 실패했습니다. 다시 시도해주세요."),
         }
     }, []);
 

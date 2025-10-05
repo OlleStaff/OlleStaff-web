@@ -108,12 +108,8 @@ export default function RecommendPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // const response = await fetch(``);
-                // const result = await response.json();
-                // setData(result);
                 setData(mockData);
             } catch (error) {
-                console.error("카테고리 불러오기 실패", error);
                 setData([]);
             }
         };
