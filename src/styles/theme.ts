@@ -3,8 +3,8 @@ const theme = {
         White: "#ffffff",
         Gray0: "#F8F8F8", // Light
         Gray1: "#E4E4E4",
-        Gray2: "#CACACA",
-        Gray3: "#B3B3B3",
+        Gray2: "#BEBEBE",
+        Gray3: "#A0A0A0",
         Gray4: "#909090",
         Gray5: "#606060", // Dark
         Black: "#111111",
