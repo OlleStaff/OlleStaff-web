@@ -40,7 +40,6 @@ export default function ChatListPage() {
 
     const { data: chatList, isPending, isLoading } = useGetChatList(serverFilter);
     const isInitialLoading = (isPending ?? false) || (isLoading && !chatList);
-    console.log("테슽테슽 ::: 안읽은거몇갠데", chatList);
 
     const [onEditMode, setOnEditMode] = useState(false);
     const navigate = useNavigate();

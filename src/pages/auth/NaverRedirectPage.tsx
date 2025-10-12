@@ -12,12 +12,10 @@ export default function NaverRedirectPage() {
         const savedState = sessionStorage.getItem("naver_auth_state");
 
         if (!code) {
-            console.error("네이버 로그인 코드가 없습니다.");
             return;
         }
 
         if (state !== savedState) {
-            console.error("CSRF 의심 요청입니다.");
             return;
         }
 

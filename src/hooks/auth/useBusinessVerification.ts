@@ -37,7 +37,7 @@ export default function useBusinessVerification(storageKey = "businessVerificati
                 setSelectedFile(new File([ab], fileInfo.name, { type: mime }));
             }
         } catch (err) {
-            console.error(err);
+            throw err;
         }
     }, [storageKey]);
 

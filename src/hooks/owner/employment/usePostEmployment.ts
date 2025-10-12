@@ -11,9 +11,7 @@ export const usePostEmployment = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["employmentList"] });
         },
-        onError: error => {
-            console.error("공고 등록 실패", error);
-        },
+        // onError: () => showToast("공고 등록을 실패했습니다. 다시 시도해주세요."),
     });
 };
 
@@ -27,10 +25,6 @@ export const usePostLikeRecruit = () => {
             queryClient.invalidateQueries({ queryKey: ["employmentList"] });
             queryClient.invalidateQueries({ queryKey: ["employmentDetail", employmentId] });
             queryClient.invalidateQueries({ queryKey: ["myLikeRecruit"] });
-        },
-
-        onError: err => {
-            console.error("좋아요 등록 실패", err);
         },
     });
 };

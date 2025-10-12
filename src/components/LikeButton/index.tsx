@@ -55,7 +55,7 @@ export default function LikeButton({ accompanyId, initialLiked, initialCount }: 
                 await postAccompanyLike(accompanyId);
             }
         } catch (err) {
-            console.error("좋아요 요청 실패", err);
+            //  showToast("좋아요를 실패했습니다. 다시 시도해주세요."),
             setLiked(prev.liked);
             setCount(prev.count);
             patchAccompanyListCache(prev.liked, prev.count);

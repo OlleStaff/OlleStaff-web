@@ -124,7 +124,7 @@ export default function SignupPage() {
                             required
                         />
 
-                        <Wrapper.FlexBox gap="4px" alignItems="center">
+                        <Wrapper.FlexBox gap="4px" alignItems="flex-start">
                             <Input
                                 inputTitle="전화번호"
                                 value={formatPhoneNumberKR(userInfo.phone)}
@@ -139,16 +139,18 @@ export default function SignupPage() {
                                 messageColor={errors.phone ? "Red1" : "Gray4"}
                                 required
                             />
-                            <Button
-                                width="small"
-                                height="small"
-                                label="인증 요청 버튼"
-                                onClick={requestVerification}
-                                disabled={isCooldown || !/^010\d{8}$/.test(userInfo.phone)}
-                                isActive={!isCooldown && /^010\d{8}$/.test(userInfo.phone)}
-                            >
-                                {isRequested ? "재전송" : "인증 요청"}
-                            </Button>
+                            <PhoneButtonHolder>
+                                <Button
+                                    width="small"
+                                    height="small"
+                                    label="인증 요청 버튼"
+                                    onClick={requestVerification}
+                                    disabled={isCooldown || !/^010\d{8}$/.test(userInfo.phone)}
+                                    isActive={!isCooldown && /^010\d{8}$/.test(userInfo.phone)}
+                                >
+                                    {isRequested ? "재전송" : "인증 요청"}
+                                </Button>
+                            </PhoneButtonHolder>
                         </Wrapper.FlexBox>
 
                         <Input
@@ -221,4 +223,11 @@ export default function SignupPage() {
 
 const ButtonWrapper = styled.div`
     margin-top: 40px;
+`;
+
+const PhoneButtonHolder = styled.div`
+    margin-top: 32px;
+    height: 40px;
+    display: flex;
+    align-items: center;
 `;

@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import api from "@/apis/axios";
 import { fetchMinimumUserInfo } from "../user/useFetchMinumumUserInfo";
-import { isApp, saveAppToken, getAppToken } from "@/utils/authToken";
+import { isApp, saveAppToken } from "@/utils/authToken";
 
 type SocialLoginParams = {
     code?: string;
@@ -31,7 +31,6 @@ export const useSocialLogin = (provider: "kakao" | "naver" | "dev") => {
             if (isApp) {
                 const jwt = data?.data?.accessToken;
                 if (!jwt) {
-                    console.warn("[login] isApp인데 accessToken 없음:", data);
                     throw new Error("앱 로그인 응답에 accessToken이 없음.");
                 }
 
@@ -42,8 +41,6 @@ export const useSocialLogin = (provider: "kakao" | "naver" | "dev") => {
 
                 // 2) 저장(메모리 캐시+Preferences)해 이후 요청은 인터셉터가 자동 부착
                 await saveAppToken(jwt);
-                const stored = await getAppToken();
-                console.log("[login] saved token:", stored);
 
                 return {
                     status: "SUCCESS" as const,
@@ -82,9 +79,6 @@ export const useSocialLogin = (provider: "kakao" | "naver" | "dev") => {
             else if (store.mode === "GUESTHOUSE") navigate("/owner");
             else navigate("/");
         },
-
-        onError: err => {
-            console.error(`${provider} 로그인 실패`, err);
-        },
+        // onError: () => showToast("로그인을 실패했습니다. 다시 시도해주세요."),
     });
 };

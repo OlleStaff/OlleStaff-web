@@ -47,9 +47,7 @@ export default function LocationSelector({ locationName, onChange, required }: L
             script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_CLIENT_ID}&autoload=false&libraries=services`;
             script.async = true;
             script.onload = () => {
-                window.kakao.maps.load(() => {
-                    console.log("Kakao Maps SDK 로드 완료");
-                });
+                window.kakao.maps.load();
             };
             document.head.appendChild(script);
         }

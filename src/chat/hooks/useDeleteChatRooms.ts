@@ -9,8 +9,6 @@ export const useDeleteChatRooms = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["chatList"] });
         },
-        onError: e => {
-            console.error("채팅방 삭제 실패", e);
-        },
+        // onError: () => showToast("채팅방 삭제를 실패했습니다. 다시 시도해주세요."),
     });
 };

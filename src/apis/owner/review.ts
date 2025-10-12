@@ -21,10 +21,8 @@ export const ReviewApi = {
         try {
             const res = await api.post(`/reviews/${reviewId}/comments`, { reviewComment });
 
-            console.log("답 댓글 등록 완료", res.data);
             return res.data;
         } catch (error) {
-            console.error("답 댓글 등록 실패", error);
             throw error;
         }
     },

@@ -9,8 +9,6 @@ export const usePutEmployment = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["employmentList"] });
         },
-        onError: error => {
-            console.error("공고 수정 실패", error);
-        },
+        // onError: () => showToast("공고 수정을 실패했습니다. 다시 시도해주세요."),
     });
 };
