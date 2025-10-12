@@ -102,14 +102,7 @@ export default function ApplicationWritePage() {
                         required
                     />
                     <Textarea
-                        textareaTitle="자기소개 및 지원 동기 작성"
-                        value={formData.motivation}
-                        onChange={e => setFormData(prev => ({ ...prev, motivation: e.target.value }))}
-                        placeholder="지원 동기를 작성하세요."
-                        required
-                    />
-                    <Textarea
-                        textareaTitle="어필 및 경력사항"
+                        textareaTitle="어필사항 및 경력사항"
                         value={formData.appeal}
                         onChange={e => setFormData(prev => ({ ...prev, appeal: e.target.value }))}
                         placeholder="이전 스텝 경험, 언어 능력 등 나를 어필할 수 있는 어필사항이나 경력을 소개해주세요."
