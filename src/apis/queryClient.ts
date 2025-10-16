@@ -1,6 +1,7 @@
 import { QueryCache, MutationCache, QueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { errorMessages } from "@/constants/errorMessages";
+import { useErrorStore } from "@/store/useErrorStore";
 
 function getErrorMessage(error: unknown): string {
     if (error instanceof AxiosError) {
@@ -21,14 +22,16 @@ function getErrorMessage(error: unknown): string {
 export const queryClient = new QueryClient({
     queryCache: new QueryCache({
         onError: error => {
-            // TODO: 모달 컴포넌트
-            console.error("에러상위통합처리", getErrorMessage(error));
+            const message = getErrorMessage(error);
+            useErrorStore.getState().showError(message);
+            console.error("에러상위통합처리", message);
         },
     }),
     mutationCache: new MutationCache({
         onError: error => {
-            // TODO: 모달 컴포넌트
-            console.error("에러상위통합처리", getErrorMessage(error));
+            const message = getErrorMessage(error);
+            useErrorStore.getState().showError(message);
+            console.error("에러상위통합처리", message);
         },
     }),
 });
