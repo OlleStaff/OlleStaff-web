@@ -5,6 +5,7 @@ import styled from "@emotion/styled";
 import { useRef } from "react";
 import { useScrollToTopOnPathChange } from "@/hooks/useScrollToTopOnPathChange";
 import SessionWatcher from "@/components/SessionWatcher";
+import ErrorWatcher from "@/components/ErrorWatcher";
 
 export default function OwnerLayout() {
     const contentRef = useRef<HTMLDivElement>(null);
@@ -12,6 +13,7 @@ export default function OwnerLayout() {
     return (
         <>
             <SessionWatcher />
+            <ErrorWatcher />
             <PageWrapper hasNav>
                 <ContentWrapper ref={contentRef}>
                     <Outlet />

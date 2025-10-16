@@ -49,7 +49,7 @@ export default function SignupPage() {
 
     const signupMutation = useSignup();
 
-    type ModalType = "success" | "invalid_code" | "failure" | null;
+    type ModalType = "success" | "invalid_code" | null;
     const [modal, setModal] = useState<ModalType>(null);
 
     const handleSubmit = () => {
@@ -72,8 +72,6 @@ export default function SignupPage() {
                 onError: err => {
                     if (isAxiosError(err) && err.response?.status === 422) {
                         setModal("invalid_code"); // 인증번호 오류
-                    } else {
-                        setModal("failure"); // 기타 오류
                     }
                 },
             }
@@ -207,16 +205,6 @@ export default function SignupPage() {
                 />
             )}
 
-            {modal === "failure" && (
-                <Modal
-                    variant="error"
-                    title="회원가입에 실패했어요"
-                    message="잠시 후 다시 시도해 주세요."
-                    confirmText="확인"
-                    handleModalClose={() => setModal(null)}
-                    onConfirm={() => setModal(null)}
-                />
-            )}
         </>
     );
 }

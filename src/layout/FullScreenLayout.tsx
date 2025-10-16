@@ -4,6 +4,7 @@ import PageWrapper from "@/components/PageWrapper";
 import { useRef } from "react";
 import { useScrollToTopOnPathChange } from "@/hooks/useScrollToTopOnPathChange";
 import SessionWatcher from "@/components/SessionWatcher";
+import ErrorWatcher from "@/components/ErrorWatcher";
 
 export default function FullscreenLayout() {
     const contentRef = useRef<HTMLDivElement>(null);
@@ -11,6 +12,7 @@ export default function FullscreenLayout() {
     return (
         <>
             <SessionWatcher />
+            <ErrorWatcher />
             <PageWrapper isRoot>
                 <FullHeightContent ref={contentRef}>
                     <Outlet />

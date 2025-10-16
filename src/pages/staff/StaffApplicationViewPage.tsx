@@ -57,11 +57,9 @@ export default function StaffApplicationViewPage() {
             },
             onError: err => {
                 const axiosErr = err as AxiosError;
+                setIsConfirmOpen(false);
                 if (axiosErr.response?.status === 409) {
-                    setIsConfirmOpen(false);
                     setIsAlreadyAppliedOpen(true);
-                } else {
-                    alert("지원에 실패했습니다. 잠시 후 다시 시도해주세요.");
                 }
             },
         });
