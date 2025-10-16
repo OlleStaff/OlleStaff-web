@@ -31,11 +31,10 @@ export default function ApplicationWritePage() {
         mbti: "",
         link: "",
         introduction: "",
-        motivation: "",
         appeal: "",
     });
 
-    const REQUIRED_FIELDS = ["mbti", "introduction", "motivation", "appeal"];
+    const REQUIRED_FIELDS = ["mbti", "introduction", "appeal"];
 
     const isAllFilled = REQUIRED_FIELDS.every(key => formData[key as keyof typeof formData].trim() !== "");
 
