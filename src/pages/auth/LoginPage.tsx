@@ -54,9 +54,9 @@ export default function LoginPage() {
         window.location.href = url;
     };
 
-    const handleGoogleLogin = () => {
-        window.location.href = "/auth/google";
-    };
+    // const handleGoogleLogin = () => {
+    //     window.location.href = "/auth/google";
+    // };
 
     return (
         <Background>
@@ -84,10 +84,10 @@ export default function LoginPage() {
                     </Text.Title3_1>
                 </LoginButton>
 
-                <LoginButton style={{ border: "1px solid #E2E2E2" }} bgColor="White" onClick={handleGoogleLogin}>
+                {/* <LoginButton style={{ border: "1px solid #E2E2E2" }} bgColor="White" onClick={handleGoogleLogin}>
                     <LoginButtonIcon src="/icons/google.svg" alt="이메일 아이콘" />
                     <Text.Title3_1 style={{ marginTop: "3px" }}>이메일 로그인</Text.Title3_1>
-                </LoginButton>
+                </LoginButton> */}
             </ButtonContainer>
         </Background>
     );
