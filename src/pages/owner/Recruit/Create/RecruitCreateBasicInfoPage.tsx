@@ -122,7 +122,7 @@ export default function RecruitCreateBasicInfoPage({
                     <Wrapper.FlexBox justifyContent="space-between">
                         <Wrapper.FlexBox width="48%" direction="column" alignItems="flex-end">
                             <Input
-                                inputTitle="시작일"
+                                inputTitle="근무 시작일"
                                 placeholder="예) 2025-02-08"
                                 variant="default"
                                 value={formData.startedAt}
@@ -138,7 +138,7 @@ export default function RecruitCreateBasicInfoPage({
                         </Wrapper.FlexBox>
                         <Wrapper.FlexBox width="48%" direction="column" alignItems="flex-end">
                             <Input
-                                inputTitle="종료일"
+                                inputTitle="근무 종료일"
                                 placeholder="예) 2025-12-22"
                                 variant="default"
                                 value={formData.endedAt}
@@ -155,7 +155,7 @@ export default function RecruitCreateBasicInfoPage({
                     </Wrapper.FlexBox>
                     <Wrapper.FlexBox direction="column" alignItems="flex-end">
                         <Input
-                            inputTitle="모집 마감일"
+                            inputTitle="공고 모집 마감일"
                             placeholder="예) 2025-02-01"
                             variant="default"
                             value={formData.recruitmentEnd}
