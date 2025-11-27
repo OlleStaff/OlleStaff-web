@@ -8,6 +8,8 @@ function getErrorMessage(error: unknown): string {
         const status = error.response?.status;
         const bodyStatus = error.response?.data?.status;
 
+        if (status === 401 || status === 419) return "";
+
         if (status && bodyStatus && errorMessages[bodyStatus]) {
             return errorMessages[bodyStatus];
         }
@@ -26,6 +28,7 @@ export const queryClient = new QueryClient({
                 return;
             }
             const message = getErrorMessage(error);
+            if (!message) return;
             useErrorStore.getState().showError(message);
             console.error("에러상위통합처리", message);
         },
