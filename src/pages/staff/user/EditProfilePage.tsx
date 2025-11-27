@@ -21,7 +21,7 @@ export default function EditProfilePage() {
     const [isEditMode, setIsEditMode] = useState(false);
     const setUser = useUserStore(state => state.setUser);
 
-    const { data: user, isLoading, isError } = useFetchUserProfile();
+    const { data: user, isLoading } = useFetchUserProfile();
     const updateMutation = useUpdateUserProfile();
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
@@ -93,7 +93,7 @@ export default function EditProfilePage() {
     };
 
     if (isLoading) return <div>불러오는 중...</div>;
-    if (isError || !user) return <div>사용자 정보를 불러오지 못했습니다.</div>;
+    if (!user) return null;
 
     const isPhoneChanged = userInfo.phone !== user.phone;
     const isVerificationRequired = isEditMode && isPhoneChanged;
