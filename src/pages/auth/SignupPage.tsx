@@ -15,6 +15,7 @@ import { UserInfo } from "@/types/user";
 import { formatPhoneNumberKR } from "@/utils/formatPhoneNumberKR";
 import { isAxiosError } from "axios";
 import Modal from "@/components/Modal";
+import { errorMessages } from "@/constants/errorMessages";
 
 export default function SignupPage() {
     const { userInfo, errors, handleInputChange, validate } = useValidation();
@@ -49,7 +50,7 @@ export default function SignupPage() {
 
     const signupMutation = useSignup();
 
-    type ModalType = "success" | "invalid_code" | null;
+    type ModalType = "success" | "invalid_code" | "duplicate_nickname" | "server_error" | null;
     const [modal, setModal] = useState<ModalType>(null);
 
     const handleSubmit = () => {
@@ -70,8 +71,24 @@ export default function SignupPage() {
                     setModal("success");
                 },
                 onError: err => {
-                    if (isAxiosError(err) && err.response?.status === 422) {
-                        setModal("invalid_code"); // 인증번호 오류
+                    if (isAxiosError(err)) {
+                        const status = err.response?.status;
+                        const bodyStatus = err.response?.data?.status;
+
+                        // 422 인증번호 오류
+                        if (status === 422) {
+                            setModal("invalid_code");
+                            return;
+                        }
+
+                        // 409 닉네임 중복
+                        if (status === 409 || bodyStatus === "DUPLICATED_ERROR") {
+                            setModal("duplicate_nickname");
+                            return;
+                        }
+
+                        // 그 외 서버 오류
+                        setModal("server_error");
                     }
                 },
             }
@@ -198,13 +215,34 @@ export default function SignupPage() {
                 <Modal
                     variant="error"
                     title="인증번호가 올바르지 않아요"
-                    message={"입력한 인증번호를 확인해 주세요."}
+                    message="입력한 인증번호를 확인해 주세요."
                     confirmText="확인"
                     handleModalClose={() => setModal(null)}
                     onConfirm={() => setModal(null)}
                 />
             )}
 
+            {modal === "duplicate_nickname" && (
+                <Modal
+                    variant="error"
+                    title="이미 사용 중인 닉네임이에요"
+                    message="다른 닉네임으로 변경 후 다시 시도해 주세요."
+                    confirmText="확인"
+                    handleModalClose={() => setModal(null)}
+                    onConfirm={() => setModal(null)}
+                />
+            )}
+
+            {modal === "server_error" && (
+                <Modal
+                    variant="error"
+                    title="오류가 발생했어요"
+                    message={errorMessages[500]}
+                    confirmText="확인"
+                    handleModalClose={() => setModal(null)}
+                    onConfirm={() => setModal(null)}
+                />
+            )}
         </>
     );
 }
