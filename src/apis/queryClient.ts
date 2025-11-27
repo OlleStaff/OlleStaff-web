@@ -21,14 +21,20 @@ function getErrorMessage(error: unknown): string {
 
 export const queryClient = new QueryClient({
     queryCache: new QueryCache({
-        onError: error => {
+        onError: (error, query) => {
+            if (query?.meta && (query.meta as { suppressGlobalError?: boolean }).suppressGlobalError) {
+                return;
+            }
             const message = getErrorMessage(error);
             useErrorStore.getState().showError(message);
             console.error("에러상위통합처리", message);
         },
     }),
     mutationCache: new MutationCache({
-        onError: error => {
+        onError: (error, _variables, _context, mutation) => {
+            if (mutation?.meta && (mutation.meta as { suppressGlobalError?: boolean }).suppressGlobalError) {
+                return;
+            }
             const message = getErrorMessage(error);
             useErrorStore.getState().showError(message);
             console.error("에러상위통합처리", message);
