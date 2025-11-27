@@ -38,5 +38,6 @@ export const useSignup = () => {
 
             return res.data;
         },
+        meta: { suppressGlobalError: true },
     });
 };

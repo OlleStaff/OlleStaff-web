@@ -25,5 +25,6 @@ export const useFetchMyApplication = () => {
             // 나머지는 최대 3번까지만 재시도
             return failureCount < 3;
         },
+        meta: { suppressGlobalError: true },
     });
 };

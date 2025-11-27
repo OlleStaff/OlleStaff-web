@@ -6,4 +6,5 @@ export const useGetAllReviewsForGuesthouse = (reviewType: "ALL" | "COMMENTED") =
     useQuery<ReviewListItemProps>({
         queryKey: ["guesthouseReviews", reviewType],
         queryFn: () => ReviewApi.getAllReviewsForGuesthouse(reviewType),
+        meta: { suppressGlobalError: true },
     });
