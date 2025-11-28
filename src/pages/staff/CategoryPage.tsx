@@ -19,7 +19,7 @@ export default function CategoryPage() {
     const label = params.get("label") || "";
     const category = categoryMap[label];
 
-    const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useEmploymentAll({
+    const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useEmploymentAll({
         type: sort === "마감공고" ? "END" : "IN_PROGRESS",
         category,
         pageSize: 6,
@@ -39,8 +39,6 @@ export default function CategoryPage() {
                 />
                 {isLoading ? (
                     <SkeletonList variant="guesthouse" count={5} />
-                ) : isError ? (
-                    <Oops message="에러가 발생했어요" description="다시 시도해주세요"></Oops>
                 ) : items.length === 0 ? (
                     <Wrapper.FlexBox gap="12px" alignItems="center" direction="column" padding="50% 0">
                         <Oops

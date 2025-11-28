@@ -26,13 +26,13 @@ export default function HomePage() {
     const navigate = useNavigate();
     const [sort, setSort] = useState<SearchTab>("진행중인 공고");
 
-    const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useEmploymentAll({
+    const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useEmploymentAll({
         type: sort === "마감공고" ? "END" : "IN_PROGRESS",
         search: debouncedSearch || undefined,
         pageSize: 6,
         enabled: !!debouncedSearch,
     });
-    const { data: latest, isLoading: isLatestLoading, isError: isLatestError } = useEmploymentLatest(10);
+    const { data: latest, isLoading: isLatestLoading } = useEmploymentLatest(10);
 
     const setUser = useUserStore(s => s.setUser);
     const current = useUserStore(
@@ -106,8 +106,6 @@ export default function HomePage() {
                 <Section>
                     {isDebouncing || isLoading ? (
                         <SkeletonList variant="guesthouse" count={5} />
-                    ) : isError ? (
-                        <Oops message="에러가 발생했어요" description="다시 시도해주세요" />
                     ) : searchResults.length === 0 ? (
                         <>
                             <Wrapper.FlexBox
@@ -161,8 +159,6 @@ export default function HomePage() {
                         <SectionTitle title="새롭게 올라온 게스트하우스 🏡" link="/staff/guesthouse/latest" />
                         {isLatestLoading ? (
                             <SkeletonList variant="guesthouse" count={2} />
-                        ) : isLatestError ? (
-                            <Oops message="최신 공고를 불러오지 못했어요" description="잠시 후 다시 시도해주세요." />
                         ) : !latest || latest.length === 0 ? (
                             <Oops message="작성된 공고가 없어요" description="공고가 올라올 때까지 기다려주세요!" />
                         ) : (

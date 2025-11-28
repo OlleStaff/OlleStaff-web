@@ -40,9 +40,6 @@ export default function BusinessVerificationPage() {
                     alert("사업자 인증이 완료되었습니다.");
                     navigate("/owner", { replace: true });
                 },
-                onError: () => {
-                    alert("사업자 인증 중 오류가 발생했습니다.");
-                },
             }
         );
     };

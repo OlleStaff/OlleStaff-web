@@ -7,5 +7,6 @@ export const useApplicationApply = () => {
             const { data } = await api.post("/apply", {}, { params: { employmentId } });
             return data;
         },
+        meta: { suppressGlobalError: true },
     });
 };

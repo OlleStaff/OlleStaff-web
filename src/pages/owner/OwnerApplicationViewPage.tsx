@@ -29,14 +29,14 @@ export default function OwnerApplicationViewPage() {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [tab, setTab] = useState<StaffTabTypes["MY_APPLICATION"]>("자기소개");
 
-    const { data: otherUserApplication, isLoading, isError } = useGetOtherUserApplication(targetUserId as number);
+    const { data: otherUserApplication, isLoading } = useGetOtherUserApplication(targetUserId as number);
 
     if (!Number.isFinite(targetUserId)) {
         return <div style={{ padding: 16 }}>잘못된 접근입니다.</div>;
     }
     if (isLoading) return <LoadingSpinner />;
-    if (isError || !otherUserApplication) {
-        return <div style={{ padding: 16 }}>지원서를 불러오지 못했습니다.</div>;
+    if (!otherUserApplication) {
+        return null;
     }
 
     const handleImageClick = (idx: number) => {
