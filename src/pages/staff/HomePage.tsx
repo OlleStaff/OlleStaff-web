@@ -46,8 +46,11 @@ export default function HomePage() {
         }))
     );
     const bootRef = useRef(false);
+    const { id } = useUserStore.getState();
 
     useEffect(() => {
+        if (!id) return;
+
         const checkApplicationStatus = async () => {
             try {
                 const skipped = sessionStorage.getItem("applicationSkipped");

@@ -59,7 +59,6 @@ const StaffRoutes: RouteObject[] = [
                 path: "accompany/write",
                 element: <AccompanyWritePage />,
             },
-
             {
                 path: "user/edit-application",
                 element: <EditApplicationPage />,
